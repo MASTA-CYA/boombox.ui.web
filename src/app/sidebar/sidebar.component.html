@@ -1,0 +1,24 @@
+<div class="nav-rail-container">
+  <div>
+    <img class="image" src="logo-no-background.png" />
+  </div>
+  <div>
+    @for (item of items; track item) {
+    <ul>
+      <li>
+        <a
+          class="nav-list-item"
+          [routerLink]="item.routeLink"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <div class="nav-list-item-row">
+            <mat-icon class="nav-list-item-icon">{{ item.icon }}</mat-icon>
+            <p class="nav-list-item-text">{{ item.label }}</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+    }
+  </div>
+</div>
