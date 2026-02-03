@@ -2,7 +2,7 @@
   <div>
     <img class="image" src="logo-no-background.png" />
   </div>
-  <div>
+  <div class="nav-list-container">
     @for (item of items; track item) {
     <ul>
       <li>
@@ -20,5 +20,8 @@
       </li>
     </ul>
     }
+  </div>
+  <div class="player">
+    <app-player></app-player>
   </div>
 </div>
