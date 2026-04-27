@@ -1,0 +1,56 @@
+<h2 class="playlist-heading">Playlists</h2>
+<div class="playlist-container">
+  <div class="playlist-title-container">
+    @for (name of playlistNames; track name) {
+    <div class="radio-item">
+      <input
+        type="radio"
+        id="{{ name }}"
+        name="playlist_{{ name }}"
+        value="{{ name }}"
+        (change)="onPlaylistSelected(name)"
+      />
+      <label class="playlist-title-text" for="{{ name }}">{{ name }}</label>
+    </div>
+    }
+  </div>
+  <div class="playlist-tracks-container">
+    <table>
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Artist</th>
+        <th>Duration</th>
+        <th></th>
+      </tr>
+      @for (track of selectedPlaylistTracks; track track) {
+      <tr>
+        @if (track.isFavourite) {
+        <td>
+          <button (click)="onMarkAsFavouriteClicked(track.path)">
+            <svg-icon key="flame" color="#710193" size="lg"></svg-icon>
+          </button>
+        </td>
+        } @else {
+        <td>
+          <button (click)="onMarkAsFavouriteClicked(track.path)">
+            <svg-icon key="flame" color="#FFFFFF" size="lg"></svg-icon>
+          </button>
+        </td>
+        }
+        <td>{{ track.name }}</td>
+        <td>{{ track.artist }}</td>
+        <td>{{ track.displayTotalDuration }}</td>
+        <td>
+          <input
+            type="checkbox"
+            id="{{ track }}"
+            value="{{ track.path }}"
+            (change)="onSelectedTrackChanged($event)"
+          />
+        </td>
+      </tr>
+      }
+    </table>
+  </div>
+</div>

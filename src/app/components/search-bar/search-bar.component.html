@@ -1,0 +1,28 @@
+<div>
+  <div class="search-container">
+    <input
+      #search
+      type="search"
+      class="search-text"
+      placeholder="Search"
+      (input)="onSearchTextChanged($event)"
+    />
+    @if (canClearSearch) {
+    <button class="clear-button" (click)="onClearClicked()">
+      <svg-icon key="clear" color="#FFFFFF" size="lg"></svg-icon>
+    </button>
+    }
+    <button class="search-button" (click)="onSearchClicked(search.value)">
+      <svg-icon key="search" color="#FFFFFF" size="lg"></svg-icon>
+    </button>
+    <div class="filter-dropdown">
+      <label for="libraryOrder">Order by:</label>
+      <select #libraryOrder name="libraryOrder" id="libraryOrder" (change)="onOrderByChanged(search.value, libraryOrder.value)">
+        <option selected value> -- select an option -- </option>
+        @for (option of orderByOptions; track option) {
+          <option value="{{option[0]}}">{{option[1]}}</option>
+        }
+      </select>
+    </div>
+  </div>
+</div>

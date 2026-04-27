@@ -1,0 +1,202 @@
+.player-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	padding: 10px;
+}
+
+.image {
+	height: 260px;
+	padding: 0px 5px;
+}
+
+.no-image {
+	height: 260px;
+	filter: invert(100%);
+	padding: 0px 20px;
+}
+
+.player-playlist-container {
+	display: flex;
+	flex-direction: column;
+	height: 260px;
+}
+
+.playlist-button {
+	display: flex;
+	flex-direction: row;
+}
+
+.playlist-button-container {
+	display: inline-flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.playlist-icon-button {
+	background: transparent;
+	border: none;
+
+	.mat-icon {
+	  font-size: 22px;
+	  height: 22px;
+	  width: 22px;
+	  color: #FFFFFF;
+	}
+}
+
+.icon-button-spacing {
+	margin-right: 25px;
+}
+
+.track-row-container {
+	padding: 0px 5px 0px 0px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	scrollbar-width: thin;
+}
+
+.playlist-track-name {
+	color: #FFFFFF;
+	overflow-wrap: normal
+}
+
+.playlist-active-track-name {
+	color: #710193;
+	overflow-wrap: normal
+}
+
+.playlist-track-row {
+	display: flex;
+	justify-content: space-between;
+	justify-items: center;
+	margin: 8px 0px;
+	padding: 8px;
+}
+
+.playlist-track-row:nth-child(odd) { background-color: #1e1e1e; }
+
+.track-title {
+	font-weight: bold;
+	color: #FFFFFF;
+	margin: 10px 2px 0px 2px;
+}
+
+.track-sub-title {
+	color: #505050;
+	margin: 4px 2px 0px 2px;
+}
+
+.track-duration {
+	display: flex;
+	justify-content: space-between;
+	color: #505050;
+	margin: 4px;
+}
+
+.information-controls {
+	margin: 15px 5px 0px 5px;
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.information-icon-button {
+	background: transparent;
+	border: none;
+
+	.mat-icon {
+	  font-size: 22px;
+	  height: 22px;
+	  width: 22px;
+	  color: #FFFFFF;
+	}
+}
+
+mat-slider {
+	--mdc-slider-handle-color: #710193;
+	--mdc-slider-active-track-color: #710193;
+  --mdc-slider-inactive-track-color: #505050; 
+	--mdc-slider-inactive-track-height: 5px;
+	--mdc-slider-active-track-height: 5px;
+	--mdc-slider-handle-height: 18px;
+	--mdc-slider-handle-width: 18px;
+	--mdc-slider-handle-shape: 50px;
+}
+
+.player-controls {
+	margin: 5px;
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: space-between;
+}
+
+.player-icon-button {
+	background: transparent;
+	border: none;
+
+	.mat-icon {
+	  font-size: 28px;
+	  height: 28px;
+	  width: 28px;
+	  color: #FFFFFF;
+	}
+}
+
+.play-icon-button {
+	background: transparent;
+	border: none;
+
+	.mat-icon {
+		font-size: 42px;
+		height: 42px;
+		width: 42px;
+		color: #710193;
+	}
+}
+
+.radio-item {
+	display: flex;
+	align-items: center;
+	color: #FFFFFF;
+	margin: 4px;
+}
+.radio-item input {
+	margin-right: 8px; /* Adds space between button and label */
+}
+
+/* 1. Reset the native radio look */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #505050;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  display: grid;
+  place-content: center; /* Centers the inner dot */
+}
+
+/* 2. Create the inner dot (hidden by default) */
+input[type="radio"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: scale(0); /* Hide dot initially */
+  transition: 120ms transform ease-in-out;
+  background-color: #710193;
+}
+
+/* 3. Show dot when checked */
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+/* 4. Focus state for accessibility */
+input[type="radio"]:focus-visible {
+  outline: 2px solid #710193;
+  outline-offset: 3px;
+}

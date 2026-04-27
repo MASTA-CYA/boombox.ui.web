@@ -1,0 +1,41 @@
+.progress-bar-container {
+	position: relative;
+}
+
+.outer {
+	width: 400px;
+	height: 20px;
+	margin: 5px;
+	border: 2px solid #505050;
+	border-radius: 12px;
+	box-shadow: 0 0 8px #505050;
+	overflow: hidden;
+}
+
+.inner {
+	height: 18px;
+	background-color: #710193;
+	transition: 0.1s ease-in-out;
+	overflow: hidden;
+}
+
+.progress {
+	color: white;
+	text-align: center;
+}
+
+/* Indeterminate animation */
+/* @keyframes indeterminate {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(100%);
+	}
+}
+
+.indeterminate {
+	width: 100%;
+	animation: indeterminate 1.5s infinite linear;
+} */

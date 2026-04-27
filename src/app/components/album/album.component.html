@@ -1,0 +1,203 @@
+<div class="album-container">
+  <div class="album-header">
+    <div class="album-details-container">
+      <div class="album-image-details-container">
+        <img class="album-image" [src]="album?.displayImage" />
+        <div class="album-data-container">
+          <div>
+            <p class="album-title">
+              {{ album?.name }}
+            </p>
+            <p class="album-sub-title">
+              {{ album?.artist }}
+            </p>
+          </div>
+          <div class="album-information-container">
+            <div class="album-information-separated">
+              <div class="album-information-item-left">
+                <svg-icon key="calender" color="#FFFFFF" size="lg"></svg-icon>
+                <span class="album-header-text"> {{ album?.year }} </span>
+              </div>
+              <span class="album-info-separator"></span>
+              <div class="album-information-item-right">
+                <svg-icon key="genre" color="#FFFFFF" size="lg"></svg-icon>
+                <span class="album-header-text"> {{ album?.genre }} </span>
+              </div>
+            </div>
+            <div class="album-information-separated">
+              <div class="album-information-item-left">
+                <svg-icon key="stopwatch" color="#FFFFFF" size="lg"></svg-icon>
+                <span class="album-header-text">
+                  {{ album?.displayDuration }}
+                </span>
+              </div>
+              <span class="album-info-separator"></span>
+              <div class="album-information-item-right">
+                <svg-icon
+                  key="number-sign"
+                  color="#FFFFFF"
+                  size="lg"
+                ></svg-icon>
+                <span class="album-header-text">
+                  {{ album?.numberOfTracks }}
+                </span>
+              </div>
+            </div>
+            <div class="album-information-separated">
+              <div class="album-information-item-left">
+                <svg-icon key="extension" color="#FFFFFF" size="lg"></svg-icon>
+                <span class="album-header-text"> {{ album?.encoding }} </span>
+              </div>
+              <span class="album-info-separator"></span>
+              <div class="album-information-item-right">
+                <svg-icon
+                  key="calender-add"
+                  color="#FFFFFF"
+                  size="lg"
+                ></svg-icon>
+                <span class="album-header-text">
+                  {{ album?.dateMapped?.toLocaleDateString() }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="album-button-container">
+        <button class="album-icon-button" (click)="onPlayAllClicked()">
+          <div>
+            <svg-icon key="play" color="#FFFFFF" size="md"></svg-icon>
+            <span class="album-icon-button-text">Play All</span>
+          </div>
+        </button>
+        <button class="album-icon-button">
+          <div>
+            <svg-icon key="shuffle" color="#FFFFFF" size="m"></svg-icon>
+            <span class="album-icon-button-text">Shuffle Play</span>
+          </div>
+        </button>
+        <button class="album-icon-button" (click)="onShowPlaylistsClicked()">
+          <div>
+            <svg-icon key="add" color="#FFFFFF" size="m"></svg-icon>
+            <span class="album-icon-button-text">Add To</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    @if (showPlaylists) {
+    <div class="album-playlists-container">
+      <div class="album-playlists-cards-container">
+        <div class="album-playlists-card">
+          <p class="album-playlists-heading">Playlists</p>
+          <div class="album-playlists-list-container">
+            @for (name of playlistNames; track name) {
+            <div class="radio-item">
+              <input
+                type="radio"
+                id="{{ name }}"
+                name="playlist_{{ name }}"
+                value="{{ name }}"
+                (change)="onPlaylistSelected(name)"
+              />
+              <label for="{{ name }}">{{ name }}</label>
+            </div>
+            }
+          </div>
+        </div>
+        <div class="album-playlists-card">
+          <p class="album-playlists-heading">Tracks</p>
+          <div class="album-playlists-list-container">
+            @for (name of selectedPlaylistTracks; track name) {
+            <div class="radio-item">
+              <input
+                type="radio"
+                id="{{ name }}"
+                name="playlist_{{ name }}"
+                value="{{ name }}"
+                (change)="onPlaylistTrackSelected(name)"
+              />
+              @if (isPlaying(name)) {
+              <label
+                class="album-playlist-track-radio-button-label"
+                for="{{ name }}"
+                >{{ name }}</label
+              >
+              } @else {
+              <label for="{{ name }}">{{ name }}</label>
+              }
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+      <div class="album-playlist-button-container">
+        <button class="album-playlist-icon-button" (click)="onPrependClicked()">
+          <div>
+            <svg-icon key="down-arrow" color="#FFFFFF" size="md"></svg-icon>
+            <span class="album-icon-button-text">Prepend</span>
+          </div>
+        </button>
+        <button class="album-playlist-icon-button" (click)="onAppendClicked()">
+          <div>
+            <svg-icon key="up-arrow" color="#FFFFFF" size="md"></svg-icon>
+            <span class="album-icon-button-text">Append</span>
+          </div>
+        </button>
+        <button class="album-playlist-icon-button" (click)="onCancelClicked()">
+          <div>
+            <svg-icon key="cancel" color="#FFFFFF" size="md"></svg-icon>
+            <span class="album-icon-button-text">Cancel</span>
+          </div>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="album-tracks-container">
+    <table>
+      <tr>
+        <th></th>
+        <th>#</th>
+        <th>Name</th>
+        <th>Times Played</th>
+        <th>Duration</th>
+        <th></th>
+      </tr>
+      @for (track of album?.tracks; track track) {
+      <tr>
+        @if (track.isFavourite) {
+        <td>
+          <button
+            class="favourite-button"
+            (click)="onMarkAsFavouriteClicked(track.path)"
+          >
+            <svg-icon key="flame" color="#710193" size="lg"></svg-icon>
+          </button>
+        </td>
+        } @else {
+        <td>
+          <button
+            class="favourite-button"
+            (click)="onMarkAsFavouriteClicked(track.path)"
+          >
+            <svg-icon key="flame" color="#FFFFFF" size="lg"></svg-icon>
+          </button>
+        </td>
+        }
+        <td>{{ track.trackNumber }}</td>
+        <td>{{ track.name }}</td>
+        <td>{{ track.timesPlayed }}</td>
+        <td>{{ track.displayDuration }}</td>
+        <td>
+          <input
+            type="checkbox"
+            id="{{ track }}"
+            value="{{ track.path }}"
+            (change)="onSelectedTrackChanged($event)"
+          />
+        </td>
+      </tr>
+      }
+    </table>
+  </div>
+</div>

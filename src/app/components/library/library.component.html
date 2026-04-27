@@ -1,0 +1,57 @@
+@if (!displayAlbums){
+<div class="progress-bar-container">
+  <img class="progress-bar-image" src="cd.png" />
+  <app-progress-bar [progress]="mappingUpdate.percent"></app-progress-bar>
+  <span class="progress-bar-text-container">
+    <p class="progress-bar-update-text">{{ mappingUpdate.message }}</p>
+    <p class="progress-bar-error-text">{{ mappingUpdate.error }}</p>
+  </span>
+</div>
+} @else {
+<app-search-bar></app-search-bar>
+<div #scrollableContainer class="library-container">
+  @for (album of displayAlbums; track album) {
+  <mat-card
+    class="library-item"
+    appearance="raised"
+    (click)="onAlbumClick(album)"
+  >
+    @if (album.image) {
+    <img [src]="album.displayImage" />
+    } @else {
+    <img src="broken.png" />
+    }
+    <div class="library-item-header-container">
+      <p class="library-item-title">
+        {{ album.name }}
+      </p>
+      <p class="library-item-sub-title">
+        {{ album.artist }}
+      </p>
+    </div>
+    <mat-card-actions>
+      <div class="library-item-footer-container">
+        <div class="library-item-footer-info-container">
+          <svg-icon key="number-sign" color="#FFFFFF" size="sm"></svg-icon>
+          <span class="library-item-footer-text">{{
+            album.numberOfTracks
+          }}</span>
+        </div>
+        <span class="library-item-footer-separator"></span>
+        <div class="library-item-footer-info-container">
+          <svg-icon key="flame" color="#FFFFFF" size="sm"></svg-icon>
+          <span class="library-item-footer-text">2</span>
+        </div>
+        <span class="library-item-footer-separator"></span>
+        <div class="library-item-footer-info-container">
+          <svg-icon key="extension" color="#FFFFFF" size="sm"></svg-icon>
+          <span class="library-item-footer-text">{{ album.encoding }}</span>
+        </div>
+      </div>
+    </mat-card-actions>
+  </mat-card>
+  }
+</div>
+}
+
+<router-outlet />

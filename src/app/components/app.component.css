@@ -1,0 +1,29 @@
+.content-container {
+	display: flex;
+	flex-direction: row;
+	height: 100%;
+	transition: all 0.5s ease;
+	background-image: url("/space-background-modified.jpg");
+}
+
+.glass-box {
+  background: rgba(255, 255, 255, 0.9); /* Semi-transparent color is required */
+  backdrop-filter: blur(10px); /* Blurs what is behind this box */
+  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+}
+
+.main-content {
+	flex: 1;
+	transition: all 0.1s ease;
+	overflow-y: scroll;
+	scrollbar-width: thin;
+	scroll-behavior: smooth;
+}
+
+.snackbar-container {
+	position: absolute;
+	z-index: 2;
+	bottom: 0;
+	right: 0;
+	margin: 10px;
+}

@@ -1,0 +1,115 @@
+.playlist-heading {
+	color: #FFFFFF;
+	margin-bottom: 40px;
+}
+
+.playlist-container {
+	display: flex;
+	width: 100%;
+}
+
+.playlist-title-container {
+	width: 25%;
+	box-shadow: 8px 0px 5px -5px #505050;
+	/* align-items: flex-start; */
+}
+
+.playlist-title-text {
+	color: #FFFFFF;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.playlist-tracks-container {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	color: #FFFFFF;
+}
+
+.radio-item {
+	display: flex;
+	align-items: center;
+	color: #FFFFFF;
+	margin: 4px;
+}
+.radio-item input {
+	margin-right: 8px; /* Adds space between button and label */
+}
+
+/* 1. Reset the native radio look */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #505050;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  display: grid;
+  place-content: center; /* Centers the inner dot */
+}
+
+/* 2. Create the inner dot (hidden by default) */
+input[type="radio"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: scale(0); /* Hide dot initially */
+  transition: 120ms transform ease-in-out;
+  background-color: #710193;
+}
+
+/* 3. Show dot when checked */
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+/* 4. Focus state for accessibility */
+input[type="radio"]:focus-visible {
+  outline: 2px solid #710193;
+  outline-offset: 3px;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	accent-color: #710193;
+}
+
+input[type="checkbox"]:checked+td {
+	color: #710193;
+}
+
+table {
+	border-collapse: collapse;
+	width: 95%;
+	margin: 0px 0px 40px 40px;
+	align-items: center;
+}
+
+th {
+	background-color: #710193;
+	color: #FFFFFF;
+	font-size: 18px;
+}
+
+td {
+	color: #FFFFFF;
+}
+
+tr:nth-child(odd) {
+	background-color: #1e1e1e;
+}
+
+td {
+	border-bottom: 1px solid #ddd;
+}
+
+th,
+td {
+	padding: 12px;
+	text-align: left;
+}

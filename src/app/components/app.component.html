@@ -1,0 +1,11 @@
+<div class="content-container">
+  <aside>
+    <app-sidebar></app-sidebar>
+  </aside>
+  <main #scrollContainer class="main-content" (scroll)="onScroll($event)">
+    <app-main></app-main>
+    <div class="snackbar-container">
+      <app-snackbar></app-snackbar>
+    </div>
+  </main>
+</div>

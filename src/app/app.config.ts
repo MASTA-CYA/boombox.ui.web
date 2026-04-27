@@ -1,9 +1,62 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { ApplicationConfig, provideZoneChangeDetection, provideAppInitializer, inject, runInInjectionContext } from '@angular/core';
+import { provideRouter, withComponentInputBinding, withDebugTracing, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
+import { provideSvgIcons, provideSvgIconsConfig } from '@ngneat/svg-icon';
+import * as icons from './svg';
+import { ServerService } from './services/server.service';
+
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideAnimationsAsync()]
+  providers: [
+    provideAppInitializer(async () => await inject(ServerService).startConnectionAsync()),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+      }), withDebugTracing()),
+    provideAnimationsAsync(),
+    provideSvgIconsConfig({
+      sizes: {
+        xs: '10px',
+        sm: '12px',
+        md: '16px',
+        lg: '20px',
+        xl: '25px',
+        xxl: '30px',
+      },
+      defaultSize: 'md'
+    }), provideSvgIcons([
+      icons.cdIcon,
+      icons.playlistIcon,
+      icons.settingsIcon,
+      icons.numberSignIcon,
+      icons.flameIcon,
+      icons.extensionIcon,
+      icons.infoIcon,
+      icons.lyricsIcon,
+      icons.playOneIcon,
+      icons.shuffleIcon,
+      icons.repeat1Icon,
+      icons.repeatIcon,
+      icons.previousIcon,
+      icons.playIcon,
+      icons.pauseIcon,
+      icons.nextIcon,
+      icons.calenderIcon,
+      icons.calenderAddIcon,
+      icons.genreIcon,
+      icons.stopwatchIcon,
+      icons.addIcon,
+      icons.searchIcon,
+      icons.clearIcon,
+      icons.upArrowIcon,
+      icons.downArrowIcon,
+      icons.binIcon,
+      icons.cancelIcon,
+      icons.beforeIcon,
+      icons.afterIcon,
+    ])]
 };

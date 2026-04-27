@@ -1,0 +1,267 @@
+.album-container {
+	height: inherit;
+	width: inherit;
+}
+
+.album-header {
+	display: inline-flex;
+	width: 98%;
+	background-color: #111111;
+	padding: 15px;
+	box-shadow: 0px 0 10px #710193;
+	margin: 5px;
+	justify-content: space-between;
+}
+
+.album-details-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.album-image-details-container {
+	display: flex;
+	margin-bottom: 20px;
+}
+
+.album-image {
+	width: 260px;
+}
+
+.album-data-container {
+	display: flex;
+	flex-direction: column;
+	margin-left: 15px;
+	justify-content: space-between;
+}
+
+.album-title {
+	font-weight: bold;
+	color: #FFFFFF;
+	font-size: 30px;
+	margin-bottom: 8px;
+}
+
+.album-sub-title {
+	color: #505050;
+	font-size: 26px;
+}
+
+.album-header-text {
+	color: #FFFFFF;
+	margin-left: 8px;
+	font-size: 16px;
+}
+
+.album-information-container {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 8px;
+}
+
+.album-information-item-left {
+	display: flex;
+	flex-direction: row;
+	/* width: 100px; */
+	margin-top: 8px;
+}
+
+.album-information-item-right {
+	display: flex;
+	flex-direction: row;
+	width: 140px;
+	margin-top: 8px;
+}
+
+.album-information-separated {
+	display: inline-flex;
+	width: 350px;
+	align-items: center;
+	justify-content: space-between;
+	margin: 8px 0px;
+}
+
+.album-info-separator {
+	height: 10px;
+	width: 10px;
+	/* margin: 0px 30px 0px 15px; */
+	background-color: #710193;
+	border-radius: 50%;
+}
+
+.album-playlists-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	animation: 500ms ease-in both;
+}
+
+.album-playlists-cards-container {
+	display: flex;
+}
+
+.album-playlist-button-container {
+	display: flex;
+	margin-left: 20px;
+	margin-top: 10px;
+	justify-content: space-between;
+	justify-self: center;
+}
+
+.album-playlist-icon-button {
+	background-color: transparent;
+	border: #710193 solid 2px;
+	color: #FFFFFF;
+	padding: 10px 25px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-table;
+	cursor: pointer;
+	font-size: 16px;
+}
+
+.album-playlists-card{
+	width: 350px;
+	margin-left: 20px;
+	padding: 8px;
+	box-shadow: 0px 0 5px #505050;
+}
+
+.album-playlists-heading {
+	color: #FFFFFF;
+	font-size: 22px;
+}
+
+.album-playlists-list-container {
+	display: flex;
+	height: 200px;
+	flex-direction: column;
+	margin-top: 10px;
+	overflow-y: scroll;
+	scrollbar-width: thin;
+}
+
+.album-playlist-track-radio-button-label {
+	color: #710193;
+}
+
+.radio-item {
+	display: flex;
+	align-items: center;
+	color: #FFFFFF;
+	margin: 4px;
+}
+.radio-item input {
+	margin-right: 8px; /* Adds space between button and label */
+}
+
+/* 1. Reset the native radio look */
+input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #505050;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+  display: grid;
+  place-content: center; /* Centers the inner dot */
+}
+
+/* 2. Create the inner dot (hidden by default) */
+input[type="radio"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  transform: scale(0); /* Hide dot initially */
+  transition: 120ms transform ease-in-out;
+  background-color: #710193;
+}
+
+/* 3. Show dot when checked */
+input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+/* 4. Focus state for accessibility */
+input[type="radio"]:focus-visible {
+  outline: 2px solid #710193;
+  outline-offset: 3px;
+}
+
+.album-button-container {
+	display: flex;
+	margin: 0px 0px;
+	justify-content: space-between;
+}
+
+.album-icon-button {
+	background-color: transparent;
+	border: #710193 solid 2px;
+	color: #FFFFFF;
+	padding: 10px 25px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-table;
+	cursor: pointer;
+	font-size: 16px;
+	margin-right: 20px;
+}
+
+.album-icon-button:hover {
+	background-color: #710193;
+	color: white;
+	box-shadow: 0px 0 10px #505050;
+}
+
+.album-icon-button-text {
+	margin-left: 10px;
+}
+
+.favourite-button {
+	background-color: transparent;
+	cursor: pointer;
+	border: none;
+}
+
+input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
+	accent-color: #710193;
+}
+
+input[type="checkbox"]:checked+td {
+	color: #710193;
+}
+
+table {
+	border-collapse: collapse;
+	width: 95%;
+	margin: 40px;
+	align-items: center;
+}
+
+th {
+	background-color: #710193;
+	color: #FFFFFF;
+	font-size: 18px;
+}
+
+td {
+	color: #FFFFFF;
+}
+
+tr:nth-child(odd) {
+	background-color: #1e1e1e;
+}
+
+td {
+	border-bottom: 1px solid #ddd;
+}
+
+th,
+td {
+	padding: 12px;
+	text-align: left;
+}
