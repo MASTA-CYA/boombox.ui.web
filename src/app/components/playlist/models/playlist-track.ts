@@ -34,4 +34,8 @@ export class PlaylistTrack implements IPlaylistTrack {
 		if (sanitizer)
 			this.displayImage = this.sanitizer!.bypassSecurityTrustResourceUrl(playbackInformation.image);
 	}
+
+	equals(other: PlaylistTrack): boolean {
+		return this.path === other.path;
+	}
 }

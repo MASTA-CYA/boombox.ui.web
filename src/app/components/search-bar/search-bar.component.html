@@ -17,11 +17,18 @@
     </button>
     <div class="filter-dropdown">
       <label for="libraryOrder">Order by:</label>
-      <select #libraryOrder name="libraryOrder" id="libraryOrder" (change)="onOrderByChanged(search.value, libraryOrder.value)">
-        <option selected value> -- select an option -- </option>
-        @for (option of orderByOptions; track option) {
-          <option value="{{option[0]}}">{{option[1]}}</option>
-        }
+      <select
+        #libraryOrder
+        name="libraryOrder"
+        id="libraryOrder"
+        (change)="onOrderByChanged(search.value, libraryOrder.value)"
+      >
+        @for (option of orderByOptions; track option) { @if (option[1] ===
+        "New") {
+        <option selected value="{{ option[0] }}">{{ option[1] }}</option>
+        } @else {
+        <option value="{{ option[0] }}">{{ option[1] }}</option>
+        } }
       </select>
     </div>
   </div>

@@ -4,6 +4,11 @@
   </aside>
   <main #scrollContainer class="main-content" (scroll)="onScroll($event)">
     <app-main></app-main>
+    @if (showScrollButton) {
+    <button class="scroll-button" (click)="onScrollToTop()">
+      <svg-icon key="up-arrow" color="#FFFFFF" size="xl"></svg-icon>
+    </button>
+    }
     <div class="snackbar-container">
       <app-snackbar></app-snackbar>
     </div>

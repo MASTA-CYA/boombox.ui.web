@@ -8,7 +8,7 @@ import { LibraryService } from './library.service';
 import { environment } from '../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ServerService {
   private hubConnection: signalR.HubConnection;
@@ -17,7 +17,8 @@ export class ServerService {
     private snackbarService: SnackbarService,
     private playerService: PlayerService,
     private playlistService: PlaylistService,
-    private libraryService: LibraryService) {
+    private libraryService: LibraryService
+  ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.serverHubUrl, {
         skipNegotiation: true,
@@ -26,7 +27,7 @@ export class ServerService {
       .withAutomaticReconnect([0, 2000, 10000, 30000])
       .configureLogging(signalR.LogLevel.Debug)
       .build();
-    this.hubConnection.serverTimeoutInMilliseconds = 600000;
+    this.hubConnection.serverTimeoutInMilliseconds = 1200000;
     this.hubConnection.keepAliveIntervalInMilliseconds = 150000;
   }
 

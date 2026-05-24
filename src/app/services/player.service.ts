@@ -7,6 +7,9 @@ import { IUserTrackData } from "../components/library/interfaces/user-track-data
 import { UserTrackData } from "../components/library/models/user-track-data";
 import { IPlaybackInformation } from "../components/player/interfaces/playback-information";
 import { environment } from "../../environments/environment";
+import { IPlayerState } from "../components/player/interfaces/player-state";
+import { IPlaylistTrack } from "../components/playlist/interfaces/playlist-track";
+import { PlaylistTrack } from "../components/playlist/models/playlist-track";
 
 @Injectable({
   providedIn: "root"
@@ -15,8 +18,20 @@ export class PlayerService {
   private hubConnection: signalR.HubConnection;
   private playbackInformationSubject: Subject<IPlaybackInformation> = new Subject<IPlaybackInformation>();
   public playbackInformation$: Observable<IPlaybackInformation> = this.playbackInformationSubject.asObservable();
+
+  private playerStateSubject: Subject<IPlayerState> = new Subject<IPlayerState>();
+  public playerState$: Observable<IPlayerState> = this.playerStateSubject.asObservable();
+
+  private seekbarPlayingTrackSubject: Subject<PlaylistTrack> = new Subject<PlaylistTrack>();
+  public seekbarPlayingTrack$: Observable<PlaylistTrack> = this.seekbarPlayingTrackSubject.asObservable();
+  private trackInfoPlayingTrackSubject: Subject<PlaylistTrack> = new Subject<PlaylistTrack>();
+  public trackInfoPlayingTrack$: Observable<PlaylistTrack> = this.trackInfoPlayingTrackSubject.asObservable();
+
   private userTrackDataSubject: Subject<UserTrackData> = new Subject<UserTrackData>();
   public userTrackData$: Observable<UserTrackData> = this.userTrackDataSubject.asObservable();
+
+  private isPlayerLoadingSubject: Subject<boolean> = new Subject<boolean>();
+  public isPlayerLoading$: Observable<boolean> = this.isPlayerLoadingSubject.asObservable();
 
   constructor(private ngZone: NgZone, private snackbarService: SnackbarService) {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -86,6 +101,7 @@ export class PlayerService {
         try {
           const playbackInformation = JSON.parse(response) as IPlaybackInformation;
           this.playbackInformationSubject.next(playbackInformation);
+          this.playerStateSubject.next(playbackInformation.playerState);
         } catch (err) {
           this.snackbarService.showMessage(getErrorMessage(err));
           console.log(err);
@@ -96,6 +112,7 @@ export class PlayerService {
 
   public async playAsync(paths?: string[]): Promise<void> {
     try {
+      this.isPlayerLoadingSubject.next(true);
       await this.hubConnection.invoke("PlayAsync", paths);
     } catch (err) {
       this.snackbarService.showMessage(getErrorMessage(err));
@@ -178,5 +195,17 @@ export class PlayerService {
         }
       });
     });
+  }
+
+  public broadcastPlayingTrack(track: PlaylistTrack | undefined): void {
+    if (!track) return;
+
+    this.seekbarPlayingTrackSubject.next(track);
+    this.trackInfoPlayingTrackSubject.next(track);
+
+  }
+
+  public updatePlayerLoadingState(isLoading: boolean): void {
+    this.isPlayerLoadingSubject.next(isLoading);
   }
 }

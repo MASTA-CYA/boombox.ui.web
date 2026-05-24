@@ -2,6 +2,8 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { SvgIconComponent } from '@ngneat/svg-icon';
 import { LibraryService } from '../../services/library.service';
 import { OrderByOption } from './models/orderby-option-enum';
+import { debounceTime, Subject } from 'rxjs';
+import { SearchModel } from './models/search-model';
 
 @Component({
   selector: 'app-search-bar',
@@ -13,13 +15,19 @@ export class SearchBarComponent {
   @ViewChild('search') private searchBar!: ElementRef;
   canClearSearch: boolean | undefined;
   orderByOptions: [string, OrderByOption][] = Object.entries(OrderByOption);
+  searchInput = new Subject<SearchModel>();
 
-
-  constructor(private libraryService: LibraryService) { }
+  constructor(private libraryService: LibraryService) {
+    this.searchInput
+      .pipe(debounceTime(800))
+      .subscribe((model: SearchModel) => {
+        this.libraryService.filterLibrary(model);
+      });
+  }
 
   onSearchClicked(searchText: string, option?: OrderByOption): void {
     if (searchText || searchText == '')
-      this.libraryService.filterLibrary(searchText, option);
+      this.searchInput.next(new SearchModel(searchText, option))
   }
 
   onClearClicked(): void {

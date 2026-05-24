@@ -19,7 +19,7 @@
 			"preLaunchTask": "npm: start",
 			"webRoot": "${workspaceFolder}",
             "reAttach": true,
-			"firefoxExecutable": "developer"
+			"firefoxExecutable": "developer",
 		},
 		{
 			"name": "Attach",

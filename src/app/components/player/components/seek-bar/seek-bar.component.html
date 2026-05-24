@@ -1,0 +1,9 @@
+<div class="slider-container">
+  <mat-slider [min]="0" [step]="1" [max]="playingTrack?.totalDuration">
+    <input matSliderThumb [value]="playingTrack?.playedDuration" />
+  </mat-slider>
+  <div class="track-duration">
+    <span>{{ playingTrack?.displayPlayedDuration }}</span>
+    <span>{{ playingTrack?.displayTotalDuration }}</span>
+  </div>
+</div>

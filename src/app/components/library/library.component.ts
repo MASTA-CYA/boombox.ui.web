@@ -1,10 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, NgZone, signal, Signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { SvgIconComponent } from "@ngneat/svg-icon";
-import { Router, ActivatedRoute, Scroll } from '@angular/router';
+import { Router, ActivatedRoute, Scroll, NavigationEnd } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { LibraryService } from '../../services/library.service';
-import { map, Subscription } from 'rxjs';
+import { filter, map, Subscription } from 'rxjs';
 import { Album } from './models/album';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ProgressBarComponent } from '../../components/progress-bar/progress-bar.component';
@@ -24,7 +24,7 @@ import { Track } from './models/track';
   templateUrl: './library.component.html',
   styleUrl: './library.component.css'
 })
-export class LibraryComponent implements OnInit, AfterViewInit {
+export class LibraryComponent implements OnInit {
   @ViewChild('scrollableContainer') private scrollContainer!: ElementRef;
 
   public albums: Album[] | undefined;
@@ -38,25 +38,28 @@ export class LibraryComponent implements OnInit, AfterViewInit {
     private router: Router,
     private route: ActivatedRoute,
     private libraryService: LibraryService,
-    private domSanitizer: DomSanitizer,) {
+    private domSanitizer: DomSanitizer
+  ) {
     this.mappingUpdate = new MappingUpdate(0, '', '', false);
-  }
-
-  async ngAfterViewInit(): Promise<void> {
-    await this.libraryService.getLibraryAsync();
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      if (event.url === "/library")
+        setTimeout(async () => await this.libraryService.getLibraryScrollPositionAsync(), 0);
+    });
   }
 
   async ngOnInit(): Promise<void> {
     this.mappingUpdateSubscription = this.libraryService.mappingUpdate$.subscribe(async (update) => {
       this.mappingUpdate = new MappingUpdate(update.percent, update.message, update.error, update.isComplete);
-
       if (this.mappingUpdate.isComplete)
         await this.libraryService.getLibraryScrollPositionAsync();
     });
-    this.albumSubscription = this.libraryService.albums$.subscribe((albums) => {
+    this.albumSubscription = this.libraryService.albums$.subscribe(async (albums) => {
       this.cachedAlbum = albums;
       this.albums = albums.map((album) => new Album(this.domSanitizer, album))
-      this.displayAlbums = this.albums;
+      this.displayAlbums = this.getFilteredAlbums("", OrderByOption.new);;
+      await this.libraryService.getLibraryScrollPositionAsync();
     });
     await this.libraryService.getLibraryAsync();
     this.libraryService.filterLibraryUpdate$.subscribe((model) => {
@@ -70,7 +73,8 @@ export class LibraryComponent implements OnInit, AfterViewInit {
   }
 
   getFilteredAlbums(text: string, option?: OrderByOption): Album[] {
-    const filteredAlbums = this.albums?.filter((album) => album.name.includes(text) || album.artist.includes(text)) ?? [];
+    const filteredAlbums = this.albums?.filter((album) => (album.name?.toLowerCase() ?? "").includes(text.toLowerCase())
+      || album.artist.toLowerCase().includes(text.toLowerCase())) ?? [];
 
     switch (option) {
       case OrderByOption.favorite:
@@ -78,7 +82,7 @@ export class LibraryComponent implements OnInit, AfterViewInit {
       case OrderByOption.plays:
         return filteredAlbums.sort((a, b) => this.getAlbumTrackTimesPlayed(b.tracks) - this.getAlbumTrackTimesPlayed(a.tracks));
       case OrderByOption.new:
-        return filteredAlbums.sort((a, b) => b.dateMapped.getTime() - a.dateMapped.getTime());
+        return filteredAlbums.sort((a, b) => new Date(b.dateMapped)?.getTime() - new Date(a.dateMapped)?.getTime());
       default:
         return filteredAlbums;
     }

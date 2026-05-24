@@ -1,0 +1,22 @@
+mat-slider {
+	width: 100%;
+	--mdc-slider-handle-color: #710193;
+	--mdc-slider-active-track-color: #710193;
+  --mdc-slider-inactive-track-color: #505050; 
+	--mdc-slider-inactive-track-height: 5px;
+	--mdc-slider-active-track-height: 5px;
+	--mdc-slider-handle-height: 18px;
+	--mdc-slider-handle-width: 18px;
+	--mdc-slider-handle-shape: 50px;
+}
+
+.track-duration {
+	display: flex;
+	justify-content: space-between;
+	color: #505050;
+	margin: 4px;
+}
+
+.slider-container {
+	padding: 0px 10px 0px 0px;
+}

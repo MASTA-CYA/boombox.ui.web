@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection, provideAppInitializer, inject, runInInjectionContext } from '@angular/core';
-import { provideRouter, withComponentInputBinding, withDebugTracing, withInMemoryScrolling } from '@angular/router';
+import { provideRouter, RouteReuseStrategy, withComponentInputBinding, withDebugTracing, withInMemoryScrolling } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -7,15 +7,18 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideSvgIcons, provideSvgIconsConfig } from '@ngneat/svg-icon';
 import * as icons from './svg';
 import { ServerService } from './services/server.service';
+import { CustomRouteReuseStrategy } from './common/re-use-strategy';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAppInitializer(async () => await inject(ServerService).startConnectionAsync()),
     provideZoneChangeDetection({ eventCoalescing: true }),
+    { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
     provideRouter(
       routes,
       withInMemoryScrolling({
         scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled'
       }), withDebugTracing()),
     provideAnimationsAsync(),
     provideSvgIconsConfig({

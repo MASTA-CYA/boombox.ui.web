@@ -3,14 +3,51 @@
 	width: inherit;
 }
 
+.album-header-image {
+	width: 100%;
+	/* display: flex;
+	flex-direction: row; */
+	background-size: cover;
+	/* background-repeat: no-repeat; */
+	/* background-size: 100% 100%; */
+	background-position: center;
+}
+
+.frosted-glass {
+  position: relative; /* Essential for positioning the pseudo-element */
+  z-index: 1; /* Ensures content stays above the glass layer */
+  /* Add your background image or color here */
+}
+
+.frosted-glass::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* Adjust this to create a PARTIAL effect (e.g., 50% width) */
+  height: 100%;
+  
+  /* The Glass Effect */
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+  backdrop-filter: blur(10px) saturate(180%); /* Blurs everything behind */
+  -webkit-backdrop-filter: blur(10px) saturate(180%); /* Safari support */
+  /* Aesthetics */
+  z-index: -1; /* Places the "glass" behind the container's text/content */
+}
+
 .album-header {
-	display: inline-flex;
-	width: 98%;
-	background-color: #111111;
-	padding: 15px;
-	box-shadow: 0px 0 10px #710193;
-	margin: 5px;
+	display: flex;
+	flex-direction: row;
+	/* width: 100%; */
+	/* background: inherit; */
+	/* background-color: #111111; */
+	/* background: rgba(0, 0, 0, 0.5); */
+	/* backdrop-filter: blur(150px); */
+  /* -webkit-backdrop-filter: blur(100px);	 */
 	justify-content: space-between;
+	/* background-repeat: round; */
+	padding: 15px;
+	/* margin: 5px; */
 }
 
 .album-details-container {
@@ -21,6 +58,7 @@
 .album-image-details-container {
 	display: flex;
 	margin-bottom: 20px;
+	max-width: 740px;
 }
 
 .album-image {
@@ -42,7 +80,7 @@
 }
 
 .album-sub-title {
-	color: #505050;
+	color: #999999;
 	font-size: 26px;
 }
 
@@ -61,14 +99,14 @@
 .album-information-item-left {
 	display: flex;
 	flex-direction: row;
-	/* width: 100px; */
+	width: 100px;
 	margin-top: 8px;
 }
 
 .album-information-item-right {
 	display: flex;
 	flex-direction: row;
-	width: 140px;
+	width: 160px;
 	margin-top: 8px;
 }
 
@@ -84,12 +122,12 @@
 	height: 10px;
 	width: 10px;
 	/* margin: 0px 30px 0px 15px; */
-	background-color: #710193;
+	background-color: rgba(255, 255, 255, 0.4);
 	border-radius: 50%;
 }
 
 .album-playlists-container {
-	display: flex;
+	display: inline-flex;
 	flex-direction: column;
 	justify-content: space-between;
 	animation: 500ms ease-in both;
@@ -108,8 +146,8 @@
 }
 
 .album-playlist-icon-button {
-	background-color: transparent;
-	border: #710193 solid 2px;
+	background-color: rgba(255, 255, 255, 0.1);;
+	border: rgba(0, 0, 0, 0.38) solid 3px;
 	color: #FFFFFF;
 	padding: 10px 25px;
 	text-align: center;
@@ -117,6 +155,13 @@
 	display: inline-table;
 	cursor: pointer;
 	font-size: 16px;
+}
+
+.album-playlist-icon-button:hover {
+	background-color: rgba(255, 255, 255, 0.1);;
+	color: white;
+	box-shadow: 0px 0 10px #505050;
+	transition: background-color 0.3s ease;
 }
 
 .album-playlists-card{
@@ -176,7 +221,7 @@ input[type="radio"]::before {
   border-radius: 50%;
   transform: scale(0); /* Hide dot initially */
   transition: 120ms transform ease-in-out;
-  background-color: #710193;
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 /* 3. Show dot when checked */
@@ -197,22 +242,24 @@ input[type="radio"]:focus-visible {
 }
 
 .album-icon-button {
-	background-color: transparent;
-	border: #710193 solid 2px;
+	background-color: rgba(255, 255, 255, 0.1);
+	border: rgba(0, 0, 0, 0.38) solid 3px;
 	color: #FFFFFF;
 	padding: 10px 25px;
 	text-align: center;
 	text-decoration: none;
-	display: inline-table;
+	display: inline-block;
 	cursor: pointer;
 	font-size: 16px;
 	margin-right: 20px;
+	z-index: 100px;
 }
 
 .album-icon-button:hover {
-	background-color: #710193;
+	background-color: rgba(255, 255, 255, 0.1);
 	color: white;
 	box-shadow: 0px 0 10px #505050;
+	transition: background-color 0.3s ease;
 }
 
 .album-icon-button-text {

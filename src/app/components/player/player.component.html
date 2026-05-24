@@ -1,146 +1,24 @@
 <div class="player-container">
-  @if (playingTrack) { @if (showPlaylist) {
-  <div class="player-playlist-container">
-    <div class="playlist-button-container">
-      <div class="playlist-button">
-        <button
-          id="shift-up"
-          matIconButton
-          class="playlist-icon-button icon-button-spacing"
-          (click)="onShiftUpClickedAsync()"
-        >
-          <svg-icon key="up-arrow" color="#FFFFFF" size="xl"></svg-icon>
-        </button>
-        <button
-          id="shift-down"
-          matIconButton
-          class="playlist-icon-button"
-          (click)="onShiftDownClickedAsync()"
-        >
-          <svg-icon key="down-arrow" color="#FFFFFF" size="xl"></svg-icon>
-        </button>
-      </div>
-      <button matIconButton class="playlist-icon-button" (click)="onDeleteTrackAsync()">
-        <svg-icon key="bin" color="#FF0000" size="xl"></svg-icon>
-      </button>
-    </div>
-    <div class="track-row-container">
-      @for (track of playlist; track track) {
-      <div class="radio-item">
-        @if (track.isPlaying) {
-        <label class="playlist-track-name" for="{{ track }}">{{ track }}</label>
-        } @else {
-        <label for="{{ track }}">{{ track }}</label>
-        }
-        <input
-          type="radio"
-          id="{{ track.path }}"
-          name="playlist_{{ track }}"
-          value="{{ track }}"
-          (change)="onPlaylistTrackSelected(track.path)"
-        />
-      </div>
-      }
-    </div>
-  </div>
-  } @else { @if (playingTrack.displayImage) {
-  <img class="image" [src]="playingTrack.displayImage" />
+  @if (isPlayerLoading || playingTrack) { @if (showPlaylist) {
+  <app-player-playlist
+    [playlist]="playlist"
+    (updatePlayerPlaylist)="receivePlayerPlaylist($event)"
+  />
+  } @else { @if (playingTrack?.displayImage) {
+  <img class="image" [src]="playingTrack?.displayImage" />
   } @else {
   <img class="no-image" src="cd.png" />
   } }
   <div class="track-info-container">
     <p class="track-title">
-      {{ playingTrack.name }}
+      {{ playingTrack?.name }}
     </p>
     <p class="track-sub-title">
-      {{ playingTrack.artist }}
+      {{ playingTrack?.artist }}
     </p>
   </div>
-  <div class="information-controls">
-    <button matIconButton class="information-icon-button">
-      <svg-icon key="info" color="#FFFFFF" size="xl"></svg-icon>
-    </button>
-    @if (playingTrack.isFavourite) {
-    <button
-      matIconButton
-      class="information-icon-button"
-      (click)="onMarkAsFavouriteClicked(playingTrack.path)"
-    >
-      <svg-icon key="flame" color="#710193" size="xl"></svg-icon>
-    </button>
-    }@else {
-    <button
-      matIconButton
-      class="information-icon-button"
-      (click)="onMarkAsFavouriteClicked(playingTrack.path)"
-    >
-      <svg-icon key="flame" color="#FFFFFF" size="xl"></svg-icon>
-    </button>
-    }<button matIconButton class="information-icon-button">
-      <svg-icon key="lyrics" color="#FFFFFF" size="xxl"></svg-icon>
-    </button>
-  </div>
-  <mat-slider [min]="0" [step]="1" [max]="playingTrack.totalDuration">
-    <input matSliderThumb [value]="playingTrack.playedDuration" />
-  </mat-slider>
-  <div class="track-duration">
-    <span>{{ playingTrack.displayPlayedDuration }}</span>
-    <span>{{ playingTrack.displayTotalDuration }}</span>
-  </div>
-  <div class="player-controls">
-    @if(playerState?.modeImageName) {
-    <button
-      matIconButton
-      class="player-icon-button"
-      (click)="togglePlayerModeAsync()"
-    >
-      <svg-icon
-        key="{{ playerState?.modeImageName }}"
-        color="#FFFFFF"
-        size="xl"
-      ></svg-icon>
-    </button>
-    } @else {
-    <button matIconButton class="player-icon-button" disabled>
-      <svg-icon key="play-one" color="#505050" size="xl"></svg-icon>
-    </button>
-    } @if (playerState?.hasPrevious) {
-    <button matIconButton class="player-icon-button" (click)="playPrevious()">
-      <svg-icon key="previous" color="#FFFFFF" size="xl"></svg-icon>
-    </button>
-    } @else {
-    <button matIconButton class="player-icon-button" disabled>
-      <svg-icon key="previous" color="#505050" size="xl"></svg-icon>
-    </button>
-    } @if (playerState?.isPlaying) {
-    <button
-      matIconButton
-      class="play-icon-button"
-      [disabled]="!playerState?.hasPrevious"
-      (click)="playPauseAsync('pause')"
-    >
-      <svg-icon key="pause" color="#710193" size="xxl"></svg-icon>
-    </button>
-    } @else {
-    <button
-      matIconButton
-      class="play-icon-button"
-      (click)="playPauseAsync('play')"
-    >
-      <svg-icon key="play" color="#710193" size="xxl"></svg-icon>
-    </button>
-    } @if (playerState?.hasNext) {
-    <button matIconButton class="player-icon-button" (click)="playNext()">
-      <svg-icon key="next" color="#FFFFFF" size="xl"></svg-icon>
-    </button>
-    } @else {
-    <button matIconButton class="player-icon-button" disabled>
-      <svg-icon key="next" color="#505050" size="xl"></svg-icon>
-    </button>
-    }
-    <button matIconButton class="player-icon-button" (click)="togglePlaylist()">
-      <svg-icon key="playlist" color="#FFFFFF" size="xl"></svg-icon>
-    </button>
-  </div>
+  <app-track-information />
+  <app-seek-bar />
+  <app-player-actions (showPlaylist)="togglePlaylist($event)" />
   }
 </div>

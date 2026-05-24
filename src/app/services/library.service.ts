@@ -31,10 +31,12 @@ export class LibraryService {
 
   private selectedAlbum: Album | undefined;
 
-  constructor(private ngZone: NgZone,
+  constructor(
+    private ngZone: NgZone,
     private snackbarService: SnackbarService,
     private scrollService: AutoScrollService,
-    private storageService: LocalStorageService) {
+    private storageService: LocalStorageService
+  ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.libraryHubUrl, {
         skipNegotiation: true,
@@ -138,7 +140,7 @@ export class LibraryService {
 
   public async updateSelectedAlbumAsync(album: IAlbum): Promise<void> {
     try {
-      await this.hubConnection.invoke('UpdateSelectedAlbumAsync', JSON.stringify(album));
+      await this.hubConnection.invoke('UpdateSelectedAlbumAsync', JSON.stringify(album), album.path);
     } catch (err) {
       this.snackbarService.showMessage(getErrorMessage(err));
       console.error(err);
@@ -188,17 +190,17 @@ export class LibraryService {
     return this.selectedAlbum;
   }
 
-  public filterLibrary(text: string, orderByOption?: OrderByOption): void {
-    this.filterLibrarySubject.next(new SearchModel(text, orderByOption));
+  public filterLibrary(searchModel: SearchModel): void {
+    this.filterLibrarySubject.next(searchModel);
   }
 
   private mapAlbums(response: string): void {
-    let albums: IAlbum[] = [];
     const albumsJson = JSON.parse(response) as {}[];
+    let albums: IAlbum[] = [];
 
     for (const album of albumsJson.values())
       albums.push(album as IAlbum);
 
-    this.albumSubject.next(albums);
+    this.albumSubject.next(albums ?? []);
   }
 }

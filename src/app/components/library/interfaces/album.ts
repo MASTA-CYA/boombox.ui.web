@@ -10,5 +10,6 @@ export interface IAlbum {
 	image: string;
 	encoding: string;
 	dateMapped: Date;
+	path: string;
 	tracks: ITrack[];
 }

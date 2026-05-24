@@ -8,28 +8,29 @@ import { AutoScrollService } from '../services/auto-scroll.service';
 import { SnackbarService } from '../services/snackbar.service';
 import { getErrorMessage } from '../common/functions';
 import { LibraryService } from '../services/library.service';
+import { SvgIconComponent } from '@ngneat/svg-icon';
+import { NavigationEnd, Router } from '@angular/router';
 
 
 @Component({
   selector: 'app-root',
-  imports: [SidebarComponent, MainComponent, SnackbarComponent, ScrollingModule],
+  imports: [SidebarComponent, MainComponent, SnackbarComponent, ScrollingModule, SvgIconComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
+export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   private scrollSubscription!: Subscription;
+  private activeRoute: string | undefined;
+  showScrollButton: boolean = false;
 
   title = 'Boombox';
 
   constructor(
     private scrollService: AutoScrollService,
     private snackbarService: SnackbarService,
-    private libraryService: LibraryService) { }
-
-  async ngOnInit(): Promise<void> {
-
-  }
+    private libraryService: LibraryService,
+    private router: Router) { }
 
   ngAfterViewInit(): void {
     this.scrollSubscription = this.scrollService.scrollPosition$.subscribe((position) => {
@@ -47,15 +48,29 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
         console.error(err);
       }
     });
-  }
 
-  async onScroll(event: Event): Promise<void> {
-    const element = event.target as HTMLElement;
-    await this.libraryService.updateLibraryScrollPositionAsync(element.scrollLeft, element.scrollTop);
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        this.activeRoute = event.urlAfterRedirects;
+        this.showScrollButton = this.activeRoute === "/library" && this.scrollContainer.nativeElement.scrollTop > 2000;
+      }
+    });
   }
 
   ngOnDestroy() {
     if (this.scrollSubscription)
       this.scrollSubscription.unsubscribe();
+  }
+
+  async onScroll(event: Event): Promise<void> {
+    if (this.activeRoute === "/library") {
+      const element = event.target as HTMLElement;
+      this.showScrollButton = this.activeRoute === "/library" && element.scrollTop > 2000;
+      await this.libraryService.updateLibraryScrollPositionAsync(element.scrollLeft, element.scrollTop);
+    }
+  }
+
+  onScrollToTop() {
+    this.scrollContainer.nativeElement.scrollTop = 0;
   }
 }
