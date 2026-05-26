@@ -1,55 +1,54 @@
 <div class="player-controls">
-	@if(playerState?.modeImageName) {
-	<button
-		matIconButton
-		class="player-icon-button"
-		(click)="togglePlayerModeAsync()"
-	>
-		<svg-icon
-			key="{{ playerState?.modeImageName }}"
-			color="#FFFFFF"
-			size="xl"
-		></svg-icon>
-	</button>
-	} @else {
-	<button matIconButton class="player-icon-button" disabled>
-		<svg-icon key="play-one" color="#505050" size="xl"></svg-icon>
-	</button>
-	} @if (playerState?.hasPrevious) {
-	<button matIconButton class="player-icon-button" (click)="playPrevious()">
-		<svg-icon key="previous" color="#FFFFFF" size="xl"></svg-icon>
-	</button>
-	} @else {
-	<button matIconButton class="player-icon-button" disabled>
-		<svg-icon key="previous" color="#505050" size="xl"></svg-icon>
-	</button>
-	} @if (playerState?.isPlaying) {
-	<button
-		matIconButton
-		class="play-icon-button"
-		[disabled]="!playerState?.hasPrevious"
-		(click)="playPauseAsync('pause')"
-	>
-		<svg-icon key="pause" color="#710193" size="xxl"></svg-icon>
-	</button>
-	} @else {
-	<button
-		matIconButton
-		class="play-icon-button"
-		(click)="playPauseAsync('play')"
-	>
-		<svg-icon key="play" color="#710193" size="xxl"></svg-icon>
-	</button>
-	} @if (playerState?.hasNext) {
-	<button matIconButton class="player-icon-button" (click)="playNext()">
-		<svg-icon key="next" color="#FFFFFF" size="xl"></svg-icon>
-	</button>
-	} @else {
-	<button matIconButton class="player-icon-button" disabled>
-		<svg-icon key="next" color="#505050" size="xl"></svg-icon>
-	</button>
-	}
-	<button matIconButton class="player-icon-button" (click)="togglePlaylist()">
-		<svg-icon key="playlist" color="#FFFFFF" size="xl"></svg-icon>
-	</button>
+  @if(playerState?.modeImageName) {
+  <button
+    matIconButton
+    class="player-icon-button"
+    (click)="togglePlayerModeAsync()"
+  >
+    <svg-icon
+      key="{{ playerState?.modeImageName }}"
+      color="#FFFFFF"
+      size="xl"
+    ></svg-icon>
+  </button>
+  } @else {
+  <button matIconButton class="player-icon-button" disabled>
+    <svg-icon key="play-one" color="#505050" size="xl"></svg-icon>
+  </button>
+  } @if (playerState?.hasPrevious) {
+  <button matIconButton class="player-icon-button" (click)="playPrevious()">
+    <svg-icon key="previous" color="#FFFFFF" size="xl"></svg-icon>
+  </button>
+  } @else {
+  <button matIconButton class="player-icon-button" disabled>
+    <svg-icon key="previous" color="#505050" size="xl"></svg-icon>
+  </button>
+  } @if (playerState?.isPlaying) {
+  <button
+    matIconButton
+    class="play-icon-button"
+    (click)="playPauseAsync('pause')"
+  >
+    <svg-icon key="pause" color="#710193" size="xxl"></svg-icon>
+  </button>
+  } @else {
+  <button
+    matIconButton
+    class="play-icon-button"
+    (click)="playPauseAsync('play')"
+  >
+    <svg-icon key="play" color="#710193" size="xxl"></svg-icon>
+  </button>
+  } @if (playerState?.hasNext) {
+  <button matIconButton class="player-icon-button" (click)="playNext()">
+    <svg-icon key="next" color="#FFFFFF" size="xl"></svg-icon>
+  </button>
+  } @else {
+  <button matIconButton class="player-icon-button" disabled>
+    <svg-icon key="next" color="#505050" size="xl"></svg-icon>
+  </button>
+  }
+  <button matIconButton class="player-icon-button" (click)="togglePlaylist()">
+    <svg-icon key="playlist" color="#FFFFFF" size="xl"></svg-icon>
+  </button>
 </div>
