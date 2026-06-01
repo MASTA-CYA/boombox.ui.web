@@ -2,6 +2,7 @@ import { getDurationFromSeconds } from "../../../common/functions";
 import { ITrack } from "../interfaces/track";
 
 export class Track implements ITrack {
+	discNumber: number;
 	trackNumber: number;
 	name: string;
 	artist: string;
@@ -12,6 +13,7 @@ export class Track implements ITrack {
 	path: string;
 
 	constructor(track: ITrack) {
+		this.discNumber = track.discNumber;
 		this.trackNumber = track.trackNumber;
 		this.name = track.name;
 		this.artist = track.artist;

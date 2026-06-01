@@ -5,6 +5,7 @@ export interface IAlbum {
 	artist: string;
 	genre: string;
 	year: number;
+	numberOfDiscs: number;
 	numberOfTracks: number;
 	duration: number;
 	image: string;

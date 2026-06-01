@@ -184,17 +184,78 @@
     </div>
   </div>
   <div class="album-tracks-container">
+    @if ((album?.numberOfDiscs ?? 0) > 0) {
+    <div class="album-disc-table-container">
+      @for (_ of [].constructor(album?.numberOfDiscs); track $index) {
+      <p class="album-disc-title">Disc {{ $index + 1 }}</p>
+      <table>
+        <tr>
+          <th style="width: 5%"></th>
+          <th style="width: 5%"></th>
+          <th style="width: 5%">#</th>
+          <th style="width: 50%">Name</th>
+          <th style="width: 20%">Duration</th>
+          <th style="width: 10%">Times Played</th>
+        </tr>
+        @for (albumTrack of getTracksByDiscNumber($index + 1); track albumTrack)
+        {
+        <tr (dblclick)="onTrackDoubleClick(albumTrack.path)">
+          <td>
+            <input
+              type="checkbox"
+              id="album_{{ albumTrack.path }}"
+              value="{{ albumTrack.path }}"
+              (change)="onSelectedTrackChanged($event)"
+            />
+          </td>
+          @if (albumTrack.isFavourite) {
+          <td>
+            <button
+              class="favourite-button"
+              (click)="onMarkAsFavouriteClicked(albumTrack.path)"
+            >
+              <svg-icon key="flame" color="#710193" size="lg"></svg-icon>
+            </button>
+          </td>
+          } @else {
+          <td>
+            <button
+              class="favourite-button"
+              (click)="onMarkAsFavouriteClicked(albumTrack.path)"
+            >
+              <svg-icon key="flame" color="#FFFFFF" size="lg"></svg-icon>
+            </button>
+          </td>
+          }
+          <td>{{ albumTrack.trackNumber }}</td>
+          <td>{{ albumTrack.name }}</td>
+          <td>{{ albumTrack.displayDuration }}</td>
+          <td>{{ albumTrack.timesPlayed }}</td>
+        </tr>
+        }
+      </table>
+      }
+    </div>
+    }@else {
     <table>
       <tr>
-        <th></th>
-        <th>#</th>
-        <th>Name</th>
-        <th>Times Played</th>
-        <th>Duration</th>
-        <th></th>
+        <th style="width: 5%"></th>
+        <th style="width: 5%"></th>
+        <th style="width: 5%">#</th>
+        <th style="width: 50%">Name</th>
+        <th style="width: 20%">Duration</th>
+        <th style="width: 10%">Times Played</th>
       </tr>
       @for (albumTrack of album?.tracks; track albumTrack) {
       <tr (dblclick)="onTrackDoubleClick(albumTrack.path)">
+        <td>
+          <input
+            type="checkbox"
+            id="album_{{ albumTrack.path }}"
+            value="{{ albumTrack.path }}"
+            (change)="onSelectedTrackChanged($event)"
+          />
+        </td>
         @if (albumTrack.isFavourite) {
         <td>
           <button
@@ -216,18 +277,11 @@
         }
         <td>{{ albumTrack.trackNumber }}</td>
         <td>{{ albumTrack.name }}</td>
-        <td>{{ albumTrack.timesPlayed }}</td>
         <td>{{ albumTrack.displayDuration }}</td>
-        <td>
-          <input
-            type="checkbox"
-            id="album_{{ albumTrack.path }}"
-            value="{{ albumTrack.path }}"
-            (change)="onSelectedTrackChanged($event)"
-          />
-        </td>
+        <td>{{ albumTrack.timesPlayed }}</td>
       </tr>
       }
     </table>
+    }
   </div>
 </div>

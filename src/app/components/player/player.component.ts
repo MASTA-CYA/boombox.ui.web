@@ -70,13 +70,10 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.playingTrack = playlistTracks.find(track => track.isPlaying);
         this.playerService.broadcastPlayingTrack(this.playingTrack);
 
-        const hasMatchingTrackPaths = this.playlist?.every(track => playlistTracks.map(otherTrack => otherTrack.path).includes(track.path));
         const currentPlayingTrack = this.playlist?.find(track => track.isPlaying);
         const nextPlayingTrack = playlistTracks?.find(track => track.isPlaying);
-        const hasPlayingTrackChanged = currentPlayingTrack?.path !== nextPlayingTrack?.path;
 
-        if (this.playlist && this.playlist.length > 0 && hasMatchingTrackPaths && !hasPlayingTrackChanged && !this.canUpdatePlayerPlaylist) return;
-        this.playlist = playlistTracks;
+        this.playlist = [...playlistTracks];
         this.cdRef.markForCheck();
     }
 

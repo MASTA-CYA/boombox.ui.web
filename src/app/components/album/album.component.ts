@@ -14,6 +14,7 @@ import { Subscription } from 'rxjs';
 import { Playlist } from '../playlist/models/playlist';
 import { UserTrackData } from '../library/models/user-track-data';
 import { Constants } from '../../common/constants';
+import { Track } from '../library/models/track';
 
 @Component({
   selector: 'app-album',
@@ -210,6 +211,9 @@ export class AlbumComponent implements OnInit, OnDestroy {
           cb.checked = false;
       });
     }, 0);
+  }
 
+  getTracksByDiscNumber(disc: number): Track[] | undefined {
+    return this.album?.tracks.filter(track => track.discNumber == disc);
   }
 }

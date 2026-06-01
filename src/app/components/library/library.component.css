@@ -18,12 +18,12 @@
 }
 
 .progress-bar-image {
-	width: 200px;
+	width: 180px;
 	object-fit: cover;
 	image-rendering: optimizeQuality;
 	filter: invert(100%);
 	margin: 20px 0px;
-	animation: rotation 4s linear infinite;
+	animation: rotation 2s linear infinite;
 }
 	
 .progress-bar-text-container {
@@ -32,6 +32,7 @@
 
 .progress-bar-update-text {
 	color: #FFFFFF;
+	font-family: 'Poppins';
 }
 
 .progress-bar-error-text {
@@ -41,9 +42,11 @@
 
 .library-item {
 	width: 200px;
+	height: 320px;
 	transition: all 0.5s ease-in-out;
 	cursor: pointer;
 	background-color: #000000;
+	z-index: 10;
 }
 
 .library-item:hover {
@@ -66,11 +69,20 @@ mat-card img {
 	font-weight: bold;
 	color: #FFFFFF;
 	margin: 8px 2px 4px 0px;
+	display: -webkit-box;
+  -webkit-line-clamp: 2; /* Number of lines to show */
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .library-item-sub-title {
 	color: #505050;
 	margin: 4px 2px 0px 0px;
+	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+	font-family: 'Poppins';
 }
 
 mat-card-actions {
@@ -113,12 +125,9 @@ mat-card-actions {
 }
 @keyframes rotation {
 	from {
-		transform: rotate(0deg);
-		/* Start at 0 degrees */
-	}
-
-	to {
-		transform: rotate(360deg);
-		/* End at 360 degrees (a full circle) */
-	}
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

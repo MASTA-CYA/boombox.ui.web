@@ -9,6 +9,7 @@
 .image {
 	height: 280px;
 	margin-top: 6px;
+	padding: 0px 8px 0px 8px;
 }
 
 .no-image {
@@ -16,7 +17,7 @@
 	padding: 30px;
 	filter: invert(100%);
 	margin-top: 6px;
-	animation: rotation 4s linear infinite;
+	animation: rotation 2s linear infinite;
 }
 
 .track-info-container {
@@ -32,6 +33,7 @@
 .track-sub-title {
 	color: #505050;
 	margin: 4px 2px 0px 2px;
+	font-family: 'Poppins';
 }
 
 .radio-item {

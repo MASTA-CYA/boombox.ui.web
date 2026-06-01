@@ -82,6 +82,7 @@
 .album-sub-title {
 	color: #999999;
 	font-size: 26px;
+	font-family: 'Poppins';
 }
 
 .album-header-text {
@@ -282,11 +283,23 @@ input[type="checkbox"]:checked+td {
 	color: #710193;
 }
 
+.album-tracks-container {
+	display: flex;
+	width: 100%;
+	margin-top: 10px;
+}
+
+.album-disc-title {
+	color: #FFFFFF;
+	font-size: 26px;
+}
+
 table {
 	border-collapse: collapse;
 	width: 95%;
 	margin: 40px;
 	align-items: center;
+	table-layout: fixed;
 }
 
 th {

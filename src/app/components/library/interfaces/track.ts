@@ -1,4 +1,5 @@
 export interface ITrack {
+	discNumber: number;
 	trackNumber: number;
 	name: string;
 	artist: string;

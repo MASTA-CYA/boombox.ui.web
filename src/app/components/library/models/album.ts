@@ -8,6 +8,7 @@ export class Album implements IAlbum {
 	artist: string;
 	genre: string;
 	year: number;
+	numberOfDiscs: number;
 	numberOfTracks: number;
 	duration: number;
 	image: string;
@@ -21,7 +22,7 @@ export class Album implements IAlbum {
 	displayFavoriteTracks: number;
 
 	constructor(sanitizer: DomSanitizer, album: IAlbum);
-	constructor(sanitizer: DomSanitizer, album: IAlbum, name: string, artist: string, genre: string, year: number, numberOfTracks: number, duration: number, image: string, encoding: string, dateMapped: Date, path: string, tracks: Track[]);
+	constructor(sanitizer: DomSanitizer, album: IAlbum, name: string, artist: string, genre: string, year: number, numberOfDiscs: number, numberOfTracks: number, duration: number, image: string, encoding: string, dateMapped: Date, path: string, tracks: Track[]);
 
 	constructor(private sanitizer: DomSanitizer,
 		album?: IAlbum,
@@ -29,6 +30,7 @@ export class Album implements IAlbum {
 		artist?: string,
 		genre?: string,
 		year?: number,
+		numberOfDisc?: number,
 		numberOfTracks?: number,
 		duration?: number,
 		image?: string,
@@ -42,6 +44,7 @@ export class Album implements IAlbum {
 			this.artist = album.artist;
 			this.genre = album.genre;
 			this.year = album.year;
+			this.numberOfDiscs = album.numberOfDiscs;
 			this.numberOfTracks = album.numberOfTracks;
 			this.duration = album.duration;
 			this.image = album.image;
@@ -58,6 +61,7 @@ export class Album implements IAlbum {
 			this.artist = artist!;
 			this.genre = genre!;
 			this.year = year!;
+			this.numberOfDiscs = numberOfDisc!;
 			this.numberOfTracks = numberOfTracks!;
 			this.duration = duration!;
 			this.image = image!;
