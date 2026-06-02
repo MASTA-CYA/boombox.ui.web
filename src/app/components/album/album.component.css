@@ -85,7 +85,6 @@
 .album-information-pill-icon {
 	align-content: center;
 	background-color: #710193;
-	/* width: 40px; */
 	border-radius: 32px 0 0 32px;
 	padding: 0px 5px 0px 10px;
 }
@@ -93,7 +92,6 @@
 .album-information-pill-text {
 	align-content: center;
 	background: rgba(255, 255, 255, 0.1);
-	/* width: 60px; */
 	border-radius: 0 32px 32px 0;
 	padding: 0px 10px;
 	color: #FFFFFF;
@@ -131,7 +129,6 @@
 .album-info-separator {
 	height: 10px;
 	width: 10px;
-	/* margin: 0px 30px 0px 15px; */
 	background-color: rgba(255, 255, 255, 0.4);
 	border-radius: 50%;
 }
@@ -174,7 +171,7 @@
 	transition: background-color 0.3s ease;
 }
 
-.album-playlists-card{
+.album-playlists-card {
 	width: 350px;
 	margin-left: 20px;
 	padding: 8px;
@@ -206,10 +203,9 @@
 	margin: 4px;
 }
 .radio-item input {
-	margin-right: 8px; /* Adds space between button and label */
+	margin-right: 8px;
 }
 
-/* 1. Reset the native radio look */
 input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
@@ -220,26 +216,24 @@ input[type="radio"] {
   outline: none;
   cursor: pointer;
   display: grid;
-  place-content: center; /* Centers the inner dot */
+  place-content: center;
 }
 
-/* 2. Create the inner dot (hidden by default) */
+
 input[type="radio"]::before {
   content: "";
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  transform: scale(0); /* Hide dot initially */
+  transform: scale(0);
   transition: 120ms transform ease-in-out;
   background-color: rgba(255, 255, 255, 0.6);
 }
 
-/* 3. Show dot when checked */
 input[type="radio"]:checked::before {
   transform: scale(1);
 }
 
-/* 4. Focus state for accessibility */
 input[type="radio"]:focus-visible {
   outline: 2px solid #710193;
   outline-offset: 3px;
