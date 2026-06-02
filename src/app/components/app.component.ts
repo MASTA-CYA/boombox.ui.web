@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { debounceTime, Subject, Subscription } from 'rxjs';
 import { MainComponent } from './main/main.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { SnackbarComponent } from "./snackbar/snackbar.component";
@@ -10,6 +10,7 @@ import { getErrorMessage } from '../common/functions';
 import { LibraryService } from '../services/library.service';
 import { SvgIconComponent } from '@ngneat/svg-icon';
 import { NavigationEnd, Router } from '@angular/router';
+import { ScrollPosition } from './library/models/scroll-position';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
   private scrollSubscription!: Subscription;
   private activeRoute: string | undefined;
+  scrollPositionUpdate = new Subject<ScrollPosition>();
   showScrollButton: boolean = false;
 
   title = 'Boombox';
@@ -30,7 +32,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private scrollService: AutoScrollService,
     private snackbarService: SnackbarService,
     private libraryService: LibraryService,
-    private router: Router) { }
+    private router: Router
+  ) {
+    this.scrollPositionUpdate.pipe(debounceTime(800))
+    .subscribe(async (position: ScrollPosition) => {
+      await this.libraryService.updateLibraryScrollPositionAsync(position.horizontal, position.vertical);
+    });
+  }
 
   ngAfterViewInit(): void {
     this.scrollSubscription = this.scrollService.scrollPosition$.subscribe((position) => {
@@ -66,7 +74,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (this.activeRoute === "/library") {
       const element = event.target as HTMLElement;
       this.showScrollButton = this.activeRoute === "/library" && element.scrollTop > 2000;
-      await this.libraryService.updateLibraryScrollPositionAsync(element.scrollLeft, element.scrollTop);
+      this.scrollPositionUpdate.next(new ScrollPosition(element.scrollLeft, element.scrollTop));
     }
   }
 

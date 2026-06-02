@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, NgZone, signal, Signal } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { SvgIconComponent } from "@ngneat/svg-icon";
-import { Router, ActivatedRoute, Scroll, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { RouterOutlet } from '@angular/router';
 import { LibraryService } from '../../services/library.service';
 import { filter, map, Subscription } from 'rxjs';
@@ -10,9 +10,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { ProgressBarComponent } from '../../components/progress-bar/progress-bar.component';
 import { IMappingUpdate } from './interfaces/update';
 import { MappingUpdate } from './models/update';
-import { SnackbarService } from '../../services/snackbar.service';
-import { AutoScrollService } from '../../services/auto-scroll.service';
-import { LocalStorageService } from '../../services/local-storage.service';
 import { SearchBarComponent } from "../search-bar/search-bar.component";
 import { OrderByOption } from '../search-bar/models/orderby-option-enum';
 import { IAlbum } from './interfaces/album';
@@ -82,9 +79,8 @@ export class LibraryComponent implements OnInit {
       case OrderByOption.plays:
         return filteredAlbums.sort((a, b) => this.getAlbumTrackTimesPlayed(b.tracks) - this.getAlbumTrackTimesPlayed(a.tracks));
       case OrderByOption.new:
-        return filteredAlbums.sort((a, b) => new Date(b.dateMapped)?.getTime() - new Date(a.dateMapped)?.getTime());
       default:
-        return filteredAlbums;
+        return filteredAlbums.sort((a, b) => new Date(b.dateMapped)?.getTime() - new Date(a.dateMapped)?.getTime());
     }
   }
 

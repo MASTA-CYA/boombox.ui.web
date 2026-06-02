@@ -15,65 +15,98 @@
                 </p>
               </div>
               <div class="album-information-container">
+                <!-- DATE RELEASED | GENRE -->
                 <div class="album-information-separated">
                   <div class="album-information-item-left">
-                    <svg-icon
-                      key="calender"
-                      color="#FFFFFF"
-                      size="lg"
-                    ></svg-icon>
-                    <span class="album-header-text"> {{ album?.year }} </span>
+                    <div class="album-information-pill">
+                      <div class="album-information-pill-icon">
+                        <svg-icon
+                          key="calender"
+                          color="#FFFFFF"
+                          size="lg"
+                        ></svg-icon>
+                      </div>
+                      <div class="album-information-pill-text">
+                        {{ album?.year }}
+                      </div>
+                    </div>
                   </div>
                   <span class="album-info-separator"></span>
                   <div class="album-information-item-right">
-                    <svg-icon key="genre" color="#FFFFFF" size="lg"></svg-icon>
-                    <span class="album-header-text"> {{ album?.genre }} </span>
+                    <div class="album-information-pill">
+                      <div class="album-information-pill-icon">
+                        <svg-icon
+                          key="genre"
+                          color="#FFFFFF"
+                          size="lg"
+                        ></svg-icon>
+                      </div>
+                      <div class="album-information-pill-text">
+                        {{ album?.genre }}
+                      </div>
+                    </div>
                   </div>
                 </div>
+                <!-- DURATION  | TRACKS -->
                 <div class="album-information-separated">
                   <div class="album-information-item-left">
-                    <svg-icon
-                      key="stopwatch"
-                      color="#FFFFFF"
-                      size="lg"
-                    ></svg-icon>
-                    <span class="album-header-text">
+                    <div class="album-information-pill">
+                      <div class="album-information-pill-icon">
+                        <svg-icon
+                          key="stopwatch"
+                          color="#FFFFFF"
+                          size="lg"
+                        ></svg-icon>
+                      </div>
+                    </div>
+                    <div class="album-information-pill-text">
                       {{ album?.displayDuration }}
-                    </span>
+                    </div>
                   </div>
                   <span class="album-info-separator"></span>
                   <div class="album-information-item-right">
-                    <svg-icon
-                      key="number-sign"
-                      color="#FFFFFF"
-                      size="lg"
-                    ></svg-icon>
-                    <span class="album-header-text">
+                    <div class="album-information-pill">
+                      <div class="album-information-pill-icon">
+                        <svg-icon
+                          key="number-sign"
+                          color="#FFFFFF"
+                          size="md"
+                        ></svg-icon>
+                      </div>
+                    </div>
+                    <div class="album-information-pill-text">
                       {{ album?.numberOfTracks }}
-                    </span>
+                    </div>
                   </div>
                 </div>
+                <!-- EXTENSION  | DATE MAPPED -->
                 <div class="album-information-separated">
                   <div class="album-information-item-left">
-                    <svg-icon
-                      key="extension"
-                      color="#FFFFFF"
-                      size="lg"
-                    ></svg-icon>
-                    <span class="album-header-text">
+                    <div class="album-information-pill">
+                      <div class="album-information-pill-icon">
+                        <svg-icon
+                          key="extension"
+                          color="#FFFFFF"
+                          size="lg"
+                        ></svg-icon>
+                      </div>
+                    </div>
+                    <div class="album-information-pill-text">
                       {{ album?.encoding }}
-                    </span>
+                    </div>
                   </div>
                   <span class="album-info-separator"></span>
                   <div class="album-information-item-right">
-                    <svg-icon
-                      key="calender-add"
-                      color="#FFFFFF"
-                      size="lg"
-                    ></svg-icon>
-                    <span class="album-header-text">
+                    <div class="album-information-pill-icon">
+                      <svg-icon
+                        key="calender-add"
+                        color="#FFFFFF"
+                        size="lg"
+                      ></svg-icon>
+                    </div>
+                    <div class="album-information-pill-text">
                       {{ album?.dateMapped | date : "short" }}
-                    </span>
+                    </div>
                   </div>
                 </div>
               </div>
