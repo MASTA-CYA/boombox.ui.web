@@ -79,21 +79,21 @@
 .album-information-pill {
 	display: flex;
 	flex-direction: row;
-	height: 35px;
+	height: 30px;
 }
 
 .album-information-pill-icon {
 	align-content: center;
 	background-color: #710193;
 	border-radius: 32px 0 0 32px;
-	padding: 0px 5px 0px 10px;
+	padding: 2px 5px 2px 10px;
 }
 
 .album-information-pill-text {
 	align-content: center;
 	background: rgba(255, 255, 255, 0.1);
 	border-radius: 0 32px 32px 0;
-	padding: 0px 10px;
+	padding: 2px 10px;
 	color: #FFFFFF;
 }
 
@@ -309,6 +309,26 @@ th {
 	background-color: #710193;
 	color: #FFFFFF;
 	font-size: 18px;
+}
+
+/* Fade the left edge of the very first column header */
+tr th:first-child {
+  background-color: #000000; 
+	background: linear-gradient(
+    to right, 
+		#000000 0%, 
+    #710193 50%
+  );
+}
+
+/* Fade the right edge of the very last column header */
+tr th:last-child {
+  background-color: #000000; 
+	background: linear-gradient(
+    to left, 
+    #000000 0%,
+    #710193 40%
+  );
 }
 
 td {

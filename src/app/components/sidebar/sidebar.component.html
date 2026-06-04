@@ -4,21 +4,26 @@
   </div>
   <div class="nav-list-container">
     @for (item of items; track item) {
-    <ul>
-      <li>
-        <a
-          class="nav-list-item"
-          [routerLink]="item.routeLink"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: false }"
-        >
-          <div class="nav-list-item-row">
-            <svg-icon key={{item.icon}} color="#FFFFFF" size="xl"></svg-icon>
-            <p class="nav-list-item-text">{{ item.label }}</p>
-          </div>
-        </a>
-      </li>
-    </ul>
+
+    <a
+      class="nav-list-item"
+      [routerLink]="item.routeLink"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: false }"
+      #rla="routerLinkActive"
+    >
+      @if(rla.isActive){
+      <div class="nav-list-item-active">
+        <svg-icon key="{{ item.icon }}" color="#FFFFFF" size="xl"></svg-icon>
+        <p class="nav-list-item-text">{{ item.label }}</p>
+      </div>
+      }
+      @else {
+        <div class="nav-list-item-inactive">
+          <svg-icon key="{{ item.icon }}" color="#FFFFFF" size="xl"></svg-icon>
+        </div>
+      }
+    </a>
     }
   </div>
   <div class="player">
