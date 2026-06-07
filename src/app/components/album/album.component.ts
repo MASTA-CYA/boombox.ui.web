@@ -8,38 +8,29 @@ import { Album } from '../library/models/album';
 import { LibraryService } from '../../services/library.service';
 import { PlayerService } from '../../services/player.service';
 import { SnackbarService } from '../../services/snackbar.service';
-import { PlaylistService } from '../../services/playlist.service';
-import { IPlaylist } from '../playlist/interfaces/playlist';
 import { Subscription } from 'rxjs';
-import { Playlist } from '../playlist/models/playlist';
 import { UserTrackData } from '../library/models/user-track-data';
-import { Constants } from '../../common/constants';
 import { Track } from '../library/models/track';
+import { AlbumPlaylistComponent } from "./components/album-playlist/album-playlist.component";
 
 @Component({
   selector: 'app-album',
-  imports: [SvgIconComponent, MatButtonModule, MatListModule, CommonModule],
+  imports: [SvgIconComponent, MatButtonModule, MatListModule, CommonModule, AlbumPlaylistComponent],
   templateUrl: './album.component.html',
   styleUrl: './album.component.css'
 })
 export class AlbumComponent implements OnInit, OnDestroy {
   public album: Album | undefined;
-  private selectedTracks: string[] = [];
-  public playlists: IPlaylist[] | undefined;
-  public playlistNames: string[] | undefined;
-  public selectedPlaylistTracks: string[] | undefined;
-  public selectedPlaylistTrack: string | undefined;
-  public selectedPlaylist: Playlist | undefined;
-  public showPlaylists: boolean | undefined;
+  selectedTracks: string[] = [];
+  public showPlaylists: boolean = false;
 
-  private playlistSubscription: Subscription | undefined;
   private userTrackDataSubscription: Subscription | undefined;
 
   constructor(private libraryService: LibraryService,
     private playerService: PlayerService,
     private snackbarService: SnackbarService,
-    private playlistService: PlaylistService,
-    private domSanitizer: DomSanitizer,) { }
+    private domSanitizer: DomSanitizer
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.album = this.libraryService.getSelectedAlbum();
@@ -52,14 +43,10 @@ export class AlbumComponent implements OnInit, OnDestroy {
     const albumHeader = document.getElementById("albumHeader") as HTMLInputElement;
     albumHeader.style.backgroundImage = `url('${imageUrl}')`;
 
-    this.playlistSubscription = this.playlistService.playlists$.subscribe(playlists => this.handlePlaylistsChange(playlists))
     this.userTrackDataSubscription = this.libraryService.userTrackData$.subscribe(track => this.handleUserTrackDataUpdated(track))
   }
 
   ngOnDestroy(): void {
-    if (this.playlistSubscription)
-      this.playlistSubscription.unsubscribe();
-
     if (this.userTrackDataSubscription)
       this.userTrackDataSubscription.unsubscribe();
   }
@@ -74,7 +61,7 @@ export class AlbumComponent implements OnInit, OnDestroy {
     }
 
     await this.playerService.playAsync(paths ?? []);
-    this.resetCheckboxes();
+     this.resetCheckboxes();
     this.selectedTracks = [];
   }
 
@@ -92,25 +79,6 @@ export class AlbumComponent implements OnInit, OnDestroy {
       this.selectedTracks.splice(this.selectedTracks.indexOf(event.target.value), 1);
   }
 
-  private handlePlaylistsChange(playlists: IPlaylist[]): void {
-    this.playlists = playlists.map(playlist => new Playlist(playlist))
-    this.playlistNames = this.playlists.map(playlist => playlist.name);
-    this.selectedPlaylist = this.playlists.find(playlist => playlist.name === this.selectedPlaylist?.name);
-    this.selectedPlaylistTracks = this.playlists.find(playlist => playlist.name === this.selectedPlaylist?.name)?.tracks?.map(track => track.name);
-
-    if (this.selectedPlaylist) {
-      setTimeout(() => {
-        const selectedPlaylistRadioButton = document.getElementById(this.selectedPlaylist!.name) as HTMLInputElement;
-        selectedPlaylistRadioButton.checked = true;
-
-        if (this.selectedPlaylistTrack) {
-          const selectedPlaylistRadioButton = document.getElementById(this.selectedPlaylistTrack) as HTMLInputElement;
-          selectedPlaylistRadioButton.checked = true;
-        }
-      }, 0);
-    }
-  }
-
   private handleUserTrackDataUpdated(trackData: UserTrackData) {
     let track = this.album?.tracks.find(track => track.path === trackData.path)
 
@@ -121,79 +89,13 @@ export class AlbumComponent implements OnInit, OnDestroy {
     track!.timesPlayed = trackData.timesPlayed;
   }
 
-  onPlaylistSelected(name: string): void {
-    const playlist = this.playlists?.find(playlist => playlist.name === name);
-    this.selectedPlaylistTracks = playlist?.tracks.map(track => track.name)
-    this.selectedPlaylist = playlist;
-  }
-
-  onPlaylistTrackSelected(name: string): void {
-    this.selectedPlaylistTrack = this.selectedPlaylist?.tracks.find(track => track.name === name)?.path
-  }
-
   onShowPlaylistsClicked(): void {
     if (!this.showPlaylists)
       this.showPlaylists = !this.showPlaylists;
   }
 
-  onCancelClicked(): void {
-    if (this.showPlaylists)
-      this.showPlaylists = !this.showPlaylists;
-
-    setTimeout(() => {
-      this.resetCheckboxes();
-      this.resetForNextPlaylistTrack();
-    }, 0);
-  }
-
-  async onPrependClicked(): Promise<void> {
-    if (!this.selectedPlaylistTrack) {
-      this.snackbarService.showMessage("No playlist track selected");
-      return;
-    }
-
-    if (this.selectedPlaylist?.name === Constants.nowPlaying)
-      await this.playerService.addToNowPlayingAsync(this.selectedTracks, false, this.selectedPlaylistTrack);
-
-    setTimeout(() => {
-      this.resetCheckboxes();
-      this.resetForNextPlaylistTrack();
-    }, 0);
-  }
-
-  async onAppendClicked(): Promise<void> {
-    if (!this.selectedPlaylistTrack) {
-      this.snackbarService.showMessage("No playlist track selected");
-      return;
-    }
-
-    if (this.selectedPlaylist?.name === Constants.nowPlaying)
-      await this.playerService.addToNowPlayingAsync(this.selectedTracks, true, this.selectedPlaylistTrack);
-
-    setTimeout(() => {
-      this.resetCheckboxes();
-      this.resetForNextPlaylistTrack();
-    }, 0);
-  }
-
-  isPlaying(name: string) {
-    return this.selectedPlaylist?.tracks.find(track => track.name === name)?.isPlaying;
-  }
-
-  async onMarkAsFavouriteClicked(path: string): Promise<void> {
-    await this.libraryService.markAsFavouriteAsync(path);
-  }
-
-  private resetForNextPlaylistTrack(): void {
-    if (this.selectedPlaylistTrack) {
-      const trackName = this.playlists?.find(playlist => playlist.name === this.selectedPlaylist?.name)?.tracks?.find(track => track.path === this.selectedPlaylistTrack)?.name;
-      const selectedPlaylistRadioButton = document.getElementById(trackName!) as HTMLInputElement;
-
-      if (selectedPlaylistRadioButton)
-        selectedPlaylistRadioButton.checked = false;
-    }
-    this.selectedPlaylistTrack = undefined;
-    this.selectedTracks = [];
+  hidePlaylists(): void {
+    this.showPlaylists = false;
   }
 
   onTrackDoubleClick(path: string): void {
@@ -215,5 +117,9 @@ export class AlbumComponent implements OnInit, OnDestroy {
 
   getTracksByDiscNumber(disc: number): Track[] | undefined {
     return this.album?.tracks.filter(track => track.discNumber == disc);
+  }
+
+  async onMarkAsFavouriteClicked(path: string): Promise<void> {
+    await this.libraryService.markAsFavouriteAsync(path);
   }
 }

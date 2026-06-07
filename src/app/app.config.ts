@@ -61,5 +61,6 @@ export const appConfig: ApplicationConfig = {
       icons.cancelIcon,
       icons.beforeIcon,
       icons.afterIcon,
+      icons.folderIcon,
     ])]
 };

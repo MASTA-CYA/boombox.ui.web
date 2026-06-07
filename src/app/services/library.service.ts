@@ -28,6 +28,8 @@ export class LibraryService {
   public filterLibraryUpdate$: Observable<SearchModel> = this.filterLibrarySubject.asObservable();
   private userTrackDataSubject: Subject<UserTrackData> = new Subject<UserTrackData>();
   public userTrackData$: Observable<UserTrackData> = this.userTrackDataSubject.asObservable();
+  private localCacheClearedSubject: Subject<boolean> = new Subject<boolean>();
+  public localCacheCleared$: Observable<boolean> = this.localCacheClearedSubject.asObservable();
 
   private selectedAlbum: Album | undefined;
 
@@ -58,6 +60,7 @@ export class LibraryService {
       this.getMappingUpdateListener();
       this.getLibraryScrollPositionListener();
       this.getUserTrackDataListener();
+      this.receiveLocalCacheClearedListener();
     } catch (err) {
       this.snackbarService.showMessage('Error establishing connection with LibraryHub: ' + err)
       console.log('Error establishing connection with LibraryHub: ' + err)
@@ -192,6 +195,28 @@ export class LibraryService {
 
   public filterLibrary(searchModel: SearchModel): void {
     this.filterLibrarySubject.next(searchModel);
+  }
+
+  public async clearLocalCacheAsync(): Promise<void> {
+    try {
+      await this.hubConnection.invoke('ClearLocalCacheAsync');
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.error(err);
+    }
+  }
+
+  private receiveLocalCacheClearedListener = () => {
+    this.hubConnection.on('ReceiveLocalCacheCleared', (response: string) => {
+      this.ngZone.run(() => {
+        try {
+          this.localCacheClearedSubject.next(true);
+        } catch (err) {
+          this.snackbarService.showMessage(getErrorMessage(err));
+          console.log(err);
+        }
+      });
+    });
   }
 
   private mapAlbums(response: string): void {

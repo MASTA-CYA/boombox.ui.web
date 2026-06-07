@@ -27,3 +27,4 @@ export { binIcon } from "./bin";
 export { cancelIcon } from "./cancel";
 export { beforeIcon } from "./before";
 export { afterIcon } from "./after";
+export { folderIcon } from "./folder";

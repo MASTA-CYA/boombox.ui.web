@@ -8,7 +8,40 @@
   </span>
 </div>
 } @else {
-<app-search-bar></app-search-bar>
+<div class="library-header-container">
+  <app-search-bar></app-search-bar>
+  <div class="library-icon-button-container">
+    <div class="hover-dummy library-icon">
+      <svg-icon key="bin" color="#FFFFFF" size="xxl"></svg-icon>
+    </div>
+    <button class="hover-dummy library-button" (click)="onClearLocalCacheClicked()">
+      <span class="library-icon-button-text">Clear Local Cache</span>
+    </button>
+  </div>
+  <div class="library-statistics-container">
+    <!-- albums -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="folder" color="#FFFFFF" size="xxl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ totalNumberOfAlbums }}</div>
+    </div>
+    <!-- tracks -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="cd" color="#FFFFFF" size="xl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ totalNumberOfTracks }}</div>
+    </div>
+    <!-- tracks -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="flame" color="#FFFFFF" size="xl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ totalNumberOfFavorites }}</div>
+    </div>
+  </div>
+</div>
 <div #scrollableContainer class="library-container">
   @for (album of displayAlbums; track album) {
   <mat-card
@@ -40,7 +73,9 @@
         <span class="library-item-footer-separator"></span>
         <div class="library-item-footer-info-container">
           <svg-icon key="flame" color="#FFFFFF" size="sm"></svg-icon>
-          <span class="library-item-footer-text">{{ album.displayFavoriteTracks }}</span>
+          <span class="library-item-footer-text">{{
+            album.displayFavoriteTracks
+          }}</span>
         </div>
         <span class="library-item-footer-separator"></span>
         <div class="library-item-footer-info-container">

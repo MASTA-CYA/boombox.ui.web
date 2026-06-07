@@ -136,88 +136,17 @@
             </button>
           </div>
         </div>
-        @if (showPlaylists) {
-        <div class="album-playlists-container">
-          <div class="album-playlists-cards-container">
-            <div class="album-playlists-card">
-              <p class="album-playlists-heading">Playlists</p>
-              <div class="album-playlists-list-container">
-                @for (name of playlistNames; track name) {
-                <div class="radio-item">
-                  <input
-                    type="radio"
-                    id="{{ name }}"
-                    name="album_playlist"
-                    value="{{ name }}"
-                    (change)="onPlaylistSelected(name)"
-                  />
-                  <label for="{{ name }}">{{ name }}</label>
-                </div>
-                }
-              </div>
-            </div>
-            <div class="album-playlists-card">
-              <p class="album-playlists-heading">Tracks</p>
-              <div class="album-playlists-list-container">
-                @for (name of selectedPlaylistTracks; track name) {
-                <div class="radio-item">
-                  <input
-                    type="radio"
-                    id="{{ name }}"
-                    name="album_playlist_tracks"
-                    value="{{ name }}"
-                    (change)="onPlaylistTrackSelected(name)"
-                  />
-                  @if (isPlaying(name)) {
-                  <label
-                    class="album-playlist-track-radio-button-label"
-                    for="{{ name }}"
-                    >{{ name }}</label
-                  >
-                  } @else {
-                  <label for="{{ name }}">{{ name }}</label>
-                  }
-                </div>
-                }
-              </div>
-            </div>
-          </div>
-          <div class="album-playlist-button-container">
-            <button
-              class="album-playlist-icon-button"
-              (click)="onPrependClicked()"
-            >
-              <div>
-                <svg-icon key="up-arrow" color="#FFFFFF" size="md"></svg-icon>
-                <span class="album-icon-button-text">Prepend</span>
-              </div>
-            </button>
-            <button
-              class="album-playlist-icon-button"
-              (click)="onAppendClicked()"
-            >
-              <div>
-                <svg-icon key="down-arrow" color="#FFFFFF" size="md"></svg-icon>
-                <span class="album-icon-button-text">Append</span>
-              </div>
-            </button>
-            <button
-              class="album-playlist-icon-button"
-              (click)="onCancelClicked()"
-            >
-              <div>
-                <svg-icon key="cancel" color="#FFFFFF" size="md"></svg-icon>
-                <span class="album-icon-button-text">Cancel</span>
-              </div>
-            </button>
-          </div>
-        </div>
-        }
+        <app-album-playlist
+          [showPlaylists]="showPlaylists"
+          [selectedTracks]="selectedTracks"
+          (resetCheckboxes)="resetCheckboxes()"
+          (hidePlaylists)="hidePlaylists()"
+        />
       </div>
     </div>
   </div>
   <div class="album-tracks-container">
-    @if ((album?.numberOfDiscs ?? 0) > 0) {
+    @if ((album?.numberOfDiscs ?? 0) > 1) {
     <div class="album-disc-table-container">
       @for (_ of [].constructor(album?.numberOfDiscs); track $index) {
       <p class="album-disc-title">Disc {{ $index + 1 }}</p>

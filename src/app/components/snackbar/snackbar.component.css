@@ -17,7 +17,8 @@
 	height: 150px;
 	color: #FFFFFF;
 	padding: 10px;
-	overflow-wrap: normal;
 	overflow-y: scroll;
 	scrollbar-width: thin;
+	overflow-wrap: break-word; /* Modern standard */
+  word-wrap: break-word;     /* Legacy fallback for older browsers */
 }

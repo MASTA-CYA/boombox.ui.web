@@ -27,9 +27,14 @@ export class LibraryComponent implements OnInit {
   public albums: Album[] | undefined;
   public displayAlbums: Album[] | undefined;
   public mappingUpdate: IMappingUpdate;
+  public totalNumberOfAlbums: number = 0;
+  public totalNumberOfTracks: number = 0;
+  public totalNumberOfFavorites: number = 0;
+  private cachedAlbum: IAlbum[] | undefined;
+
   private albumSubscription!: Subscription;
   private mappingUpdateSubscription!: Subscription;
-  private cachedAlbum: IAlbum[] | undefined;
+  private localCacheClearedSubscription!: Subscription;
 
   constructor(
     private router: Router,
@@ -47,6 +52,7 @@ export class LibraryComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.localCacheClearedSubscription = this.libraryService.localCacheCleared$.subscribe(_ => window.location.reload());
     this.mappingUpdateSubscription = this.libraryService.mappingUpdate$.subscribe(async (update) => {
       this.mappingUpdate = new MappingUpdate(update.percent, update.message, update.error, update.isComplete);
       if (this.mappingUpdate.isComplete)
@@ -57,11 +63,23 @@ export class LibraryComponent implements OnInit {
       this.albums = albums.map((album) => new Album(this.domSanitizer, album))
       this.displayAlbums = this.getFilteredAlbums("", OrderByOption.new);;
       await this.libraryService.getLibraryScrollPositionAsync();
+      setTimeout(() => this.populateLibraryStats(), 0);
     });
     await this.libraryService.getLibraryAsync();
     this.libraryService.filterLibraryUpdate$.subscribe((model) => {
       this.displayAlbums = this.getFilteredAlbums(model.searchText, model.orderByOption);
     });
+  }
+
+  ngOnDestroy() {
+    if (this.albumSubscription)
+      this.albumSubscription.unsubscribe();
+
+    if (this.mappingUpdateSubscription)
+      this.mappingUpdateSubscription.unsubscribe();
+
+    if (this.localCacheClearedSubscription)
+      this.localCacheClearedSubscription.unsubscribe();
   }
 
   async onAlbumClick(selectedAlbum: Album): Promise<void> {
@@ -88,11 +106,14 @@ export class LibraryComponent implements OnInit {
     return array.map(track => track.timesPlayed).reduce((accumulator, current) => accumulator + current);
   }
 
-  ngOnDestroy() {
-    if (this.albumSubscription)
-      this.albumSubscription.unsubscribe();
+  public async onClearLocalCacheClicked(): Promise<void> {
+    await this.libraryService.clearLocalCacheAsync();
+    this.displayAlbums = undefined;
+  }
 
-    if (this.mappingUpdateSubscription)
-      this.mappingUpdateSubscription.unsubscribe();
+  private populateLibraryStats(): void {
+    this.totalNumberOfAlbums = this.albums?.length ?? 0;
+    this.totalNumberOfTracks = this.albums?.map(album => album.numberOfTracks).reduce((accumulator, current) => accumulator + current, 0) ?? 0;
+    this.totalNumberOfFavorites = this.albums?.map(album => album.tracks.filter(track => track.isFavourite)).reduce((accumulator, current) => accumulator + current.length, 0) ?? 0;
   }
 }
