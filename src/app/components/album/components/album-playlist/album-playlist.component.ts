@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { SvgIconComponent } from '@ngneat/svg-icon';
@@ -43,29 +43,33 @@ export class AlbumPlaylistComponent implements OnInit, OnDestroy, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['showPlaylists']) {
       setTimeout(() => {
-        if (this.showPlaylists) {
+        if (!this.showPlaylists) return;
+        
+        setTimeout(() => {
           const container = this.tracksContainer.nativeElement;
-          container.scrollTop = container.scrollHeight;
+          if (!container) return;
+          while (container.scrollTop !== container.scrollTopMax)
+            container.scrollTop = container.scrollHeight;
+        }, 0);
 
-          this.selectedPlaylist = this.playlists?.at(0);
-          this.selectedPlaylistTracks = this.playlists?.find(playlist => playlist.name === this.selectedPlaylist?.name)?.tracks?.map(track => track.name);
-          if (this.selectedPlaylist) {
-            const selectedPlaylistRadioButton = document.getElementById(this.selectedPlaylist.name) as HTMLInputElement;
-            selectedPlaylistRadioButton.checked = true;
-          }
-
-          this.selectedPlaylistTrack = this.selectedPlaylist?.tracks.find(track => track.isPlaying)?.path;
-          if (this.selectedPlaylistTrack)
-            this.playingTrackIndex = this.selectedPlaylist?.tracks.findIndex(track => track.path === this.selectedPlaylistTrack) ?? 0;
-
-          setTimeout(() => {
-            const playingTrack = this.selectedPlaylist?.tracks?.find(track => track.path == this.selectedPlaylistTrack)?.name;
-            if (playingTrack) {
-              const selectedPlaylistTrackRadioButton = document.getElementById(playingTrack) as HTMLInputElement;
-              selectedPlaylistTrackRadioButton.checked = true;
-            }
-          }, 0);
+        this.selectedPlaylist = this.playlists?.at(0);
+        this.selectedPlaylistTracks = this.playlists?.find(playlist => playlist.name === this.selectedPlaylist?.name)?.tracks?.map(track => track.name);
+        if (this.selectedPlaylist) {
+          const selectedPlaylistRadioButton = document.getElementById(this.selectedPlaylist.name) as HTMLInputElement;
+          selectedPlaylistRadioButton.checked = true;
         }
+
+        this.selectedPlaylistTrack = this.selectedPlaylist?.tracks.find(track => track.isPlaying)?.path;
+        if (this.selectedPlaylistTrack)
+          this.playingTrackIndex = this.selectedPlaylist?.tracks.findIndex(track => track.path === this.selectedPlaylistTrack) ?? 0;
+
+        setTimeout(() => {
+          const playingTrack = this.selectedPlaylist?.tracks?.find(track => track.path == this.selectedPlaylistTrack)?.name;
+          if (playingTrack) {
+            const selectedPlaylistTrackRadioButton = document.getElementById(playingTrack) as HTMLInputElement;
+            selectedPlaylistTrackRadioButton.checked = true;
+          }
+        }, 0);
       }, 0);
     }
   }
@@ -84,6 +88,7 @@ export class AlbumPlaylistComponent implements OnInit, OnDestroy, OnChanges {
     this.playlistNames = this.playlists.map(playlist => playlist.name);
     this.selectedPlaylist = this.playlists.find(playlist => playlist.name === this.selectedPlaylist?.name);
     this.selectedPlaylistTracks = this.playlists.find(playlist => playlist.name === this.selectedPlaylist?.name)?.tracks?.map(track => track.name);
+    this.playingTrackIndex = this.selectedPlaylist?.tracks.findIndex(track => track.path === this.selectedPlaylistTrack) ?? 0;
 
     if (this.selectedPlaylist) {
       setTimeout(() => {

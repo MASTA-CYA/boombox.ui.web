@@ -62,8 +62,9 @@ export class PlayerActionsComponent implements OnInit, OnDestroy {
     const hasNextChanged = this.playerState?.hasNext != state.hasNext;
     const isPlayingChanged = this.playerState?.isPlaying != state.isPlaying;
     const hasPreviousChanged = this.playerState?.hasPrevious != state.hasPrevious;
+    const hasModeChanged = this.playerState?.mode != state.mode;
 
-    if (hasNextChanged || isPlayingChanged || hasPreviousChanged) {
+    if (hasNextChanged || isPlayingChanged || hasPreviousChanged || hasModeChanged) {
       setTimeout(() => {
         this.playerState = new PlayerState(state);
         this.cdRef.markForCheck();

@@ -28,3 +28,4 @@ export { cancelIcon } from "./cancel";
 export { beforeIcon } from "./before";
 export { afterIcon } from "./after";
 export { folderIcon } from "./folder";
+export { equalizerIcon } from "./equalizer";

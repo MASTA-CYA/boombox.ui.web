@@ -62,5 +62,6 @@ export const appConfig: ApplicationConfig = {
       icons.beforeIcon,
       icons.afterIcon,
       icons.folderIcon,
+      icons.equalizerIcon,
     ])]
 };
