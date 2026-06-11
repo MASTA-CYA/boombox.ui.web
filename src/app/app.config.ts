@@ -29,6 +29,7 @@ export const appConfig: ApplicationConfig = {
         lg: '20px',
         xl: '25px',
         xxl: '30px',
+        xxxl: '35px',
       },
       defaultSize: 'md'
     }), provideSvgIcons([

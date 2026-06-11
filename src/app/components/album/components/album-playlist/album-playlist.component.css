@@ -61,11 +61,33 @@
 
 .album-playlist-track-radio-button-label {
 	color: #8b3ca5;
+	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+	text-wrap: nowrap;
+	line-height: 24px;
+	width: 280px;
 }
 
 .album-playlist-track-radio-button-label-played {
 	color: #FFFFFF;
 	text-decoration: line-through;
+	white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+	text-wrap: nowrap;
+	line-height: 24px;
+	width: 280px;
+}
+
+.album-playlist-track-radio-button-label-single {
+	color: #FFFFFF;
+	white-space: nowrap;
+	text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+	line-height: 24px;
+	width: 280px;
 }
 
 .radio-item {
@@ -73,6 +95,7 @@
 	align-items: center;
 	color: #FFFFFF;
 	margin: 4px;
+	gap: 3px;
 }
 .radio-item input {
 	margin-right: 8px;

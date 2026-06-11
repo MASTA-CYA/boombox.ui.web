@@ -6,6 +6,8 @@ import { Subscription } from 'rxjs';
 import { PlayerService } from '../../../../services/player.service';
 import { IPlaylistTrack } from '../../../playlist/interfaces/playlist-track';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ModalService } from '../../../../services/modal.service';
+import { EqualizerComponent } from '../equalizer/equalizer.component';
 
 @Component({
   selector: 'app-track-information',
@@ -21,7 +23,8 @@ export class TrackInformationComponent implements OnInit, OnDestroy {
   constructor(private libraryService: LibraryService,
     private cdRef: ChangeDetectorRef,
     private ngZone: NgZone,
-    private playerService: PlayerService
+    private playerService: PlayerService,
+    private modalService: ModalService
   ) { }
 
   async ngOnInit(): Promise<void> {
@@ -44,5 +47,10 @@ export class TrackInformationComponent implements OnInit, OnDestroy {
       this.playingTrack = track;
       this.cdRef.markForCheck();
     }, 0);
-  } 
+  }
+
+  public onOpenEqualizerClicked(): void {
+    this.modalService.openDialog();
+    this.modalService.projectComponent(EqualizerComponent);
+  }
 }

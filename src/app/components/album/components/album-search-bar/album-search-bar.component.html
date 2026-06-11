@@ -1,0 +1,17 @@
+<div class="search-container">
+  <input
+    #trackSearch
+    type="search"
+    class="search-text"
+    placeholder="Search"
+    (input)="onSearchTextChanged($event)"
+  />
+  @if (canClearSearch) {
+  <button class="clear-button" (click)="onClearClicked()">
+    <svg-icon key="clear" color="#FF0000" size="lg"></svg-icon>
+  </button>
+  }
+  <button class="search-button" (click)="onSearchClicked(trackSearch.value)">
+    <svg-icon key="search" color="#FFFFFF" size="lg"></svg-icon>
+  </button>
+</div>

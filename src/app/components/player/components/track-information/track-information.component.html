@@ -1,24 +1,28 @@
 <div class="information-controls">
-	<button matIconButton class="information-icon-button">
-		<svg-icon key="info" color="#FFFFFF" size="xl"></svg-icon>
-	</button>
-	@if (playingTrack?.isFavourite) {
-	<button
-		matIconButton
-		class="information-icon-button"
-		(click)="onMarkAsFavouriteClicked(playingTrack?.path)"
-	>
-		<svg-icon key="flame" color="#710193" size="xl"></svg-icon>
-	</button>
-	}@else {
-	<button
-		matIconButton
-		class="information-icon-button"
-		(click)="onMarkAsFavouriteClicked(playingTrack?.path)"
-	>
-		<svg-icon key="flame" color="#FFFFFF" size="xl"></svg-icon>
-	</button>
-	}<button matIconButton class="information-icon-button">
-		<svg-icon key="lyrics" color="#FFFFFF" size="xxl"></svg-icon>
-	</button>
+  <button
+    matIconButton
+    class="information-icon-button"
+    (click)="onOpenEqualizerClicked()"
+  >
+    <svg-icon key="equalizer" color="#FFFFFF" size="xl"></svg-icon>
+  </button>
+  @if (playingTrack?.isFavourite) {
+  <button
+    matIconButton
+    class="information-icon-button"
+    (click)="onMarkAsFavouriteClicked(playingTrack?.path)"
+  >
+    <svg-icon key="flame" color="#710193" size="xl"></svg-icon>
+  </button>
+  }@else {
+  <button
+    matIconButton
+    class="information-icon-button"
+    (click)="onMarkAsFavouriteClicked(playingTrack?.path)"
+  >
+    <svg-icon key="flame" color="#FFFFFF" size="xl"></svg-icon>
+  </button>
+  }<button matIconButton class="information-icon-button">
+    <svg-icon key="lyrics" color="#FFFFFF" size="xxxl"></svg-icon>
+  </button>
 </div>

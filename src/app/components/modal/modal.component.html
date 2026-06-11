@@ -1,0 +1,23 @@
+@if(isOpen) {
+<div class="modal-overlay" (click)="onCloseClicked()">
+  <!-- stopPropagation prevents closing when clicking inside the window -->
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Tittle</h3>
+      </div>
+      <div #modalContent class="modal-body">
+        <!-- <ng-content></ng-content> -->
+      </div>
+      <div class="modal-footer">
+        <button class="modal-icon-button" (click)="onCloseClicked()">
+          <div>
+            <svg-icon key="cancel" color="#FFFFFF" size="md"></svg-icon>
+            <span class="modal-icon-button-text">Cancel</span>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

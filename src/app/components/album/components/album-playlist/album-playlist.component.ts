@@ -64,10 +64,11 @@ export class AlbumPlaylistComponent implements OnInit, OnDestroy, OnChanges {
           this.playingTrackIndex = this.selectedPlaylist?.tracks.findIndex(track => track.path === this.selectedPlaylistTrack) ?? 0;
 
         setTimeout(() => {
-          const playingTrack = this.selectedPlaylist?.tracks?.find(track => track.path == this.selectedPlaylistTrack)?.name;
+          const playingTrack = this.selectedPlaylist?.tracks?.at(-1)?.name;
           if (playingTrack) {
             const selectedPlaylistTrackRadioButton = document.getElementById(playingTrack) as HTMLInputElement;
-            selectedPlaylistTrackRadioButton.checked = true;
+            if(selectedPlaylistTrackRadioButton)
+              selectedPlaylistTrackRadioButton.checked = true;
           }
         }, 0);
       }, 0);
@@ -88,7 +89,7 @@ export class AlbumPlaylistComponent implements OnInit, OnDestroy, OnChanges {
     this.playlistNames = this.playlists.map(playlist => playlist.name);
     this.selectedPlaylist = this.playlists.find(playlist => playlist.name === this.selectedPlaylist?.name);
     this.selectedPlaylistTracks = this.playlists.find(playlist => playlist.name === this.selectedPlaylist?.name)?.tracks?.map(track => track.name);
-    this.playingTrackIndex = this.selectedPlaylist?.tracks.findIndex(track => track.path === this.selectedPlaylistTrack) ?? 0;
+    this.playingTrackIndex = this.selectedPlaylist?.tracks.findIndex(track => track.isPlaying) ?? 0;
 
     if (this.selectedPlaylist) {
       setTimeout(() => {

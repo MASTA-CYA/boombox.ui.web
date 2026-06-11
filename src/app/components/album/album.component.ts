@@ -12,18 +12,21 @@ import { Subscription } from 'rxjs';
 import { UserTrackData } from '../library/models/user-track-data';
 import { Track } from '../library/models/track';
 import { AlbumPlaylistComponent } from "./components/album-playlist/album-playlist.component";
+import { AlbumSearchBarComponent } from './components/album-search-bar/album-search-bar.component';
+import { ITrack } from '../library/interfaces/track';
 
 @Component({
   selector: 'app-album',
-  imports: [SvgIconComponent, MatButtonModule, MatListModule, CommonModule, AlbumPlaylistComponent],
+  imports: [SvgIconComponent, MatButtonModule, MatListModule, CommonModule, AlbumPlaylistComponent, AlbumSearchBarComponent],
   templateUrl: './album.component.html',
   styleUrl: './album.component.css'
 })
 export class AlbumComponent implements OnInit, OnDestroy {
   public album: Album | undefined;
+  public displayTracks: Track[] | undefined;
   selectedTracks: string[] = [];
   public showPlaylists: boolean = false;
-
+  
   private userTrackDataSubscription: Subscription | undefined;
 
   constructor(private libraryService: LibraryService,
@@ -34,10 +37,13 @@ export class AlbumComponent implements OnInit, OnDestroy {
 
   async ngOnInit(): Promise<void> {
     this.album = this.libraryService.getSelectedAlbum();
+    this.displayTracks = this.album?.tracks;
+
 
     if (!this.album) {
       const cachedAlbum = await this.libraryService.getCachedSelectedAlbumAsync();
       this.album = new Album(this.domSanitizer, cachedAlbum!);
+      this.displayTracks = this.album.tracks;
     }
     const imageUrl = this.domSanitizer.sanitize(SecurityContext.URL, this.album.displayImage);
     const albumHeader = document.getElementById("albumHeader") as HTMLInputElement;
@@ -121,5 +127,9 @@ export class AlbumComponent implements OnInit, OnDestroy {
 
   async onMarkAsFavouriteClicked(path: string): Promise<void> {
     await this.libraryService.markAsFavouriteAsync(path);
+  }
+
+  filterTracks(text: string): void {
+    this.displayTracks = this.album?.tracks.filter(track => track.name.toLowerCase().includes(text.toLowerCase()) || track.artist.toLowerCase().includes(text.toLowerCase()));
   }
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild, AfterViewInit, ViewContainerRef, inject } from '@angular/core';
 import { debounceTime, Subject, Subscription } from 'rxjs';
 import { MainComponent } from './main/main.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -11,19 +11,23 @@ import { LibraryService } from '../services/library.service';
 import { SvgIconComponent } from '@ngneat/svg-icon';
 import { NavigationEnd, Router } from '@angular/router';
 import { ScrollPosition } from './library/models/scroll-position';
+import { ModalComponent } from "./modal/modal.component";
+import { ModalService } from '../services/modal.service';
 
 
 @Component({
   selector: 'app-root',
-  imports: [SidebarComponent, MainComponent, SnackbarComponent, ScrollingModule, SvgIconComponent],
+  imports: [SidebarComponent, MainComponent, SnackbarComponent, ScrollingModule, SvgIconComponent, ModalComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;
+  
   private scrollSubscription!: Subscription;
-  private activeRoute: string | undefined;
   scrollPositionUpdate = new Subject<ScrollPosition>();
+  
+  private activeRoute: string | undefined;
   showScrollButton: boolean = false;
 
   title = 'Boombox';
@@ -32,7 +36,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     private scrollService: AutoScrollService,
     private snackbarService: SnackbarService,
     private libraryService: LibraryService,
-    private router: Router
+    private router: Router,
+    private modalService: ModalService
   ) {
     this.scrollPositionUpdate.pipe(debounceTime(800))
     .subscribe(async (position: ScrollPosition) => {

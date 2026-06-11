@@ -19,7 +19,7 @@ export class SearchBarComponent {
 
   constructor(private libraryService: LibraryService) {
     this.searchInput
-      .pipe(debounceTime(800))
+      .pipe(debounceTime(500))
       .subscribe((model: SearchModel) => {
         this.libraryService.filterLibrary(model);
       });
