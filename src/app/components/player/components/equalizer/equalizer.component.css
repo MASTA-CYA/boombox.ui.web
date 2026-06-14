@@ -1,0 +1,158 @@
+.equalizer-container {
+	display: flex;
+	flex-direction: column;
+	margin-top: 20px;
+}
+
+.equalizer-selector-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+  align-items: center;
+}
+
+.filter-dropdown label {
+	color: #FFFFFF;
+	font-size: 18px;
+	margin-right: 10px;
+}
+
+select {
+	background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209L12%2015L18%209%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 12px;
+
+	border: 2px solid #710193;
+	border-radius: 20px;
+	background-color: #000000;
+	color: #FFFFFF;
+	font-size: 18px;
+	height: 40px;
+	width: 180px;
+	padding: 4px 14px 4px 14px;
+	transition: 0.4s;
+	background-position: calc(100% - 14px) center;
+}
+
+.filter-dropdown select option:checked {
+	background-color: #710193;
+	color: #FFFFFF;
+}
+
+.filter-dropdown select option:hover {
+	background-color: #710193;
+	color: #FFFFFF;
+}
+
+.filter-dropdown select option:focus {
+	background-color: #710193;
+	color: #FFFFFF;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+	margin-left: 20px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #505050;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #FFFFFF;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #710193;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.equalizer-switch-bypass {
+	display: inline-block;
+	color: #FFFFFF;
+	font-size: 18px;
+	justify-content: center;
+  align-items: center;
+}
+
+.equalizer-bands-container {
+	display: flex;
+	margin-top: 10px;
+}
+
+.equalizer-band-group {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 50px;
+	height: 400px;
+	width: 62px;
+	justify-content: space-evenly;
+}
+
+.band-label,
+.band-value {
+	color: #FFFFFF;
+	font-size: 12px
+}
+
+mat-slider {
+	width: 200px;
+	transform: rotate(-90deg);
+	--mdc-slider-handle-color: #710193;
+	--mdc-slider-focus-handle-color: #710193;
+	--mdc-slider-active-track-color: #710193;
+  --mdc-slider-inactive-track-color: #505050; 
+	--mdc-slider-inactive-track-height: 5px;
+	--mdc-slider-active-track-height: 5px;
+	--mdc-slider-handle-height: 18px;
+	--mdc-slider-handle-width: 18px;
+	--mdc-slider-handle-shape: 50px;
+}

@@ -10,6 +10,8 @@ import { environment } from "../../environments/environment";
 import { IPlayerState } from "../components/player/interfaces/player-state";
 import { IPlaylistTrack } from "../components/playlist/interfaces/playlist-track";
 import { PlaylistTrack } from "../components/playlist/models/playlist-track";
+import { IEqualizerFrequencyBand } from "../components/player/components/equalizer/models/equalizer-frequency-band";
+import { IEqualizerPreset } from "../components/player/components/equalizer/models/equalizer-preset";
 
 @Injectable({
   providedIn: "root"
@@ -21,6 +23,9 @@ export class PlayerService {
 
   private playerStateSubject: Subject<IPlayerState> = new Subject<IPlayerState>();
   public playerState$: Observable<IPlayerState> = this.playerStateSubject.asObservable();
+
+  private playerStateHotkeysSubject: Subject<IPlayerState> = new Subject<IPlayerState>();
+  public playerStateHotkeys$: Observable<IPlayerState> = this.playerStateHotkeysSubject.asObservable();
 
   private seekbarPlayingTrackSubject: Subject<PlaylistTrack> = new Subject<PlaylistTrack>();
   public seekbarPlayingTrack$: Observable<PlaylistTrack> = this.seekbarPlayingTrackSubject.asObservable();
@@ -102,6 +107,7 @@ export class PlayerService {
           const playbackInformation = JSON.parse(response) as IPlaybackInformation;
           this.playbackInformationSubject.next(playbackInformation);
           this.playerStateSubject.next(playbackInformation.playerState);
+          this.playerStateHotkeysSubject.next(playbackInformation.playerState);
         } catch (err) {
           this.snackbarService.showMessage(getErrorMessage(err));
           console.log(err);
@@ -207,5 +213,36 @@ export class PlayerService {
 
   public updatePlayerLoadingState(isLoading: boolean): void {
     this.isPlayerLoadingSubject.next(isLoading);
+  }
+
+  public async getEqualizerFrequencyBandsAsync(): Promise<IEqualizerFrequencyBand[]> {
+    try {
+      const response = await this.hubConnection.invoke('GetEqualizerFrequencyBandsAsync');
+      return JSON.parse(response) as IEqualizerFrequencyBand[];
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+      return [];
+    }
+  }
+
+  public async getEqualizerPresetsAsync(): Promise<IEqualizerPreset[]> {
+    try {
+      const response = await this.hubConnection.invoke('GetEqualizerPresetsAsync');
+      return JSON.parse(response) as IEqualizerPreset[];
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+      return [];
+    }
+  }
+
+  public async setEqualizerPresetsAsync(preset: IEqualizerPreset): Promise<void> {
+    try {
+      await this.hubConnection.invoke('SetEqualizerPresetsAsync', preset);
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+    }
   }
 }

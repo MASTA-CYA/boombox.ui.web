@@ -29,3 +29,5 @@ export { beforeIcon } from "./before";
 export { afterIcon } from "./after";
 export { folderIcon } from "./folder";
 export { equalizerIcon } from "./equalizer";
+export { saveIcon } from "./save";
+export { undoIcon } from "./undo";

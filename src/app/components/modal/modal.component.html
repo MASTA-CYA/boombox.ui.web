@@ -1,21 +1,44 @@
-@if(isOpen) {
-<div class="modal-overlay" (click)="onCloseClicked()">
-  <!-- stopPropagation prevents closing when clicking inside the window -->
-  <div class="modal-content" (click)="$event.stopPropagation()">
+@if(isModalOpen) {
+<div class="modal-overlay" (click)="$event.stopPropagation()">
+  <div class="modal-content">
     <div class="modal-container">
       <div class="modal-header">
-        <h3>Tittle</h3>
+        <h2>{{ config?.title }}</h2>
       </div>
-      <div #modalContent class="modal-body">
-        <!-- <ng-content></ng-content> -->
+      <div class="modal-body">
+        <ng-content></ng-content>
       </div>
       <div class="modal-footer">
         <button class="modal-icon-button" (click)="onCloseClicked()">
           <div>
-            <svg-icon key="cancel" color="#FFFFFF" size="md"></svg-icon>
+            <svg-icon key="cancel" color="#FF0000" size="md"></svg-icon>
             <span class="modal-icon-button-text">Cancel</span>
           </div>
         </button>
+        @for(button of config?.buttons; track button) { @if (button?.type === 0)
+        {
+        <button class="modal-icon-button" (click)="button?.callback()">
+          <div>
+            <svg-icon
+              key="{{ button?.icon }}"
+              color="{{ button?.color }}"
+              size="lg"
+            ></svg-icon>
+            <span class="modal-icon-button-text">{{ button?.text }}</span>
+          </div>
+        </button>
+        } @else {
+        <button class="modal-icon-button" (click)="button?.callback()">
+          <div>
+            <svg-icon
+              key="button?.icon"
+              color="{{ button?.color }}"
+              size="lg"
+            ></svg-icon>
+            <span class="modal-icon-button-text">{{ button?.text }}</span>
+          </div>
+        </button>
+        } }
       </div>
     </div>
   </div>

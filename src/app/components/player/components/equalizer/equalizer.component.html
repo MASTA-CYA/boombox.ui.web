@@ -1,1 +1,38 @@
-<p>equalizer works!</p>
+<div class="equalizer-container">
+  <div class="equalizer-selector-container">
+    <div class="filter-dropdown">
+      <label for="eqSelector">Preset:</label>
+      <select
+        #eqSelector
+        name="eqSelector"
+        id="eqSelector"
+        (change)="onEqPresetChanged(eqSelector.value)"
+      >
+        @for (option of equalizerPresetsOptions; track option) { @if (option[1] ===
+        "Flat") {
+        <option selected value="{{ option[0] }}">{{ option[1] }}</option>
+        } @else {
+        <option value="{{ option[0] }}">{{ option[1] }}</option>
+        } }
+      </select>
+    </div>
+		<div class="equalizer-switch-bypass">
+			<label for="bypassPreset">Bypass</label>
+			<label class="switch">
+				<input #bypassPreset type="checkbox" (change)="onBypassToggled(bypassPreset.checked)">
+				<span class="slider round"></span>
+			</label>
+		</div>
+  </div>
+  <div class="equalizer-bands-container">
+    @for(band of selectedPreset?.frequencyBands; track band) {
+    <div class="equalizer-band-group">
+      <span class="band-label">{{ band?.name }}</span>
+      <mat-slider [min]="band?.min" [step]="1" [max]="band?.max" (wheel)="onBandGainScroll($event, band)" (change)="onBandGainChanged($event, band)">
+        <input matSliderThumb [value]="band?.gain" />
+      </mat-slider>
+      <span class="band-value">{{ band?.gain }} dB</span>
+    </div>
+    }
+  </div>
+</div>

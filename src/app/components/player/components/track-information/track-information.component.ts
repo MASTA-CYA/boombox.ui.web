@@ -4,10 +4,9 @@ import { PlaylistTrack } from '../../../playlist/models/playlist-track';
 import { LibraryService } from '../../../../services/library.service';
 import { Subscription } from 'rxjs';
 import { PlayerService } from '../../../../services/player.service';
-import { IPlaylistTrack } from '../../../playlist/interfaces/playlist-track';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ModalService } from '../../../../services/modal.service';
 import { EqualizerComponent } from '../equalizer/equalizer.component';
+import { ModalButtonConfig, ModalButtonType, ModalConfig } from '../../../modal/models/modal';
 
 @Component({
   selector: 'app-track-information',
@@ -50,7 +49,11 @@ export class TrackInformationComponent implements OnInit, OnDestroy {
   }
 
   public onOpenEqualizerClicked(): void {
-    this.modalService.openDialog();
-    this.modalService.projectComponent(EqualizerComponent);
+    const projectedInstance = this.modalService.projectComponent(EqualizerComponent);
+    if (!projectedInstance) return;
+    this.modalService.openDialog(new ModalConfig("Equalizer", [
+      new ModalButtonConfig("Reset", "undo", "#0000FF", ModalButtonType.primary, () => projectedInstance!.instance.reset()),
+      new ModalButtonConfig("Apply", "save", "#710193", ModalButtonType.primary, () => projectedInstance!.instance.apply())
+    ]));
   }
 }
