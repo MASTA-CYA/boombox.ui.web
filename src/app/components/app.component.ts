@@ -50,7 +50,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ) {
     this.scrollPositionUpdate.pipe(debounceTime(800))
       .subscribe(async (position: ScrollPosition) => {
-        await this.libraryService.updateLibraryScrollPositionAsync(position.horizontal, position.vertical);
+        await this.scrollService.updateLibraryScrollPositionAsync(position.horizontal, position.vertical);
       });
     this.playerActionsSubscription = this.playerService.playerState$.subscribe((state) =>
       this.ngZone.runOutsideAngular(() => this.handlePlayerStateUpdates(state)));
