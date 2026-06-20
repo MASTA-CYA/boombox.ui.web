@@ -14,6 +14,7 @@ import { SearchBarComponent } from "../search-bar/search-bar.component";
 import { OrderByOption } from '../search-bar/models/orderby-option-enum';
 import { IAlbum } from './interfaces/album';
 import { Track } from './models/track';
+import { AutoScrollService } from '../../services/auto-scroll.service';
 
 @Component({
   selector: 'app-library',
@@ -40,6 +41,7 @@ export class LibraryComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private libraryService: LibraryService,
+    private scrollService: AutoScrollService,
     private domSanitizer: DomSanitizer
   ) {
     this.mappingUpdate = new MappingUpdate(0, '', '', false);
@@ -47,7 +49,7 @@ export class LibraryComponent implements OnInit {
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       if (event.url === "/library")
-        setTimeout(async () => await this.libraryService.getLibraryScrollPositionAsync(), 0);
+        setTimeout(async () => await this.scrollService.getLibraryScrollPositionAsync(), 0);
     });
   }
 
@@ -56,13 +58,13 @@ export class LibraryComponent implements OnInit {
     this.mappingUpdateSubscription = this.libraryService.mappingUpdate$.subscribe(async (update) => {
       this.mappingUpdate = new MappingUpdate(update.percent, update.message, update.error, update.isComplete);
       if (this.mappingUpdate.isComplete)
-        await this.libraryService.getLibraryScrollPositionAsync();
+        await this.scrollService.getLibraryScrollPositionAsync();
     });
     this.albumSubscription = this.libraryService.albums$.subscribe(async (albums) => {
       this.cachedAlbum = albums;
       this.albums = albums.map((album) => new Album(this.domSanitizer, album))
       this.displayAlbums = this.getFilteredAlbums("", OrderByOption.new);;
-      await this.libraryService.getLibraryScrollPositionAsync();
+      await this.scrollService.getLibraryScrollPositionAsync();
       setTimeout(() => this.populateLibraryStats(), 0);
     });
     await this.libraryService.getLibraryAsync();

@@ -6,13 +6,14 @@ import {
 } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { LibraryService } from '../services/library.service';
+import { AutoScrollService } from '../services/auto-scroll.service';
 
 
 @Injectable()
 export class CustomRouteReuseStrategy implements RouteReuseStrategy {
 	private handlers = new Map<Route | null, DetachedRouteHandle>();
 
-	constructor(private libraryService: LibraryService) {	}
+	constructor(private scrollService: AutoScrollService) {	}
 
 	shouldDetach(route: ActivatedRouteSnapshot): boolean {
 		// Determines if a route should be stored for later reuse
@@ -37,7 +38,7 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
 		// Returns the stored route handle for reattachment
 		const key = this.getRouteKey(route);
 		setTimeout(() => {
-			this.libraryService.getLibraryScrollPositionAsync();
+			this.scrollService.getLibraryScrollPositionAsync();
 		}, 0)
 		return route.data['reuse'] === true ? (this.handlers.get(key) ?? null) : null;
 	}

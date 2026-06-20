@@ -6,6 +6,7 @@ import { PlayerService } from './player.service';
 import { PlaylistService } from './playlist.service';
 import { LibraryService } from './library.service';
 import { environment } from '../../environments/environment';
+import { AutoScrollService } from './auto-scroll.service';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,8 @@ export class ServerService {
     private snackbarService: SnackbarService,
     private playerService: PlayerService,
     private playlistService: PlaylistService,
-    private libraryService: LibraryService
+    private libraryService: LibraryService,
+    private autoScrollService: AutoScrollService,
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.serverHubUrl, {
@@ -40,6 +42,8 @@ export class ServerService {
       await this.libraryService.startConnectionAsync();
       await this.playerService.startConnectionAsync();
       await this.playlistService.startConnectionAsync();
+      await this.playlistService.startConnectionAsync();
+      await this.autoScrollService.startConnectionAsync();
     } catch (err) {
       this.snackbarService.showMessage("Error establishing connection with ServerHub: " + err)
       console.log("Error establishing connection with ServerHub: " + err)

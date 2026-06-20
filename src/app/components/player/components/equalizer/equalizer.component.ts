@@ -21,7 +21,7 @@ export class EqualizerComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.equalizerPresetsBands = await this.playerService.getEqualizerPresetsAsync();
-    this.selectedPreset = this.equalizerPresetsBands[0];
+    this.selectedPreset = this.equalizerPresetsBands.find(preset => preset.name === "Saved" || preset.name === "Flat");
     this.equalizerPresetsOptions = this.equalizerPresetsBands.map(preset => [preset.name, preset.name]);
   }
 

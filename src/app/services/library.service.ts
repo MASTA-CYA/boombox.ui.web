@@ -3,15 +3,11 @@ import * as signalR from '@microsoft/signalr';
 import { Observable, Subject } from 'rxjs';
 import { SnackbarService } from './snackbar.service';
 import { getErrorMessage } from '../common/functions';
-import { AutoScrollService } from './auto-scroll.service';
-import { LocalStorageService } from './local-storage.service';
 import { IAlbum } from '../components/library/interfaces/album';
-import { IScrollPosition } from '../components/library/interfaces/scroll-position';
 import { IMappingUpdate } from '../components/library/interfaces/update';
 import { IUserTrackData } from '../components/library/interfaces/user-track-data';
 import { Album } from '../components/library/models/album';
 import { UserTrackData } from '../components/library/models/user-track-data';
-import { OrderByOption } from '../components/search-bar/models/orderby-option-enum';
 import { SearchModel } from '../components/search-bar/models/search-model';
 import { environment } from '../../environments/environment';
 
@@ -36,8 +32,6 @@ export class LibraryService {
   constructor(
     private ngZone: NgZone,
     private snackbarService: SnackbarService,
-    private scrollService: AutoScrollService,
-    private storageService: LocalStorageService
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.libraryHubUrl, {
@@ -58,7 +52,6 @@ export class LibraryService {
 
       this.getLibraryListener();
       this.getMappingUpdateListener();
-      this.getLibraryScrollPositionListener();
       this.getUserTrackDataListener();
       this.receiveLocalCacheClearedListener();
     } catch (err) {
@@ -101,38 +94,6 @@ export class LibraryService {
         try {
           const mappingUpdate = JSON.parse(response) as IMappingUpdate;
           this.mappingUpdateSubject.next(mappingUpdate);
-        } catch (err) {
-          this.snackbarService.showMessage(getErrorMessage(err));
-          console.log(err);
-        }
-      });
-    });
-  }
-
-  public async updateLibraryScrollPositionAsync(horizontal: number, vertical: number): Promise<void> {
-    try {
-      await this.hubConnection.invoke('UpdateLibraryScrollPositionAsync', horizontal, vertical);
-    } catch (err) {
-      this.snackbarService.showMessage(getErrorMessage(err));
-      console.error(err);
-    }
-  }
-
-  public async getLibraryScrollPositionAsync(): Promise<void> {
-    try {
-      await this.hubConnection.invoke('GetLibraryScrollPositionAsync');
-    } catch (err) {
-      this.snackbarService.showMessage(getErrorMessage(err));
-      console.error(err);
-    }
-  }
-
-  private getLibraryScrollPositionListener = () => {
-    this.hubConnection.on('ReceiveLibraryScrollPosition', (response: string) => {
-      this.ngZone.run(() => {
-        try {
-          const scrollPosition = JSON.parse(response) as IScrollPosition;
-          this.scrollService.updateScrollPositionSubject(scrollPosition);
         } catch (err) {
           this.snackbarService.showMessage(getErrorMessage(err));
           console.log(err);

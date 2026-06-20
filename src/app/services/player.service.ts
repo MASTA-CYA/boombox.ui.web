@@ -215,17 +215,6 @@ export class PlayerService {
     this.isPlayerLoadingSubject.next(isLoading);
   }
 
-  public async getEqualizerFrequencyBandsAsync(): Promise<IEqualizerFrequencyBand[]> {
-    try {
-      const response = await this.hubConnection.invoke('GetEqualizerFrequencyBandsAsync');
-      return JSON.parse(response) as IEqualizerFrequencyBand[];
-    } catch (err) {
-      this.snackbarService.showMessage(getErrorMessage(err));
-      console.log(err);
-      return [];
-    }
-  }
-
   public async getEqualizerPresetsAsync(): Promise<IEqualizerPreset[]> {
     try {
       const response = await this.hubConnection.invoke('GetEqualizerPresetsAsync');
