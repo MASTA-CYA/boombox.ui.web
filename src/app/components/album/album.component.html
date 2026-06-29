@@ -47,7 +47,7 @@
                     </div>
                   </div>
                 </div>
-                <!-- DURATION  | TRACKS -->
+                <!-- DURATION | TRACKS -->
                 <div class="album-information-separated">
                   <div class="album-information-item-left">
                     <div class="album-information-pill">
@@ -58,9 +58,9 @@
                           size="lg"
                         ></svg-icon>
                       </div>
-                    </div>
-                    <div class="album-information-pill-text">
-                      {{ album?.displayDuration }}
+                      <div class="album-information-pill-text">
+                        {{ album?.displayDuration }}
+                      </div>
                     </div>
                   </div>
                   <span class="album-info-separator"></span>
@@ -73,13 +73,13 @@
                           size="md"
                         ></svg-icon>
                       </div>
-                    </div>
-                    <div class="album-information-pill-text">
-                      {{ album?.numberOfTracks }}
+                      <div class="album-information-pill-text">
+                        {{ album?.numberOfTracks }}
+                      </div>
                     </div>
                   </div>
                 </div>
-                <!-- EXTENSION  | DATE MAPPED -->
+                <!-- EXTENSION | DATE MAPPED -->
                 <div class="album-information-separated">
                   <div class="album-information-item-left">
                     <div class="album-information-pill">
@@ -90,22 +90,24 @@
                           size="lg"
                         ></svg-icon>
                       </div>
-                    </div>
-                    <div class="album-information-pill-text">
-                      {{ album?.encoding }}
+                      <div class="album-information-pill-text">
+                        {{ album?.encoding }}
+                      </div>
                     </div>
                   </div>
                   <span class="album-info-separator"></span>
                   <div class="album-information-item-right">
-                    <div class="album-information-pill-icon">
-                      <svg-icon
-                        key="calender-add"
-                        color="#FFFFFF"
-                        size="lg"
-                      ></svg-icon>
-                    </div>
-                    <div class="album-information-pill-text">
-                      {{ album?.dateMapped | date : "short" }}
+                    <div class="album-information-pill">
+                      <div class="album-information-pill-icon">
+                        <svg-icon
+                          key="calender-add"
+                          color="#FFFFFF"
+                          size="lg"
+                        ></svg-icon>
+                      </div>
+                      <div class="album-information-pill-text">
+                        {{ album?.dateMapped | date : "short" }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -146,7 +148,7 @@
     </div>
   </div>
   <div class="album-action-bar-container">
-    <app-album-search-bar (searchTextOutput)="filterTracks($event)"/>
+    <app-album-search-bar (searchTextOutput)="filterTracks($event)" />
   </div>
   <div class="album-tracks-container">
     @if ((album?.numberOfDiscs ?? 0) > 1) {

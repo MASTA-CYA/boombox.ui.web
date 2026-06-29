@@ -31,3 +31,5 @@ export { folderIcon } from "./folder";
 export { equalizerIcon } from "./equalizer";
 export { saveIcon } from "./save";
 export { undoIcon } from "./undo";
+export { powerIcon } from "./power";
+export { restartIcon } from "./restart";

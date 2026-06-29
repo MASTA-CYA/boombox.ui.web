@@ -112,7 +112,7 @@
 .album-information-item-left {
 	display: flex;
 	flex-direction: row;
-	width: 180px;
+	width: 160px;
 	margin-top: 8px;
 }
 
@@ -125,7 +125,7 @@
 
 .album-information-separated {
 	display: inline-flex;
-	width: 400px;
+	max-width: 500px;
 	align-items: center;
 	margin: 8px 0px;
 }
@@ -135,7 +135,7 @@
 	width: 10px;
 	background-color: rgba(255, 255, 255, 0.4);
 	border-radius: 50%;
-	margin: 0 40px;
+	margin: 0 40px 0 5px;
 }
 
 .album-button-container {

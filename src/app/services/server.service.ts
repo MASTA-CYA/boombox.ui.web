@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import * as signalR from "@microsoft/signalr";
 import { SnackbarService } from './snackbar.service';
 import { getErrorMessage } from '../common/functions';
@@ -7,12 +7,15 @@ import { PlaylistService } from './playlist.service';
 import { LibraryService } from './library.service';
 import { environment } from '../../environments/environment';
 import { AutoScrollService } from './auto-scroll.service';
+import { Observable, Subject, debounceTime } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServerService {
   private hubConnection: signalR.HubConnection;
+  private serverConnectedSubject: Subject<boolean> = new Subject<boolean>();
+  public serverConnected$: Observable<boolean> = this.serverConnectedSubject.asObservable();
 
   constructor(
     private snackbarService: SnackbarService,
@@ -20,6 +23,7 @@ export class ServerService {
     private playlistService: PlaylistService,
     private libraryService: LibraryService,
     private autoScrollService: AutoScrollService,
+    private ngZone: NgZone
   ) {
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(environment.serverHubUrl, {
@@ -38,15 +42,16 @@ export class ServerService {
       if (this.hubConnection.state === signalR.HubConnectionState.Disconnected)
         await this.hubConnection.start();
 
-      this.listenForHubErrors();
+      await this.initServerServiceAsync();
       await this.libraryService.startConnectionAsync();
       await this.playerService.startConnectionAsync();
       await this.playlistService.startConnectionAsync();
       await this.playlistService.startConnectionAsync();
       await this.autoScrollService.startConnectionAsync();
     } catch (err) {
-      this.snackbarService.showMessage("Error establishing connection with ServerHub: " + err)
-      console.log("Error establishing connection with ServerHub: " + err)
+      this.serverConnectedSubject.next(false);
+      this.snackbarService.showMessage("Error establishing connection with ServerHub: " + err);
+      console.log("Error establishing connection with ServerHub: " + err);
     }
   }
 
@@ -63,4 +68,56 @@ export class ServerService {
     });
   }
 
+  private async initServerServiceAsync(): Promise<void> {
+    this.listenForHubErrors();
+    this.getServerUpdatesListener();
+    await this.startServerStatusUpdatedAsync();
+    this.serverConnectedSubject
+      .pipe(debounceTime(10000))
+      .subscribe(async _ => {
+        this.serverConnectedSubject.next(await this.isServerRunningAsync());
+      });
+  }
+
+  public async isServerRunningAsync(): Promise<boolean> {
+    try {
+      return await this.hubConnection.invoke('IsServerRunningAsync');
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.error(err);
+      return false;
+    }
+  }
+
+  public async startServerStatusUpdatedAsync(): Promise<void> {
+    try {
+      await this.hubConnection.invoke('StartServerStatusUpdatedAsync');
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.error(err);
+    }
+  }
+
+  public async stopServerStatusUpdatedAsync(): Promise<void> {
+    try {
+      await this.hubConnection.invoke('StopServerStatusUpdatedAsync');
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.error(err);
+    }
+  }
+
+  private getServerUpdatesListener = () => {
+    this.hubConnection.on('ReceiveServerUpdates', (response: string) => {
+      this.ngZone.run(() => {
+        try {
+          this.serverConnectedSubject.next(true);
+        } catch (err) {
+          this.serverConnectedSubject.next(false);
+          this.snackbarService.showMessage(getErrorMessage(err));
+          console.log(err);
+        }
+      });
+    });
+  }
 }

@@ -8,10 +8,9 @@ import { UserTrackData } from "../components/library/models/user-track-data";
 import { IPlaybackInformation } from "../components/player/interfaces/playback-information";
 import { environment } from "../../environments/environment";
 import { IPlayerState } from "../components/player/interfaces/player-state";
-import { IPlaylistTrack } from "../components/playlist/interfaces/playlist-track";
 import { PlaylistTrack } from "../components/playlist/models/playlist-track";
-import { IEqualizerFrequencyBand } from "../components/player/components/equalizer/models/equalizer-frequency-band";
 import { IEqualizerPreset } from "../components/player/components/equalizer/models/equalizer-preset";
+import { IPlayerStateInformation, PlayerStateInformation } from "../components/player/models/player-state-information";
 
 @Injectable({
   providedIn: "root"
@@ -24,11 +23,12 @@ export class PlayerService {
   private playerStateSubject: Subject<IPlayerState> = new Subject<IPlayerState>();
   public playerState$: Observable<IPlayerState> = this.playerStateSubject.asObservable();
 
-  private playerStateHotkeysSubject: Subject<IPlayerState> = new Subject<IPlayerState>();
-  public playerStateHotkeys$: Observable<IPlayerState> = this.playerStateHotkeysSubject.asObservable();
+  private playerStateHotkeysSubject: Subject<IPlayerStateInformation> = new Subject<IPlayerStateInformation>();
+  public playerStateHotkeys$: Observable<IPlayerStateInformation> = this.playerStateHotkeysSubject.asObservable();
 
   private seekbarPlayingTrackSubject: Subject<PlaylistTrack> = new Subject<PlaylistTrack>();
   public seekbarPlayingTrack$: Observable<PlaylistTrack> = this.seekbarPlayingTrackSubject.asObservable();
+
   private trackInfoPlayingTrackSubject: Subject<PlaylistTrack> = new Subject<PlaylistTrack>();
   public trackInfoPlayingTrack$: Observable<PlaylistTrack> = this.trackInfoPlayingTrackSubject.asObservable();
 
@@ -107,7 +107,7 @@ export class PlayerService {
           const playbackInformation = JSON.parse(response) as IPlaybackInformation;
           this.playbackInformationSubject.next(playbackInformation);
           this.playerStateSubject.next(playbackInformation.playerState);
-          this.playerStateHotkeysSubject.next(playbackInformation.playerState);
+          this.playerStateHotkeysSubject.next(new PlayerStateInformation(playbackInformation.playerState, playbackInformation.tracks?.length > 0));
         } catch (err) {
           this.snackbarService.showMessage(getErrorMessage(err));
           console.log(err);

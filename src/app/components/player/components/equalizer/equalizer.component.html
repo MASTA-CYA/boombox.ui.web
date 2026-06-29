@@ -8,8 +8,8 @@
         id="eqSelector"
         (change)="onEqPresetChanged(eqSelector.value)"
       >
-        @for (option of equalizerPresetsOptions; track option) { @if (option[1]
-        === "Saved" || option[1] === "Flat") {
+        @for (option of equalizerPresetsOptions; track option; let i = $index) {
+        @if (i == 0) {
         <option selected value="{{ option[0] }}">{{ option[1] }}</option>
         } @else {
         <option value="{{ option[0] }}">{{ option[1] }}</option>

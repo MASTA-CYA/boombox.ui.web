@@ -16,6 +16,7 @@ import { ModalService } from '../services/modal.service';
 import { PlayerService } from '../services/player.service';
 import { IPlayerState } from './player/interfaces/player-state';
 import { PlayerState } from './player/models/player-state';
+import { IPlayerStateInformation, PlayerStateInformation } from './player/models/player-state-information';
 
 
 @Component({
@@ -31,7 +32,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   private scrollSubscription!: Subscription;
   scrollPositionUpdate = new Subject<ScrollPosition>();
 
-  public playerState: PlayerState | undefined;
+  public playerStateInformation: PlayerStateInformation | undefined;
   private playerActionsSubscription!: Subscription;
 
   private activeRoute: string | undefined;
@@ -42,7 +43,6 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   constructor(
     private scrollService: AutoScrollService,
     private snackbarService: SnackbarService,
-    private libraryService: LibraryService,
     private playerService: PlayerService,
     private router: Router,
     private modalService: ModalService,
@@ -52,8 +52,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       .subscribe(async (position: ScrollPosition) => {
         await this.scrollService.updateLibraryScrollPositionAsync(position.horizontal, position.vertical);
       });
-    this.playerActionsSubscription = this.playerService.playerState$.subscribe((state) =>
-      this.ngZone.runOutsideAngular(() => this.handlePlayerStateUpdates(state)));
+    this.playerActionsSubscription = this.playerService.playerStateHotkeys$.subscribe((stateInformation) =>
+      this.ngZone.runOutsideAngular(() => this.handlePlayerStateUpdates(stateInformation)));
   }
 
   ngAfterViewInit(): void {
@@ -104,40 +104,42 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     this.scrollContainer.nativeElement.scrollTop = 0;
   }
 
-  private handlePlayerStateUpdates(state: IPlayerState): void {
-    const hasNextChanged = this.playerState?.hasNext != state.hasNext;
-    const isPlayingChanged = this.playerState?.isPlaying != state.isPlaying;
-    const hasPreviousChanged = this.playerState?.hasPrevious != state.hasPrevious;
-    const hasModeChanged = this.playerState?.mode != state.mode;
+  private handlePlayerStateUpdates(stateInformation: PlayerStateInformation): void {
+    const hasNextChanged = this.playerStateInformation?.state.hasNext != stateInformation.state.hasNext;
+    const isPlayingChanged = this.playerStateInformation?.state.isPlaying != stateInformation.state.isPlaying;
+    const hasPreviousChanged = this.playerStateInformation?.state.hasPrevious != stateInformation.state.hasPrevious;
+    const hasModeChanged = this.playerStateInformation?.state.mode != stateInformation.state.mode;
 
     if (hasNextChanged || isPlayingChanged || hasPreviousChanged || hasModeChanged) {
       setTimeout(() => {
-        this.playerState = new PlayerState(state);
+        this.playerStateInformation = new PlayerStateInformation(stateInformation.state, stateInformation.hasQueuedTracks);
       }, 0);
     }
   }
 
-  @HostListener('window:keydown.shift.p', ['$event'])
+  @HostListener('window:keydown.shift.p', ['$event as KeyboardEvent'])
   async handlePlayPrevious(event: KeyboardEvent): Promise<void> {
     event.preventDefault();
     
-    if (this.playerState?.hasPrevious)
+    if (this.playerStateInformation?.state?.hasPrevious)
       await this.playerService.playPreviousAsync();
   }
 
-  @HostListener('window:keydown.shift.n', ['$event'])
+  @HostListener('window:keydown.shift.n', ['$event as KeyboardEvent'])
   async handlePlayNext(event: KeyboardEvent): Promise<void> {
     event.preventDefault();
 
-    if (this.playerState?.hasNext)
+    if (this.playerStateInformation?.state.hasNext)
       await this.playerService.playNextAsync();
   }
 
-  @HostListener('window:keydown.space', ['$event'])
+  @HostListener('window:keydown.space', ['$event as KeyboardEvent'])
   async handlePause(event: KeyboardEvent): Promise<void> {
     event.preventDefault();
 
-    if (this.playerState?.isPlaying)
+    if (!this.playerStateInformation?.hasQueuedTracks) return;
+
+    if (this.playerStateInformation?.state.isPlaying)
       await this.playerService.pauseAsync();
     else
       await this.playerService.playAsync();

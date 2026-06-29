@@ -8,9 +8,11 @@ import { provideSvgIcons, provideSvgIconsConfig } from '@ngneat/svg-icon';
 import * as icons from './svg';
 import { ServerService } from './services/server.service';
 import { CustomRouteReuseStrategy } from './common/re-use-strategy';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(),
     provideAppInitializer(async () => await inject(ServerService).startConnectionAsync()),
     provideZoneChangeDetection({ eventCoalescing: true }),
     { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
@@ -66,5 +68,7 @@ export const appConfig: ApplicationConfig = {
       icons.equalizerIcon,
       icons.saveIcon,
       icons.undoIcon,
+      icons.powerIcon,
+      icons.restartIcon,
     ])]
 };

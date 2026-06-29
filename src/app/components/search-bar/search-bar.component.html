@@ -6,6 +6,7 @@
       class="search-text"
       placeholder="Search"
       (input)="onSearchTextChanged($event)"
+      (keydown.space)="$event.stopPropagation()"
     />
     @if (canClearSearch) {
     <button class="clear-button" (click)="onClearClicked()">

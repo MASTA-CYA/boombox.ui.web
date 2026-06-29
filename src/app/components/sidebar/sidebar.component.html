@@ -1,5 +1,17 @@
 <div class="nav-rail-container">
   <div>
+    <div class="server-control-bar">
+      <div role="button" (click)="onPowerToggled()">
+        @if (isServerRunning) {
+          <svg-icon key="power" color="#710193" size="xl"></svg-icon>
+        } @else {
+          <svg-icon key="power" color="#FF0000" size="xl"></svg-icon>
+        }
+      </div>
+      <div role="button" (click)="onRestartClicked()">
+        <svg-icon key="restart" color="#FFFFFF" size="xl"></svg-icon>
+      </div>
+    </div>
     <img class="image" src="logo-no-background.png" />
   </div>
   <div class="nav-list-container">
