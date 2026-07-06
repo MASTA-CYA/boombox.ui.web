@@ -14,7 +14,6 @@
 	display: inline-block; 
 	width: 90%;
 	margin-left: 10px;
-	margin-bottom: 18px;
 }	
 
 .nav-list-container {
@@ -76,4 +75,12 @@ a:link, a:visited {
 	display: flex;
 	justify-content: space-between;
 	margin: 0px 8px;
+}
+
+.server-information-bar {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	align-content: center;
+	text-align: center;
+	color: #FFFFFF;
 }

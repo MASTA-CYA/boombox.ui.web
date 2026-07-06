@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ServerService } from '../../services/server.service';
 import { Subscription } from 'rxjs';
+import { ServerUpdate } from './models/server-update';
 
 @Component({
   selector: 'app-sidebar',
@@ -14,6 +15,7 @@ import { Subscription } from 'rxjs';
   styleUrl: './sidebar.component.css',
 })
 export class SidebarComponent implements OnInit, OnDestroy {
+  version: String = "";
   isServerRunning: boolean = false;
   serverSubscription: Subscription | undefined;
 
@@ -39,8 +41,9 @@ export class SidebarComponent implements OnInit, OnDestroy {
   constructor(private httpClient: HttpClient, private serverService: ServerService) { }
 
   async ngOnInit(): Promise<void> {
-    this.serverSubscription = this.serverService.serverConnected$.subscribe(async () => {
-      this.isServerRunning = await this.serverService.isServerRunningAsync()
+    this.serverSubscription = this.serverService.serverConnected$.subscribe(async (update: ServerUpdate) => {
+      this.isServerRunning = await this.serverService.isServerRunningAsync();
+      this.version = update.version;
     });
   }
 

@@ -8,14 +8,15 @@ import { LibraryService } from './library.service';
 import { environment } from '../../environments/environment';
 import { AutoScrollService } from './auto-scroll.service';
 import { Observable, Subject, debounceTime } from 'rxjs';
+import { ServerUpdate } from '../components/sidebar/models/server-update';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ServerService {
   private hubConnection: signalR.HubConnection;
-  private serverConnectedSubject: Subject<boolean> = new Subject<boolean>();
-  public serverConnected$: Observable<boolean> = this.serverConnectedSubject.asObservable();
+  private serverConnectedSubject: Subject<ServerUpdate> = new Subject<ServerUpdate>();
+  public serverConnected$: Observable<ServerUpdate> = this.serverConnectedSubject.asObservable();
 
   constructor(
     private snackbarService: SnackbarService,
@@ -49,7 +50,7 @@ export class ServerService {
       await this.playlistService.startConnectionAsync();
       await this.autoScrollService.startConnectionAsync();
     } catch (err) {
-      this.serverConnectedSubject.next(false);
+      this.serverConnectedSubject.next(new ServerUpdate(false, ""))
       this.snackbarService.showMessage("Error establishing connection with ServerHub: " + err);
       console.log("Error establishing connection with ServerHub: " + err);
     }
@@ -75,7 +76,7 @@ export class ServerService {
     this.serverConnectedSubject
       .pipe(debounceTime(10000))
       .subscribe(async _ => {
-        this.serverConnectedSubject.next(await this.isServerRunningAsync());
+        this.serverConnectedSubject.next(new ServerUpdate(await this.isServerRunningAsync(), ""));
       });
   }
 
@@ -111,9 +112,9 @@ export class ServerService {
     this.hubConnection.on('ReceiveServerUpdates', (response: string) => {
       this.ngZone.run(() => {
         try {
-          this.serverConnectedSubject.next(true);
+          this.serverConnectedSubject.next(new ServerUpdate(true, response));
         } catch (err) {
-          this.serverConnectedSubject.next(false);
+          this.serverConnectedSubject.next(new ServerUpdate(false, response ?? ""));
           this.snackbarService.showMessage(getErrorMessage(err));
           console.log(err);
         }
