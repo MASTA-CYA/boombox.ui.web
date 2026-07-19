@@ -26,6 +26,8 @@ export class LibraryService {
   public userTrackData$: Observable<UserTrackData> = this.userTrackDataSubject.asObservable();
   private localCacheClearedSubject: Subject<boolean> = new Subject<boolean>();
   public localCacheCleared$: Observable<boolean> = this.localCacheClearedSubject.asObservable();
+  private refreshAlbumSubject: Subject<void> = new Subject<void>();
+  public refreshAlbum$: Observable<void> = this.refreshAlbumSubject.asObservable();
 
   private selectedAlbum: Album | undefined;
 
@@ -54,6 +56,7 @@ export class LibraryService {
       this.getMappingUpdateListener();
       this.getUserTrackDataListener();
       this.receiveLocalCacheClearedListener();
+      this.receiveRefreshedAlbumListener();
     } catch (err) {
       this.snackbarService.showMessage('Error establishing connection with LibraryHub: ' + err)
       console.log('Error establishing connection with LibraryHub: ' + err)
@@ -172,6 +175,28 @@ export class LibraryService {
       this.ngZone.run(() => {
         try {
           this.localCacheClearedSubject.next(true);
+        } catch (err) {
+          this.snackbarService.showMessage(getErrorMessage(err));
+          console.log(err);
+        }
+      });
+    });
+  }
+
+  public async refreshAlbumAsync(path: String): Promise<void> {
+    try {
+      await this.hubConnection.invoke('RefreshAlbumAsync', path);
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.error(err);
+    }
+  }
+
+  private receiveRefreshedAlbumListener = () => {
+    this.hubConnection.on('ReceiveRefreshedAlbum', (_) => {
+      this.ngZone.run(() => {
+        try {
+          this.refreshAlbumSubject.next();
         } catch (err) {
           this.snackbarService.showMessage(getErrorMessage(err));
           console.log(err);

@@ -26,8 +26,9 @@ export class AlbumComponent implements OnInit, OnDestroy {
   public displayTracks: Track[] | undefined;
   selectedTracks: string[] = [];
   public showPlaylists: boolean = false;
-  
+
   private userTrackDataSubscription: Subscription | undefined;
+  private refreshAlbumSubscription: Subscription | undefined;
 
   constructor(private libraryService: LibraryService,
     private playerService: PlayerService,
@@ -50,11 +51,15 @@ export class AlbumComponent implements OnInit, OnDestroy {
     albumHeader.style.backgroundImage = `url('${imageUrl}')`;
 
     this.userTrackDataSubscription = this.libraryService.userTrackData$.subscribe(track => this.handleUserTrackDataUpdated(track))
+    this.refreshAlbumSubscription = this.libraryService.refreshAlbum$.subscribe(_ => window.location.reload());
   }
 
   ngOnDestroy(): void {
     if (this.userTrackDataSubscription)
       this.userTrackDataSubscription.unsubscribe();
+
+    if (this.refreshAlbumSubscription)
+      this.refreshAlbumSubscription.unsubscribe();
   }
 
   async onPlayAllClicked(): Promise<void> {
@@ -67,7 +72,7 @@ export class AlbumComponent implements OnInit, OnDestroy {
     }
 
     await this.playerService.playAsync(paths ?? []);
-     this.resetCheckboxes();
+    this.resetCheckboxes();
     this.selectedTracks = [];
   }
 
@@ -131,5 +136,11 @@ export class AlbumComponent implements OnInit, OnDestroy {
 
   filterTracks(text: string): void {
     this.displayTracks = this.album?.tracks.filter(track => track.name.toLowerCase().includes(text.toLowerCase()) || track.artist.toLowerCase().includes(text.toLowerCase()));
+  }
+
+  onRefreshAlbumClicked() {
+    if (!this.album) return;
+
+    this.libraryService.refreshAlbumAsync(this.album?.path);
   }
 }

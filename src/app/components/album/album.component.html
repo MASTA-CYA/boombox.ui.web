@@ -149,6 +149,12 @@
   </div>
   <div class="album-action-bar-container">
     <app-album-search-bar (searchTextOutput)="filterTracks($event)" />
+    <button class="album-action-icon-button" (click)="onRefreshAlbumClicked()">
+      <div>
+        <svg-icon key="restart" color="#FFFFFF" size="md"></svg-icon>
+        <span class="album-icon-button-text">Refresh Album</span>
+      </div>
+    </button>
   </div>
   <div class="album-tracks-container">
     @if ((album?.numberOfDiscs ?? 0) > 1) {
