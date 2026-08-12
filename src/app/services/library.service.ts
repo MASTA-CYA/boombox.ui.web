@@ -5,8 +5,10 @@ import { SnackbarService } from './snackbar.service';
 import { getErrorMessage } from '../common/functions';
 import { IAlbum } from '../components/library/interfaces/album';
 import { IMappingUpdate } from '../components/library/interfaces/update';
+import { IMappingStatistic } from '../components/library/interfaces/mapping-statistic';
 import { IUserTrackData } from '../components/library/interfaces/user-track-data';
 import { Album } from '../components/library/models/album';
+import { MappingStatistic } from '../components/library/models/mapping-statistic';
 import { UserTrackData } from '../components/library/models/user-track-data';
 import { SearchModel } from '../components/search-bar/models/search-model';
 import { environment } from '../../environments/environment';
@@ -127,6 +129,18 @@ export class LibraryService {
       this.snackbarService.showMessage(getErrorMessage(err));
       console.error(err);
       return;
+    }
+  }
+
+  public async getMappingHistoryAsync(limit: number = 50): Promise<MappingStatistic[]> {
+    try {
+      const response = await this.hubConnection.invoke('GetMappingHistoryAsync', limit);
+      const statisticsJson = JSON.parse(response) as IMappingStatistic[];
+      return statisticsJson.map(statistic => new MappingStatistic(statistic));
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.error(err);
+      return [];
     }
   }
 

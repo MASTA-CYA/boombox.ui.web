@@ -9,10 +9,12 @@ import * as icons from './svg';
 import { ServerService } from './services/server.service';
 import { CustomRouteReuseStrategy } from './common/re-use-strategy';
 import { provideHttpClient } from '@angular/common/http';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(),
+    provideCharts(withDefaultRegisterables()),
     provideAppInitializer(async () => await inject(ServerService).startConnectionAsync()),
     provideZoneChangeDetection({ eventCoalescing: true }),
     { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },

@@ -6,6 +6,27 @@
     <p class="progress-bar-update-text">{{ mappingUpdate.message }}</p>
     <p class="progress-bar-error-text">{{ mappingUpdate.error }}</p>
   </span>
+  @if (mappingUpdate.startedAtUtc && !mappingUpdate.isComplete) {
+  <div class="progress-bar-stats-container">
+    <div class="progress-bar-stat">
+      <svg-icon key="number-sign" color="#710193" size="sm"></svg-icon>
+      <span class="progress-bar-stat-text">{{ mappingUpdate.mappedDirectories }} / {{ mappingUpdate.directoryCount }}</span>
+    </div>
+    <span class="progress-bar-stat-separator"></span>
+    <div class="progress-bar-stat">
+      <svg-icon key="flame" color="#710193" size="sm"></svg-icon>
+      <span class="progress-bar-stat-text">{{ elapsedDisplay }}</span>
+    </div>
+    <span class="progress-bar-stat-separator"></span>
+    <div class="progress-bar-stat">
+      <span class="progress-bar-stat-text">CPU {{ mappingUpdate.cpuPercent | number:'1.0-1' }}%</span>
+    </div>
+    <span class="progress-bar-stat-separator"></span>
+    <div class="progress-bar-stat">
+      <span class="progress-bar-stat-text">{{ mappingUpdate.memoryMb | number:'1.0-0' }} MB</span>
+    </div>
+  </div>
+  }
 </div>
 } @else {
 <div class="library-header-container">

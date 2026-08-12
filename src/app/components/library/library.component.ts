@@ -1,4 +1,5 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, NgZone, signal, Signal } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { SvgIconComponent } from "@ngneat/svg-icon";
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
@@ -15,10 +16,11 @@ import { OrderByOption } from '../search-bar/models/orderby-option-enum';
 import { IAlbum } from './interfaces/album';
 import { Track } from './models/track';
 import { AutoScrollService } from '../../services/auto-scroll.service';
+import { getDurationFromSeconds } from '../../common/functions';
 
 @Component({
   selector: 'app-library',
-  imports: [MatCardModule, SvgIconComponent, RouterOutlet, ProgressBarComponent, SearchBarComponent],
+  imports: [MatCardModule, SvgIconComponent, RouterOutlet, ProgressBarComponent, SearchBarComponent, DecimalPipe],
   templateUrl: './library.component.html',
   styleUrl: './library.component.css'
 })
@@ -31,11 +33,13 @@ export class LibraryComponent implements OnInit {
   public totalNumberOfAlbums: number = 0;
   public totalNumberOfTracks: number = 0;
   public totalNumberOfFavorites: number = 0;
+  public elapsedDisplay: string = '00:00';
   private cachedAlbum: IAlbum[] | undefined;
 
   private albumSubscription!: Subscription;
   private mappingUpdateSubscription!: Subscription;
   private localCacheClearedSubscription!: Subscription;
+  private elapsedTimerHandle: ReturnType<typeof setInterval> | undefined;
 
   constructor(
     private router: Router,
@@ -56,9 +60,24 @@ export class LibraryComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.localCacheClearedSubscription = this.libraryService.localCacheCleared$.subscribe(_ => window.location.reload());
     this.mappingUpdateSubscription = this.libraryService.mappingUpdate$.subscribe(async (update) => {
-      this.mappingUpdate = new MappingUpdate(update.percent, update.message, update.error, update.isComplete);
-      if (this.mappingUpdate.isComplete)
+      this.mappingUpdate = new MappingUpdate(
+        update.percent,
+        update.message,
+        update.error,
+        update.isComplete,
+        update.directoryCount,
+        update.mappedDirectories,
+        update.startedAtUtc,
+        update.cpuPercent,
+        update.memoryMb,
+      );
+
+      if (this.mappingUpdate.isComplete) {
+        this.stopElapsedTimer();
         await this.scrollService.getLibraryScrollPositionAsync();
+      } else {
+        this.startElapsedTimer();
+      }
     });
     this.albumSubscription = this.libraryService.albums$.subscribe(async (albums) => {
       this.cachedAlbum = albums;
@@ -82,6 +101,32 @@ export class LibraryComponent implements OnInit {
 
     if (this.localCacheClearedSubscription)
       this.localCacheClearedSubscription.unsubscribe();
+
+    this.stopElapsedTimer();
+  }
+
+  // startedAtUtc is a fixed point in time, but mapping updates arrive per-file (bursty, uneven spacing) - a
+  // ticking client-side timer gives a smooth "elapsed" readout instead of one that only updates whenever the
+  // next file happens to finish mapping.
+  private startElapsedTimer(): void {
+    if (this.elapsedTimerHandle || !this.mappingUpdate.startedAtUtc) return;
+
+    this.updateElapsedDisplay();
+    this.elapsedTimerHandle = setInterval(() => this.updateElapsedDisplay(), 1000);
+  }
+
+  private stopElapsedTimer(): void {
+    if (!this.elapsedTimerHandle) return;
+
+    clearInterval(this.elapsedTimerHandle);
+    this.elapsedTimerHandle = undefined;
+  }
+
+  private updateElapsedDisplay(): void {
+    if (!this.mappingUpdate.startedAtUtc) return;
+
+    const elapsedSeconds = (Date.now() - new Date(this.mappingUpdate.startedAtUtc).getTime()) / 1000;
+    this.elapsedDisplay = getDurationFromSeconds(Math.max(0, elapsedSeconds));
   }
 
   async onAlbumClick(selectedAlbum: Album): Promise<void> {

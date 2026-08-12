@@ -40,6 +40,38 @@
 	color: #FF0000;
 }
 
+.progress-bar-stats-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	margin-top: 20px;
+	box-shadow: 0px 0 5px #710193;
+	padding: 8px 16px;
+}
+
+.progress-bar-stat {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 6px;
+}
+
+.progress-bar-stat-text {
+	color: #FFFFFF;
+	font-family: 'Poppins';
+	font-size: 14px;
+}
+
+.progress-bar-stat-separator {
+	height: 8px;
+	width: 8px;
+	margin: 0px 16px;
+	background-color: #710193;
+	border-radius: 50%;
+	display: inline-block;
+}
+
 .library-header-container {
 	display: flex;
 	flex-direction: row;

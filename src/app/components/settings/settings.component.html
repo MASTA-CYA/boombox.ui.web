@@ -1,1 +1,67 @@
-<p>settings works!</p>
+<div class="settings-container">
+  <div class="settings-tab-strip">
+    <button
+      class="settings-tab"
+      [class.settings-tab-active]="activeTab === 'settings'"
+      (click)="onTabSelected('settings')"
+    >
+      Settings
+    </button>
+    <button
+      class="settings-tab"
+      [class.settings-tab-active]="activeTab === 'mapping-statistics'"
+      (click)="onTabSelected('mapping-statistics')"
+    >
+      Mapping Statistics
+    </button>
+  </div>
+
+  @if (activeTab === 'settings') {
+  <div class="settings-tab-content">
+    <p class="settings-placeholder-text">More settings coming soon.</p>
+  </div>
+  } @else {
+  <div class="settings-tab-content mapping-statistics-content">
+    @if (isLoadingHistory) {
+    <p class="settings-placeholder-text">Loading mapping history…</p>
+    } @else if (runs.length === 0) {
+    <p class="settings-placeholder-text">No mapping runs recorded yet.</p>
+    } @else {
+    <div class="mapping-statistics-layout">
+      <div class="mapping-runs-list-container">
+        <table>
+          <tr>
+            <th>Started</th>
+            <th>Duration</th>
+            <th>Directories</th>
+            <th>Sent</th>
+          </tr>
+          @for (run of runs; track run.id) {
+          <tr
+            class="mapping-run-row"
+            [class.mapping-run-row-selected]="selectedRun?.id === run.id"
+            (click)="onRunSelected(run)"
+          >
+            <td>{{ run.displayStartedAt }}</td>
+            <td>{{ run.displayDuration }}</td>
+            <td>{{ run.mappedDirectories }} / {{ run.directoryCount }}</td>
+            <td>{{ run.displayBytesBroadcast }}</td>
+          </tr>
+          }
+        </table>
+      </div>
+      @if (selectedRun) {
+      <div class="mapping-run-chart-container">
+        @if (selectedRun.error) {
+        <p class="mapping-run-error-text">{{ selectedRun.error }}</p>
+        }
+        <div class="mapping-run-chart-canvas-container">
+          <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="'line'"></canvas>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  }
+</div>
