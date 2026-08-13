@@ -14,8 +14,11 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
   @Input() playlist: PlaylistTrack[] | undefined;
   public selectedTrack: PlaylistTrack | undefined;
 
+  // Emits true right after a shift is sent (tells the parent to hold the displayed order steady - see
+  // PlayerComponent.receivePlayerPlaylist), then false once the pending window has elapsed and it's safe to
+  // resume applying incoming playbackInformation$ updates again.
   @Output() updatePlayerPlaylist = new EventEmitter<boolean>();
-  updatedPlaylistRequested: boolean = true;
+  private isReorderPending: boolean = false;
 
   constructor(
     private playerService: PlayerService,
@@ -35,9 +38,23 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.selectedTrack) return;
 
+    // playlist reassigns to a fresh array of fresh PlaylistTrack objects on every ~500ms playback tick, not
+    // just when the track order/membership actually changes - reacting to every one of those ticks was what
+    // caused the visible "reselect" flicker (compounded by @for previously tracking by object identity, which
+    // recreated every row's DOM - see the trackBy fix in the template). Comparing path sequences here means
+    // this only does anything when the list genuinely changed.
+    const change = changes['playlist'];
+    const previousPaths = (change?.previousValue as PlaylistTrack[] | undefined)?.map(track => track.path);
+    const currentPaths = (change?.currentValue as PlaylistTrack[] | undefined)?.map(track => track.path);
+    const hasActuallyChanged = !previousPaths || previousPaths.length !== currentPaths?.length
+      || previousPaths.some((path, index) => path !== currentPaths![index]);
+
+    if (!hasActuallyChanged) return;
+
     setTimeout(() => {
-      const selectedTrackButton = document.getElementById(`player_playlist_${this.selectedTrack!.path}`) as HTMLInputElement;
-      selectedTrackButton.checked = true;
+      // selectedTrack may no longer be in the list (e.g. it was just deleted) - guard rather than throw.
+      const selectedTrackButton = document.getElementById(`player_playlist_${this.selectedTrack!.path}`) as HTMLInputElement | null;
+      if (selectedTrackButton) selectedTrackButton.checked = true;
       this.cdRef.markForCheck();
     }, 0)
   }
@@ -49,8 +66,13 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
   async onDeleteTrackAsync(): Promise<void> {
     this.toggleActionButtons(true);
 
-    if (this.selectedTrack)
-      await this.playerService.removePlaylistTrackAsync([this.selectedTrack?.path]);
+    if (this.selectedTrack) {
+      await this.playerService.removePlaylistTrackAsync([this.selectedTrack.path]);
+      // Without this, selectedTrack keeps pointing at a track that's no longer in the list - the next
+      // ngOnChanges tries to find its (now-gone) radio input via document.getElementById and throws trying to
+      // set .checked on null.
+      this.selectedTrack = undefined;
+    }
 
     this.toggleActionButtons(false);
   }
@@ -74,16 +96,26 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
   async sendShiftedPlaylistAsync(newIndex: number, currentIndex?: number,): Promise<void> {
     const shiftedPlaylist = [...this.playlist?.map(track => track.path) ?? []];
 
-    if (newIndex < 0 || newIndex >= shiftedPlaylist.length || !currentIndex) return;
+    // `!currentIndex` was wrong two ways: findIndex returns -1 (a truthy number) when nothing is selected, so
+    // that genuinely-invalid case slipped through this check - then shiftedPlaylist[-1]/[newIndex] below would
+    // silently corrupt the array (writes an "-1" property and overwrites index 0 with undefined) and send that
+    // to the backend. And currentIndex === 0 (a valid selection - the first track) is falsy, so `!currentIndex`
+    // incorrectly blocked shifting the first track down. Explicit checks fix both.
+    if (currentIndex === undefined || currentIndex === -1 || newIndex < 0 || newIndex >= shiftedPlaylist.length) return;
 
     [shiftedPlaylist[currentIndex], shiftedPlaylist[newIndex]] = [shiftedPlaylist[newIndex], shiftedPlaylist[currentIndex]];
     await this.playerService.reorderNowPlayingPlaylistAsync(shiftedPlaylist);
 
-    this.updatePlayerPlaylist.emit(true);
-    // setTimeout(() => {
-    //   this.updatedPlaylistRequested = false;
-    //   this.updatePlayerPlaylist.emit(this.updatedPlaylistRequested);
-    // }, 2000);
+    // The backend broadcasts its own confirming update right after processing the reorder, but a
+    // PlaybackBroadcast tick that was already in flight beforehand could still arrive in between and briefly
+    // show the pre-reorder order again. Holding the lock for a couple seconds rides that out.
+    this.isReorderPending = true;
+    this.updatePlayerPlaylist.emit(this.isReorderPending);
+
+    setTimeout(() => {
+      this.isReorderPending = false;
+      this.updatePlayerPlaylist.emit(this.isReorderPending);
+    }, 2000);
   }
 
   private toggleActionButtons(disabled: boolean): void {

@@ -72,6 +72,19 @@ app-player-actions {
 	flex-shrink: 0;
 }
 
+/* app-player-playlist defaults to display:inline like any custom element, so without this it never
+   participated in the flex column at all - it just sized to fit its content instead of filling the same
+   flex:1 1 0 space .image/.no-image occupy. Mirrors their sizing exactly so switching between the album
+   art and the playlist view doesn't shift any other element's layout. */
+app-player-playlist {
+	display: block;
+	width: 100%;
+	flex: 1 1 0;
+	min-height: 0;
+	margin-top: 6px;
+	box-sizing: border-box;
+}
+
 .radio-item {
 	display: flex;
 	align-items: center;

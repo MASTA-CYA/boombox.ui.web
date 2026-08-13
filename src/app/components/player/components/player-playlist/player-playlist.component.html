@@ -30,7 +30,7 @@
         </button>
       </div>
       <div class="track-row-container">
-        @for (playlistTrack of playlist; track playlistTrack) {
+        @for (playlistTrack of playlist; track playlistTrack.path) {
         <div class="playlist-track-row">
           <input
             type="radio"

@@ -33,7 +33,8 @@ export class PlayerComponent implements OnInit, OnDestroy {
     private isPlayerLoadingSubscription!: Subscription;
 
     public showPlaylist: boolean = false;
-    private canUpdatePlayerPlaylist: boolean = false;
+    // While true, handlePlaybackInformation skips reassigning `playlist` - see receivePlayerPlaylist.
+    private isPlaylistReorderPending: boolean = false;
 
     constructor(
         private playerService: PlayerService,
@@ -81,7 +82,12 @@ export class PlayerComponent implements OnInit, OnDestroy {
         if (nextPlayingTrack?.path !== currentPlayingTrack?.path)
             this.playerService.broadcastTrackInfoPlayingTrack(this.playingTrack);
 
-        this.playlist = [...playlistTracks];
+        // While a reorder is pending confirmation (see receivePlayerPlaylist), a PlaybackBroadcast tick that
+        // was already in flight before the backend processed the reorder could otherwise land here and briefly
+        // show the pre-reorder order again before the backend's own confirming broadcast catches up.
+        if (!this.isPlaylistReorderPending)
+            this.playlist = [...playlistTracks];
+
         this.cdRef.markForCheck();
     }
 
@@ -89,7 +95,7 @@ export class PlayerComponent implements OnInit, OnDestroy {
         this.showPlaylist = data;
     }
 
-    receivePlayerPlaylist(canUpdate: boolean) {
-        this.canUpdatePlayerPlaylist = canUpdate;
+    receivePlayerPlaylist(isReorderPending: boolean) {
+        this.isPlaylistReorderPending = isReorderPending;
     }
 }
