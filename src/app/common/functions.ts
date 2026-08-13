@@ -18,3 +18,20 @@ export function getErrorMessage(error: unknown): string {
 	if (typeof error === 'string') return error;
 	return String(error);
   }
+
+export function getDisplayBytes(bytes: number): string {
+	if (bytes < 1024) return `${bytes} B`;
+	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+// Mirrors the backend's MappingRunType enum (0 = FullScan, 1 = Cache) - see MusicPlayer.LibraryManagement.Models.
+// MappingRunType. Kept here rather than duplicated between the live progress screen and the Settings > Mapping
+// Statistics history table.
+export function getMappingRunTypeLabel(runType: number): string {
+	switch (runType) {
+		case 1: return 'Cache Load';
+		case 0:
+		default: return 'Full Scan';
+	}
+}

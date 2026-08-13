@@ -6,6 +6,7 @@ export interface IMappingStatisticSample {
 
 export interface IMappingStatistic {
 	id: string;
+	runType: number;
 	startedAtUtc: string;
 	completedAtUtc: string;
 	durationMs: number;

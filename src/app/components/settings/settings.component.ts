@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration } from 'chart.js';
 import { LibraryService } from '../../services/library.service';
@@ -9,7 +8,7 @@ type SettingsTab = 'settings' | 'mapping-statistics';
 
 @Component({
     selector: 'app-settings',
-    imports: [DecimalPipe, BaseChartDirective],
+    imports: [BaseChartDirective],
     templateUrl: './settings.component.html',
     styleUrl: './settings.component.css'
 })

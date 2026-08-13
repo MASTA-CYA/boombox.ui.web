@@ -7,33 +7,47 @@
 }
 
 .image {
-	/* height: 280px; */
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
 	margin-top: 6px;
-	/* padding: 0px 4px 0px 4px; */
+	box-sizing: border-box;
 }
 
 .no-image {
-	/* height: 250px; */
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: contain;
 	padding: 30px;
 	filter: invert(100%);
 	margin-top: 6px;
+	box-sizing: border-box;
 	animation: rotation 2s linear infinite;
 }
 
 .track-info-container {
 	margin: 4px 0px;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .track-title {
 	font-weight: bold;
 	color: #FFFFFF;
 	margin: 10px 2px 0px 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .track-sub-title {
 	color: #505050;
 	margin: 4px 2px 0px 2px;
 	font-family: 'Poppins';
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .radio-item {

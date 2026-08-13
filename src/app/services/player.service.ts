@@ -234,4 +234,13 @@ export class PlayerService {
       console.log(err);
     }
   }
+
+  public async setAudioOutputAsync(output: number): Promise<void> {
+    try {
+      await this.hubConnection.invoke('SetAudioOutputAsync', output);
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+    }
+  }
 }

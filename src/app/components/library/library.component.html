@@ -6,27 +6,30 @@
     <p class="progress-bar-update-text">{{ mappingUpdate.message }}</p>
     <p class="progress-bar-error-text">{{ mappingUpdate.error }}</p>
   </span>
-  @if (mappingUpdate.startedAtUtc && !mappingUpdate.isComplete) {
-  <div class="progress-bar-stats-container">
-    <div class="progress-bar-stat">
-      <svg-icon key="number-sign" color="#710193" size="sm"></svg-icon>
-      <span class="progress-bar-stat-text">{{ mappingUpdate.mappedDirectories }} / {{ mappingUpdate.directoryCount }}</span>
+  <p class="progress-bar-run-type-text">{{ getMappingRunTypeLabel(mappingUpdate.runType) }}</p>
+  <div class="library-statistics-container progress-bar-statistics-container">
+    <!-- cpu -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="cpu" color="#FFFFFF" size="xxxl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ mappingUpdate.cpuPercent | number:'1.0-0' }}%</div>
     </div>
-    <span class="progress-bar-stat-separator"></span>
-    <div class="progress-bar-stat">
-      <svg-icon key="flame" color="#710193" size="sm"></svg-icon>
-      <span class="progress-bar-stat-text">{{ elapsedDisplay }}</span>
+    <!-- ram -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="ram" color="#FFFFFF" size="xxxl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ mappingUpdate.memoryMb | number:'1.0-0' }} MB</div>
     </div>
-    <span class="progress-bar-stat-separator"></span>
-    <div class="progress-bar-stat">
-      <span class="progress-bar-stat-text">CPU {{ mappingUpdate.cpuPercent | number:'1.0-1' }}%</span>
-    </div>
-    <span class="progress-bar-stat-separator"></span>
-    <div class="progress-bar-stat">
-      <span class="progress-bar-stat-text">{{ mappingUpdate.memoryMb | number:'1.0-0' }} MB</span>
+    <!-- network -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="network" color="#FFFFFF" size="xxxl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ getDisplayBytes(mappingUpdate.bytesBroadcast) }}</div>
     </div>
   </div>
-  }
 </div>
 } @else {
 <div class="library-header-container">

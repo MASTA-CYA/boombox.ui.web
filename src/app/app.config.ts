@@ -34,6 +34,7 @@ export const appConfig: ApplicationConfig = {
         xl: '25px',
         xxl: '30px',
         xxxl: '35px',
+        huge: '50px',
       },
       defaultSize: 'md'
     }), provideSvgIcons([
@@ -72,5 +73,10 @@ export const appConfig: ApplicationConfig = {
       icons.undoIcon,
       icons.powerIcon,
       icons.restartIcon,
+      icons.cpuIcon,
+      icons.ramIcon,
+      icons.networkIcon,
+      icons.speakersIcon,
+      icons.headphonesIcon,
     ])]
 };

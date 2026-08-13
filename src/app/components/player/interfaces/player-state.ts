@@ -3,4 +3,5 @@ export interface IPlayerState {
 	hasNext: boolean;
 	hasPrevious: boolean;
 	mode: number;
+	audioOutput: number;
 }

@@ -8,4 +8,6 @@ export interface IMappingUpdate {
 	startedAtUtc: string | null;
 	cpuPercent: number;
 	memoryMb: number;
+	bytesBroadcast: number;
+	runType: number;
 }

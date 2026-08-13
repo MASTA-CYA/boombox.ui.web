@@ -1,4 +1,4 @@
-import { getDurationFromSeconds } from "../../../common/functions";
+import { getDisplayBytes, getDurationFromSeconds, getMappingRunTypeLabel } from "../../../common/functions";
 import { IMappingStatistic, IMappingStatisticSample } from "../interfaces/mapping-statistic";
 
 export class MappingStatisticSample implements IMappingStatisticSample {
@@ -15,6 +15,7 @@ export class MappingStatisticSample implements IMappingStatisticSample {
 
 export class MappingStatistic implements IMappingStatistic {
 	id: string;
+	runType: number;
 	startedAtUtc: string;
 	completedAtUtc: string;
 	durationMs: number;
@@ -27,9 +28,11 @@ export class MappingStatistic implements IMappingStatistic {
 	displayStartedAt: string;
 	displayDuration: string;
 	displayBytesBroadcast: string;
+	displayRunType: string;
 
 	constructor(statistic: IMappingStatistic) {
 		this.id = statistic.id;
+		this.runType = statistic.runType;
 		this.startedAtUtc = statistic.startedAtUtc;
 		this.completedAtUtc = statistic.completedAtUtc;
 		this.durationMs = statistic.durationMs;
@@ -41,12 +44,7 @@ export class MappingStatistic implements IMappingStatistic {
 
 		this.displayStartedAt = new Date(this.startedAtUtc).toLocaleString();
 		this.displayDuration = getDurationFromSeconds(this.durationMs / 1000);
-		this.displayBytesBroadcast = MappingStatistic.getDisplayBytes(this.bytesBroadcast);
-	}
-
-	private static getDisplayBytes(bytes: number): string {
-		if (bytes < 1024) return `${bytes} B`;
-		if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-		return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+		this.displayBytesBroadcast = getDisplayBytes(this.bytesBroadcast);
+		this.displayRunType = getMappingRunTypeLabel(this.runType);
 	}
 }

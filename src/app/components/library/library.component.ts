@@ -16,7 +16,7 @@ import { OrderByOption } from '../search-bar/models/orderby-option-enum';
 import { IAlbum } from './interfaces/album';
 import { Track } from './models/track';
 import { AutoScrollService } from '../../services/auto-scroll.service';
-import { getDurationFromSeconds } from '../../common/functions';
+import { getDisplayBytes, getDurationFromSeconds, getMappingRunTypeLabel } from '../../common/functions';
 
 @Component({
   selector: 'app-library',
@@ -34,6 +34,8 @@ export class LibraryComponent implements OnInit {
   public totalNumberOfTracks: number = 0;
   public totalNumberOfFavorites: number = 0;
   public elapsedDisplay: string = '00:00';
+  protected readonly getDisplayBytes = getDisplayBytes;
+  protected readonly getMappingRunTypeLabel = getMappingRunTypeLabel;
   private cachedAlbum: IAlbum[] | undefined;
 
   private albumSubscription!: Subscription;
@@ -70,6 +72,8 @@ export class LibraryComponent implements OnInit {
         update.startedAtUtc,
         update.cpuPercent,
         update.memoryMb,
+        update.bytesBroadcast,
+        update.runType,
       );
 
       if (this.mappingUpdate.isComplete) {

@@ -10,6 +10,8 @@ export class MappingUpdate implements IMappingUpdate{
 	startedAtUtc: string | null;
 	cpuPercent: number;
 	memoryMb: number;
+	bytesBroadcast: number;
+	runType: number;
 
 	constructor(
 		percent: number,
@@ -21,6 +23,8 @@ export class MappingUpdate implements IMappingUpdate{
 		startedAtUtc: string | null = null,
 		cpuPercent: number = 0,
 		memoryMb: number = 0,
+		bytesBroadcast: number = 0,
+		runType: number = 0,
 	) {
 		this.percent = percent;
 		this.message = message;
@@ -31,5 +35,7 @@ export class MappingUpdate implements IMappingUpdate{
 		this.startedAtUtc = startedAtUtc;
 		this.cpuPercent = cpuPercent;
 		this.memoryMb = memoryMb;
+		this.bytesBroadcast = bytesBroadcast;
+		this.runType = runType;
 	}
 }

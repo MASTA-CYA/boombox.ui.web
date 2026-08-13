@@ -93,11 +93,13 @@ export class AlbumComponent implements OnInit, OnDestroy {
   private handleUserTrackDataUpdated(trackData: UserTrackData) {
     let track = this.album?.tracks.find(track => track.path === trackData.path)
 
-    if (!track)
+    if (!track) {
       console.log("Unable to find track for user data update");
+      return;
+    }
 
-    track!.isFavourite = trackData.isFavourite;
-    track!.timesPlayed = trackData.timesPlayed;
+    track.isFavourite = trackData.isFavourite;
+    track.timesPlayed = trackData.timesPlayed;
   }
 
   onShowPlaylistsClicked(): void {

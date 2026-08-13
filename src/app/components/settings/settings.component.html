@@ -31,6 +31,7 @@
       <div class="mapping-runs-list-container">
         <table>
           <tr>
+            <th>Type</th>
             <th>Started</th>
             <th>Duration</th>
             <th>Directories</th>
@@ -42,6 +43,7 @@
             [class.mapping-run-row-selected]="selectedRun?.id === run.id"
             (click)="onRunSelected(run)"
           >
+            <td>{{ run.displayRunType }}</td>
             <td>{{ run.displayStartedAt }}</td>
             <td>{{ run.displayDuration }}</td>
             <td>{{ run.mappedDirectories }} / {{ run.directoryCount }}</td>

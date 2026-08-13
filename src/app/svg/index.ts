@@ -33,3 +33,8 @@ export { saveIcon } from "./save";
 export { undoIcon } from "./undo";
 export { powerIcon } from "./power";
 export { restartIcon } from "./restart";
+export { cpuIcon } from "./cpu";
+export { ramIcon } from "./ram";
+export { networkIcon } from "./network";
+export { speakersIcon } from "./speakers";
+export { headphonesIcon } from "./headphones";
