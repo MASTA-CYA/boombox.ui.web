@@ -2,18 +2,27 @@
   <aside>
     <app-sidebar></app-sidebar>
   </aside>
-  <main #scrollContainer class="main-content" (scroll)="onScroll($event)">
+  <main
+    #scrollContainer
+    class="main-content"
+    cdkVirtualScrollingElement
+    (scroll)="onScroll($event)"
+  >
     <div class="snackbar-container">
       <app-snackbar></app-snackbar>
     </div>
     <app-main></app-main>
-    @if (showScrollButton) {
-    <button class="scroll-button" (click)="onScrollToTop()">
-      <svg-icon key="up-arrow" color="#FFFFFF" size="xl"></svg-icon>
-    </button>
-    }
     <app-modal>
       <div #modalContent></div>
     </app-modal>
   </main>
+  <!-- Deliberately outside <main>: cdkVirtualScrollingElement's .cdk-virtual-scrollable class sets
+       contain: strict on <main>, which - like transform - makes it a new containing block for any
+       position: fixed descendants. This button relies on being positioned relative to the actual viewport,
+       so it has to live outside <main> to escape that containment. -->
+  @if (showScrollButton) {
+  <button class="scroll-button" (click)="onScrollToTop()">
+    <svg-icon key="up-arrow" color="#FFFFFF" size="xl"></svg-icon>
+  </button>
+  }
 </div>

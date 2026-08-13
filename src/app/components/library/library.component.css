@@ -1,12 +1,18 @@
 .library-container {
+	margin-top: 20px;
+	padding-top: 10px;
+}
+
+/* Each row is one cdkVirtualFor "item" - its rendered height must match the component's rowHeight (350px)
+   exactly, or CDK's positioning math (which spaces rows using rowHeight, not their actual measured size) will
+   make rows overlap or leave gaps. 320px card + 30px bottom padding accounts for the old grid's row-gap. */
+.library-row {
 	display: flex;
 	flex-direction: row;
-	flex-wrap: wrap;
-	row-gap: 30px;
 	column-gap: 12px;
-	padding: 10px;
-	overflow: hidden;
-	margin-top: 20px;
+	height: 320px;
+	padding: 0 10px 30px 10px;
+	box-sizing: content-box;
 }
 	
 .progress-bar-container {
