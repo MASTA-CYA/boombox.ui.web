@@ -14,25 +14,27 @@
     </div>
     <img class="image" src="logo-no-background.png" />
     <div class="audio-output-bar">
-      <div role="button" (click)="onSpeakersClicked()">
-        @if (audioOutput === audioOutputSpeakers) {
-          <svg-icon key="speakers" color="#710193" size="xl"></svg-icon>
-        } @else {
-          <svg-icon key="speakers" color="#FFFFFF" size="xl"></svg-icon>
+      <div
+        role="button"
+        class="audio-output-icon"
+        [class.audio-output-icon-active]="audioOutput === audioOutputSpeakers"
+        (click)="onSpeakersClicked()"
+      >
+        <svg-icon key="speakers" color="#FFFFFF" size="xl"></svg-icon>
+      </div>
+      <div class="server-information-bar">
+        @if (isServerRunning) {
+          <span>{{ version }}</span>
         }
       </div>
-      <div role="button" (click)="onHeadphonesClicked()">
-        @if (audioOutput === audioOutputHeadset) {
-          <svg-icon key="headphones" color="#710193" size="xl"></svg-icon>
-        } @else {
-          <svg-icon key="headphones" color="#FFFFFF" size="xl"></svg-icon>
-        }
+      <div
+        role="button"
+        class="audio-output-icon"
+        [class.audio-output-icon-active]="audioOutput === audioOutputHeadset"
+        (click)="onHeadphonesClicked()"
+      >
+        <svg-icon key="headphones" color="#FFFFFF" size="xl"></svg-icon>
       </div>
-    </div>
-    <div class="server-information-bar">
-      @if (isServerRunning) {
-        <span>{{ version }}</span>
-      }
     </div>
   </div>
   <div class="nav-list-container">

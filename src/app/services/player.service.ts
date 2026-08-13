@@ -2,7 +2,7 @@ import { Injectable, NgZone } from "@angular/core";
 import * as signalR from "@microsoft/signalr";
 import { SnackbarService } from "./snackbar.service";
 import { getErrorMessage } from "../common/functions";
-import { Subject, Observable } from "rxjs";
+import { Subject, ReplaySubject, Observable } from "rxjs";
 import { IUserTrackData } from "../components/library/interfaces/user-track-data";
 import { UserTrackData } from "../components/library/models/user-track-data";
 import { IPlaybackInformation } from "../components/player/interfaces/playback-information";
@@ -17,13 +17,19 @@ import { IPlayerStateInformation, PlayerStateInformation } from "../components/p
 })
 export class PlayerService {
   private hubConnection: signalR.HubConnection;
-  private playbackInformationSubject: Subject<IPlaybackInformation> = new Subject<IPlaybackInformation>();
+  // These three are fed from the same ReceivePlaybackInformation broadcast, which the app-initializer-blocking
+  // getPlaybackInformationUpdateAsync() call can trigger before Angular has finished creating any components
+  // (app initializers run before the root component tree exists). A plain Subject has no replay buffer, so that
+  // first, correct broadcast would fire into the void - no subscribers yet - and be lost, leaving components
+  // stuck on their compile-time defaults (e.g. "Speakers") until some unrelated later event happened to
+  // broadcast again. ReplaySubject(1) replays the most recent value to any component that subscribes late.
+  private playbackInformationSubject: ReplaySubject<IPlaybackInformation> = new ReplaySubject<IPlaybackInformation>(1);
   public playbackInformation$: Observable<IPlaybackInformation> = this.playbackInformationSubject.asObservable();
 
-  private playerStateSubject: Subject<IPlayerState> = new Subject<IPlayerState>();
+  private playerStateSubject: ReplaySubject<IPlayerState> = new ReplaySubject<IPlayerState>(1);
   public playerState$: Observable<IPlayerState> = this.playerStateSubject.asObservable();
 
-  private playerStateHotkeysSubject: Subject<IPlayerStateInformation> = new Subject<IPlayerStateInformation>();
+  private playerStateHotkeysSubject: ReplaySubject<IPlayerStateInformation> = new ReplaySubject<IPlayerStateInformation>(1);
   public playerStateHotkeys$: Observable<IPlayerStateInformation> = this.playerStateHotkeysSubject.asObservable();
 
   private seekbarPlayingTrackSubject: Subject<PlaylistTrack> = new Subject<PlaylistTrack>();
@@ -60,6 +66,11 @@ export class PlayerService {
       this.getPlaybackInformationListener();
       this.listenForHubErrors();
       this.getUserTrackDataListener();
+      // Without this, the client never learns the server's actual current state (audio output,
+      // playback position, etc.) until something else happens to trigger a broadcast - so the UI
+      // would show stale defaults (e.g. "Speakers") even though the backend restored a different
+      // persisted output on startup.
+      await this.getPlaybackInformationUpdateAsync();
     } catch (err) {
       this.snackbarService.showMessage("Error establishing connection with PlayerHub: " + err)
       console.log("Error establishing connection with PlayerHub: " + err)
@@ -203,12 +214,19 @@ export class PlayerService {
     });
   }
 
-  public broadcastPlayingTrack(track: PlaylistTrack | undefined): void {
+  // Split in two so each consumer can be fed at its own cadence: the seek bar needs every playback tick to
+  // keep its position current, while the track-info row (equalizer/favourite/lyrics icons) only wants to know
+  // about actual track changes, since re-emitting on every tick would replay its entrance animation constantly.
+  public broadcastSeekbarPlayingTrack(track: PlaylistTrack | undefined): void {
     if (!track) return;
 
     this.seekbarPlayingTrackSubject.next(track);
-    this.trackInfoPlayingTrackSubject.next(track);
+  }
 
+  public broadcastTrackInfoPlayingTrack(track: PlaylistTrack | undefined): void {
+    if (!track) return;
+
+    this.trackInfoPlayingTrackSubject.next(track);
   }
 
   public updatePlayerLoadingState(isLoading: boolean): void {

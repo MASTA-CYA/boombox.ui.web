@@ -16,3 +16,83 @@
 	  color: #FFFFFF;
 	}
 }
+
+/* Side icons slide in from the edges and bounce (overshoot past their resting spot, then settle) instead of
+   easing straight in. The middle icon drops from above and bounces the same way on the vertical axis.
+   animation-timing-function is set per keyframe stop (each one governs the segment up to the next stop) so
+   every fall accelerates and every rise decelerates, like real gravity, instead of one flat easing curve
+   smeared across the whole bounce - that per-segment easing is what actually reads as "smooth" rather than
+   mechanical. The outer animation shorthand's linear is just a fallback before the first stop takes over. */
+.information-controls.icons-enter .information-icon-button:nth-child(1) {
+	animation: information-icon-slide-bounce 1s linear both;
+	--information-icon-enter-offset: 32px;
+}
+
+.information-controls.icons-enter .information-icon-button:nth-child(2) {
+	animation: information-icon-drop-bounce 1s linear both;
+}
+
+.information-controls.icons-enter .information-icon-button:nth-child(3) {
+	animation: information-icon-slide-bounce 1s linear both;
+	--information-icon-enter-offset: -32px;
+}
+
+/* Falls (moving toward 0, or toward an overshoot away from 0) accelerate: cubic-bezier(0.55, 0, 1, 0.45).
+   Rises (settling back toward 0 after an overshoot) decelerate: cubic-bezier(0, 0.55, 0.45, 1). The overshoot
+   at each bounce is a shrinking fraction of the icon's own starting offset, sign-flipped, since continuing
+   the original momentum past the resting point means moving briefly in the opposite direction. */
+@keyframes information-icon-slide-bounce {
+	0% {
+		opacity: 0;
+		transform: translateX(var(--information-icon-enter-offset));
+		animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+	}
+	50% {
+		opacity: 1;
+		transform: translateX(0);
+		animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+	}
+	68% {
+		transform: translateX(calc(var(--information-icon-enter-offset) * -0.28));
+		animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+	}
+	90% {
+		transform: translateX(0);
+		animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+	}
+	97% {
+		transform: translateX(calc(var(--information-icon-enter-offset) * -0.1));
+		animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+	}
+	100% {
+		transform: translateX(0);
+	}
+}
+
+@keyframes information-icon-drop-bounce {
+	0% {
+		opacity: 0;
+		transform: translateY(-44px);
+		animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+	}
+	50% {
+		opacity: 1;
+		transform: translateY(0);
+		animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+	}
+	68% {
+		transform: translateY(-15px);
+		animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+	}
+	90% {
+		transform: translateY(0);
+		animation-timing-function: cubic-bezier(0, 0.55, 0.45, 1);
+	}
+	97% {
+		transform: translateY(-5px);
+		animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}

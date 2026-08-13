@@ -160,8 +160,10 @@
 }
 
 .library-item {
+	position: relative;
 	width: 200px;
 	height: 320px;
+	overflow: hidden;
 	transition: all 0.5s ease-in-out;
 	cursor: pointer;
 	background-color: #000000;
@@ -190,9 +192,10 @@ mat-card img {
 	margin: 8px 2px 4px 0px;
 	display: -webkit-box;
   -webkit-line-clamp: 2; /* Number of lines to show */
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 20px;
 }
 
 .library-item-sub-title {
@@ -205,7 +208,10 @@ mat-card img {
 }
 
 mat-card-actions {
-	margin-top: auto;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
 .library-item-footer-container {

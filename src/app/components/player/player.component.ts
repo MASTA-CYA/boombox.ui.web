@@ -67,11 +67,19 @@ export class PlayerComponent implements OnInit, OnDestroy {
             this.playerService.updatePlayerLoadingState(false);
         
         const playlistTracks = info.tracks.map((track) => new PlaylistTrack(track, this.domSanitizer));
-        this.playingTrack = playlistTracks.find(track => track.isPlaying);
-        this.playerService.broadcastPlayingTrack(this.playingTrack);
-
         const currentPlayingTrack = this.playlist?.find(track => track.isPlaying);
         const nextPlayingTrack = playlistTracks?.find(track => track.isPlaying);
+
+        this.playingTrack = nextPlayingTrack;
+
+        // playbackInformation$ ticks every ~500ms while something is playing, not just when the track actually
+        // changes. The seek bar needs every tick to keep its position current, but the track-info row
+        // (equalizer/favourite/lyrics icons) only wants to know about actual track changes - re-emitting to it
+        // on every tick would replay its entrance animation constantly instead of only when a track starts.
+        this.playerService.broadcastSeekbarPlayingTrack(this.playingTrack);
+
+        if (nextPlayingTrack?.path !== currentPlayingTrack?.path)
+            this.playerService.broadcastTrackInfoPlayingTrack(this.playingTrack);
 
         this.playlist = [...playlistTracks];
         this.cdRef.markForCheck();

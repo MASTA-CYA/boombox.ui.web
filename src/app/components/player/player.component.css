@@ -1,14 +1,27 @@
+/* app-player defaults to display:inline like any custom element, which meant .player-container's height:100%
+   below had nothing definite to resolve against - .player (sidebar.component.css) does get a real height via
+   flex:1, but that height was never actually being passed down into this component's content. */
+:host {
+	display: block;
+	height: 100%;
+}
+
 .player-container {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	height: 100%;
 	padding: 10px;
-	justify-content: space-between;
+	box-sizing: border-box;
 }
 
+/* flex: 1 1 0 + min-height: 0 makes the image grow/shrink to fill whatever vertical space the other,
+   fixed-size controls (title, seek bar, action buttons) don't need - instead of the old aspect-ratio: 1/1,
+   which sized the image purely off its own width and ignored how much room was actually left. */
 .image {
 	width: 100%;
-	aspect-ratio: 1 / 1;
+	flex: 1 1 0;
+	min-height: 0;
 	object-fit: cover;
 	margin-top: 6px;
 	box-sizing: border-box;
@@ -16,7 +29,8 @@
 
 .no-image {
 	width: 100%;
-	aspect-ratio: 1 / 1;
+	flex: 1 1 0;
+	min-height: 0;
 	object-fit: contain;
 	padding: 30px;
 	filter: invert(100%);
@@ -26,6 +40,7 @@
 }
 
 .track-info-container {
+	flex-shrink: 0;
 	margin: 4px 0px;
 	width: 100%;
 	box-sizing: border-box;
@@ -48,6 +63,13 @@
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+}
+
+app-track-information,
+app-seek-bar,
+app-player-actions {
+	display: block;
+	flex-shrink: 0;
 }
 
 .radio-item {

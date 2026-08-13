@@ -16,6 +16,7 @@ import { ModalButtonConfig, ModalButtonType, ModalConfig } from '../../../modal/
 })
 export class TrackInformationComponent implements OnInit, OnDestroy {
   public playingTrack: PlaylistTrack | undefined;
+  public playIconsAnimation = true;
   private playlistTrackSubscription!: Subscription;
 
 
@@ -44,8 +45,25 @@ export class TrackInformationComponent implements OnInit, OnDestroy {
   private handlePlayingTrackUpdates(track: PlaylistTrack) {
     setTimeout(() => {
       this.playingTrack = track;
+      this.retriggerIconsAnimation();
       this.cdRef.markForCheck();
     }, 0);
+  }
+
+  // Restarting a CSS animation by re-adding the same class doesn't work - the browser needs a
+  // style recalculation/paint to land in between the removal and the re-addition, otherwise the two
+  // get batched together and nothing visibly restarts. A single requestAnimationFrame isn't reliably
+  // enough of a gap for this either, so we wait two frames before flipping the class back on.
+  private retriggerIconsAnimation(): void {
+    this.playIconsAnimation = false;
+    this.cdRef.markForCheck();
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.playIconsAnimation = true;
+        this.cdRef.markForCheck();
+      });
+    });
   }
 
   public onOpenEqualizerClicked(): void {
