@@ -99,6 +99,10 @@ a:link, a:visited {
 	box-shadow: 0 0 25px 14px rgba(113, 1, 147, 0.65);
 }
 
+.audio-output-icon-disabled {
+	cursor: not-allowed;
+}
+
 .server-information-bar {
 	text-align: center;
 	color: #FFFFFF;

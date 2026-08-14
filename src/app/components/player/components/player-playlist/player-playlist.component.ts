@@ -20,6 +20,12 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
   @Output() updatePlayerPlaylist = new EventEmitter<boolean>();
   private isReorderPending: boolean = false;
 
+  // Drives [disabled] on the shift/delete buttons directly - replaces the old toggleActionButtons(), which
+  // reached into the DOM via document.getElementById to flip .disabled imperatively. That approach couldn't
+  // coexist with the new canShiftUp()/canShiftDown() template bindings below (Angular would just overwrite the
+  // imperative value on its next change detection pass), so this is now the single source of truth.
+  public isActionInProgress: boolean = false;
+
   constructor(
     private playerService: PlayerService,
     private cdRef: ChangeDetectorRef,
@@ -63,8 +69,36 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
     this.selectedTrack = this.playlist?.find(track => track.path === path);
   }
 
+  // Index of the currently-selected track within the displayed playlist, or -1 if nothing's selected / it's
+  // no longer in the list. Shared by canShiftUp/canShiftDown and sendShiftedPlaylistAsync's callers.
+  getSelectedTrackIndex(): number {
+    return this.playlist?.findIndex(track => track.path === this.selectedTrack?.path) ?? -1;
+  }
+
+  private getPlayingTrackIndex(): number {
+    return this.playlist?.findIndex(track => track.isPlaying) ?? -1;
+  }
+
+  // Moving a track up swaps it into (selectedIndex - 1). Disallow that landing at or before the playing
+  // track's position - which covers both the playing track itself (selectedIndex === playingIndex - can't
+  // reorder what's already playing) and the slot directly after it (would swap the playing track out of its
+  // spot instead of just reordering the upcoming tracks around it).
+  canShiftUp(): boolean {
+    if (this.isActionInProgress || !this.selectedTrack) return false;
+    const selectedIndex = this.getSelectedTrackIndex();
+    if (selectedIndex === -1) return false;
+    return selectedIndex - 1 > this.getPlayingTrackIndex();
+  }
+
+  canShiftDown(): boolean {
+    if (this.isActionInProgress || !this.selectedTrack) return false;
+    const selectedIndex = this.getSelectedTrackIndex();
+    if (selectedIndex === -1) return false;
+    return selectedIndex + 1 < (this.playlist?.length ?? 0);
+  }
+
   async onDeleteTrackAsync(): Promise<void> {
-    this.toggleActionButtons(true);
+    this.isActionInProgress = true;
 
     if (this.selectedTrack) {
       await this.playerService.removePlaylistTrackAsync([this.selectedTrack.path]);
@@ -74,23 +108,23 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
       this.selectedTrack = undefined;
     }
 
-    this.toggleActionButtons(false);
+    this.isActionInProgress = false;
   }
 
   async onShiftUpClickedAsync(): Promise<void> {
-    this.toggleActionButtons(true);
-    const currentIndex = this.playlist?.findIndex(track => track.path == this.selectedTrack?.path);
-    const newIndex = (currentIndex ?? 0) - 1;
+    this.isActionInProgress = true;
+    const currentIndex = this.getSelectedTrackIndex();
+    const newIndex = currentIndex - 1;
     await this.sendShiftedPlaylistAsync(newIndex, currentIndex);
-    this.toggleActionButtons(false);
+    this.isActionInProgress = false;
   }
 
   async onShiftDownClickedAsync(): Promise<void> {
-    this.toggleActionButtons(true);
-    const currentIndex = this.playlist?.findIndex(track => track.path == this.selectedTrack?.path);
-    const newIndex = (currentIndex ?? 0) + 1;
+    this.isActionInProgress = true;
+    const currentIndex = this.getSelectedTrackIndex();
+    const newIndex = currentIndex + 1;
     await this.sendShiftedPlaylistAsync(newIndex, currentIndex);
-    this.toggleActionButtons(false);
+    this.isActionInProgress = false;
   }
 
   async sendShiftedPlaylistAsync(newIndex: number, currentIndex?: number,): Promise<void> {
@@ -116,16 +150,5 @@ export class PlayerPlaylistComponent implements OnInit, OnChanges {
       this.isReorderPending = false;
       this.updatePlayerPlaylist.emit(this.isReorderPending);
     }, 2000);
-  }
-
-  private toggleActionButtons(disabled: boolean): void {
-    setTimeout(() => {
-      const shiftUpButton = document.getElementById("shift-up") as HTMLInputElement;
-      shiftUpButton.disabled = disabled;
-      const shiftDownButton = document.getElementById("shift-down") as HTMLInputElement;
-      shiftDownButton.disabled = disabled;
-      const deleteButton = document.getElementById("delete-track") as HTMLInputElement;
-      deleteButton.disabled = disabled;
-    }, 0);
   }
 }

@@ -1,5 +1,14 @@
 <div class="equalizer-container">
+  @if (!showPresetSelector) {
+  <div class="equalizer-editing-info">
+    <span class="equalizer-editing-name">{{ mode === 'track-preset' ? trackName : selectedPreset?.name }}</span>
+    @if (mode === 'track-preset') {
+    <span class="equalizer-editing-path">{{ trackPath }}</span>
+    }
+  </div>
+  }
   <div class="equalizer-selector-container">
+    @if (showPresetSelector) {
     <div class="filter-dropdown">
       <label for="eqSelector">Preset:</label>
       <select
@@ -16,6 +25,8 @@
         } }
       </select>
     </div>
+    }
+    @if (showBypass) {
     <div class="equalizer-switch-bypass">
       <label for="bypassPreset">Bypass</label>
       <label class="switch">
@@ -27,6 +38,7 @@
         <span class="slider round"></span>
       </label>
     </div>
+    }
   </div>
   <div class="equalizer-bands-container">
     @for(band of selectedPreset?.frequencyBands; track band) {

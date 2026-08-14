@@ -18,9 +18,10 @@
         role="button"
         class="audio-output-icon"
         [class.audio-output-icon-active]="audioOutput === audioOutputSpeakers"
+        [class.audio-output-icon-disabled]="!isSpeakersAvailable"
         (click)="onSpeakersClicked()"
       >
-        <svg-icon key="speakers" color="#FFFFFF" size="xl"></svg-icon>
+        <svg-icon key="speakers" [color]="isSpeakersAvailable ? '#FFFFFF' : '#505050'" size="xl"></svg-icon>
       </div>
       <div class="server-information-bar">
         @if (isServerRunning) {
@@ -31,9 +32,10 @@
         role="button"
         class="audio-output-icon"
         [class.audio-output-icon-active]="audioOutput === audioOutputHeadset"
+        [class.audio-output-icon-disabled]="!isHeadsetAvailable"
         (click)="onHeadphonesClicked()"
       >
-        <svg-icon key="headphones" color="#FFFFFF" size="xl"></svg-icon>
+        <svg-icon key="headphones" [color]="isHeadsetAvailable ? '#FFFFFF' : '#505050'" size="xl"></svg-icon>
       </div>
     </div>
   </div>

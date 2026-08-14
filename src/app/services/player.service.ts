@@ -10,6 +10,7 @@ import { environment } from "../../environments/environment";
 import { IPlayerState } from "../components/player/interfaces/player-state";
 import { PlaylistTrack } from "../components/playlist/models/playlist-track";
 import { IEqualizerPreset } from "../components/player/components/equalizer/models/equalizer-preset";
+import { IEqualizerManagementData } from "../components/player/components/equalizer/models/track-equalizer-assignment";
 import { IPlayerStateInformation, PlayerStateInformation } from "../components/player/models/player-state-information";
 
 @Injectable({
@@ -247,6 +248,79 @@ export class PlayerService {
   public async setEqualizerPresetsAsync(preset: IEqualizerPreset): Promise<void> {
     try {
       await this.hubConnection.invoke('SetEqualizerPresetsAsync', preset);
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+    }
+  }
+
+  // Backs Settings' "Equalizer" tab - management of the shared named presets, and the list of tracks that have
+  // their own custom ("Saved") preset assigned. Kept on PlayerService/PlayerHub rather than a Settings-specific
+  // service, matching where getEqualizerPresetsAsync/setEqualizerPresetsAsync above already live.
+  public async getEqualizerManagementDataAsync(): Promise<IEqualizerManagementData> {
+    try {
+      const response = await this.hubConnection.invoke('GetEqualizerManagementDataAsync');
+      return JSON.parse(response) as IEqualizerManagementData;
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+      return { presets: [], assignments: [] };
+    }
+  }
+
+  public async createEqualizerPresetAsync(name: string): Promise<IEqualizerPreset | undefined> {
+    try {
+      const response = await this.hubConnection.invoke('CreateEqualizerPresetAsync', name);
+      return JSON.parse(response) as IEqualizerPreset;
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+      return undefined;
+    }
+  }
+
+  public async updateNamedEqualizerPresetAsync(preset: IEqualizerPreset): Promise<void> {
+    try {
+      await this.hubConnection.invoke('UpdateNamedEqualizerPresetAsync', preset);
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+    }
+  }
+
+  public async deleteEqualizerPresetAsync(guid: string): Promise<void> {
+    try {
+      await this.hubConnection.invoke('DeleteEqualizerPresetAsync', guid);
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+    }
+  }
+
+  public async getTrackEqualizerPresetAsync(trackPath: string): Promise<IEqualizerPreset | undefined> {
+    try {
+      const response = await this.hubConnection.invoke('GetTrackEqualizerPresetAsync', trackPath);
+      const preset = JSON.parse(response);
+      return preset ?? undefined;
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+      return undefined;
+    }
+  }
+
+  public async updateTrackEqualizerPresetAsync(trackPath: string, preset: IEqualizerPreset): Promise<void> {
+    try {
+      await this.hubConnection.invoke('UpdateTrackEqualizerPresetAsync', trackPath, preset);
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+    }
+  }
+
+  public async deleteTrackEqualizerPresetAsync(trackPath: string): Promise<void> {
+    try {
+      await this.hubConnection.invoke('DeleteTrackEqualizerPresetAsync', trackPath);
     } catch (err) {
       this.snackbarService.showMessage(getErrorMessage(err));
       console.log(err);

@@ -25,6 +25,10 @@ export class SidebarComponent implements OnInit, OnDestroy {
   serverSubscription: Subscription | undefined;
 
   audioOutput: number = AUDIO_OUTPUT_SPEAKERS;
+  // Default true/true, matching the backend's PlayerState defaults - before the first playback information
+  // snapshot arrives, neither icon should render as greyed out.
+  isSpeakersAvailable: boolean = true;
+  isHeadsetAvailable: boolean = true;
   playerStateSubscription: Subscription | undefined;
   protected readonly audioOutputSpeakers = AUDIO_OUTPUT_SPEAKERS;
   protected readonly audioOutputHeadset = AUDIO_OUTPUT_HEADSET;
@@ -58,6 +62,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
     this.playerStateSubscription = this.playerService.playerState$.subscribe((state) => {
       this.audioOutput = state.audioOutput;
+      this.isSpeakersAvailable = state.isSpeakersAvailable;
+      this.isHeadsetAvailable = state.isHeadsetAvailable;
     });
   }
 
@@ -70,10 +76,12 @@ export class SidebarComponent implements OnInit, OnDestroy {
   }
 
   async onSpeakersClicked(): Promise<void> {
+    if (!this.isSpeakersAvailable) return;
     await this.playerService.setAudioOutputAsync(AUDIO_OUTPUT_SPEAKERS);
   }
 
   async onHeadphonesClicked(): Promise<void> {
+    if (!this.isHeadsetAvailable) return;
     await this.playerService.setAudioOutputAsync(AUDIO_OUTPUT_HEADSET);
   }
 

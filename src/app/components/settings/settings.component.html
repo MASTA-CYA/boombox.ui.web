@@ -9,6 +9,13 @@
     </button>
     <button
       class="settings-tab"
+      [class.settings-tab-active]="activeTab === 'equalizer'"
+      (click)="onTabSelected('equalizer')"
+    >
+      Equalizer
+    </button>
+    <button
+      class="settings-tab"
       [class.settings-tab-active]="activeTab === 'mapping-statistics'"
       (click)="onTabSelected('mapping-statistics')"
     >
@@ -19,6 +26,66 @@
   @if (activeTab === 'settings') {
   <div class="settings-tab-content">
     <p class="settings-placeholder-text">More settings coming soon.</p>
+  </div>
+  } @else if (activeTab === 'equalizer') {
+  <div class="settings-tab-content equalizer-settings-content">
+    @if (isLoadingEqualizerData) {
+    <p class="settings-placeholder-text">Loading equalizer data…</p>
+    } @else {
+    <div class="equalizer-settings-layout">
+      <div class="equalizer-presets-section">
+        <div class="equalizer-section-header">
+          <h3>Presets</h3>
+          <button class="settings-action-button" (click)="onNewPresetClicked()">New Preset</button>
+        </div>
+        @if (equalizerPresets.length === 0) {
+        <p class="settings-placeholder-text">No presets yet.</p>
+        } @else {
+        <table>
+          <tr>
+            <th>Name</th>
+            <th></th>
+          </tr>
+          @for (preset of equalizerPresets; track preset.guid) {
+          <tr>
+            <td>{{ preset.name }}</td>
+            <td class="settings-row-actions">
+              <button class="settings-action-button settings-action-button-edit" (click)="onEditPresetClicked(preset)">Edit</button>
+              <button class="settings-action-button settings-action-button-danger" (click)="onDeletePresetClicked(preset)">Delete</button>
+            </td>
+          </tr>
+          }
+        </table>
+        }
+      </div>
+      <div class="equalizer-assignments-section">
+        <div class="equalizer-section-header">
+          <h3>Track Presets</h3>
+        </div>
+        @if (equalizerAssignments.length === 0) {
+        <p class="settings-placeholder-text">No tracks have a custom preset assigned.</p>
+        } @else {
+        <table>
+          <tr>
+            <th>Track</th>
+            <th>Album</th>
+            <th></th>
+          </tr>
+          @for (assignment of equalizerAssignments; track assignment.trackPath) {
+          <tr>
+            <td>{{ assignment.trackName }}</td>
+            <td>{{ assignment.albumName }}</td>
+            <td class="settings-row-actions">
+              <button class="settings-action-button settings-action-button-edit" (click)="onEditTrackPresetClicked(assignment)">Edit</button>
+              <button class="settings-action-button settings-action-button-danger" (click)="onDeleteTrackPresetClicked(assignment)">Delete</button>
+            </td>
+          </tr>
+          }
+        </table>
+        }
+      </div>
+    </div>
+    }
   </div>
   } @else {
   <div class="settings-tab-content mapping-statistics-content">

@@ -124,3 +124,73 @@ td {
 	padding: 10px 12px;
 	text-align: left;
 }
+
+.equalizer-settings-layout {
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+}
+
+.equalizer-section-header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+
+.equalizer-section-header h3 {
+	color: #FFFFFF;
+	font-family: 'Righteous';
+	font-weight: normal;
+	font-size: 20px;
+	margin: 0;
+}
+
+.settings-row-actions {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	justify-content: flex-end;
+}
+
+/* Filled rather than outlined, per-action-type: purple (base/primary - "New Preset") and grey ("Edit" -
+   #505050, the app's prevalent grey elsewhere - radio borders, disabled/secondary icon color) and red
+   ("Delete") - so each row's actions read as distinct at a glance instead of all sharing the same purple
+   outline with only the label to go by. */
+.settings-action-button {
+	background-color: #710193;
+	border: 2px solid #710193;
+	border-radius: 20px;
+	color: #FFFFFF;
+	font-family: 'Righteous';
+	font-size: 14px;
+	padding: 6px 16px;
+	cursor: pointer;
+	transition: 0.2s;
+}
+
+.settings-action-button:hover {
+	background-color: #8f01b8;
+	border-color: #8f01b8;
+}
+
+.settings-action-button-edit {
+	background-color: #505050;
+	border-color: #505050;
+}
+
+.settings-action-button-edit:hover {
+	background-color: #6b6b6b;
+	border-color: #6b6b6b;
+}
+
+.settings-action-button-danger {
+	background-color: #FF0000;
+	border-color: #FF0000;
+}
+
+.settings-action-button-danger:hover {
+	background-color: #cc0000;
+	border-color: #cc0000;
+}
