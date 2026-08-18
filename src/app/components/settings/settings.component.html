@@ -95,40 +95,60 @@
     <p class="settings-placeholder-text">No mapping runs recorded yet.</p>
     } @else {
     <div class="mapping-statistics-layout">
-      <div class="mapping-runs-list-container">
-        <table>
-          <tr>
-            <th>Type</th>
-            <th>Started</th>
-            <th>Duration</th>
-            <th>Directories</th>
-            <th>Sent</th>
-          </tr>
-          @for (run of runs; track run.id) {
-          <tr
-            class="mapping-run-row"
-            [class.mapping-run-row-selected]="selectedRun?.id === run.id"
-            (click)="onRunSelected(run)"
-          >
-            <td>{{ run.displayRunType }}</td>
-            <td>{{ run.displayStartedAt }}</td>
-            <td>{{ run.displayDuration }}</td>
-            <td>{{ run.mappedDirectories }} / {{ run.directoryCount }}</td>
-            <td>{{ run.displayBytesBroadcast }}</td>
-          </tr>
-          }
-        </table>
-      </div>
-      @if (selectedRun) {
-      <div class="mapping-run-chart-container">
-        @if (selectedRun.error) {
-        <p class="mapping-run-error-text">{{ selectedRun.error }}</p>
-        }
-        <div class="mapping-run-chart-canvas-container">
-          <canvas baseChart [data]="chartData" [options]="chartOptions" [type]="'line'"></canvas>
+      <div class="mapping-statistics-columns">
+        <div class="mapping-statistics-column">
+          <h3 class="mapping-column-title">Cache Load</h3>
+          <div class="mapping-runs-list-container">
+            <table>
+              <tr>
+                <th>Started</th>
+                <th>Duration</th>
+                <th>Directories</th>
+                <th>Sent</th>
+              </tr>
+              @for (run of cacheLoadRuns; track run.id) {
+              <tr [class.mapping-run-row-error]="!!run.error" [attr.title]="run.error">
+                <td>{{ run.displayStartedAt }}</td>
+                <td>{{ run.displayDuration }}</td>
+                <td>{{ run.mappedDirectories }} / {{ run.directoryCount }}</td>
+                <td>{{ run.displayBytesBroadcast }}</td>
+              </tr>
+              } @empty {
+              <tr><td colspan="4" class="mapping-empty-row">No cache load runs recorded yet.</td></tr>
+              }
+            </table>
+          </div>
+          <div class="mapping-run-chart-canvas-container">
+            <canvas baseChart [data]="cacheLoadChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+          </div>
+        </div>
+        <div class="mapping-statistics-column">
+          <h3 class="mapping-column-title">Full Mapping</h3>
+          <div class="mapping-runs-list-container">
+            <table>
+              <tr>
+                <th>Started</th>
+                <th>Duration</th>
+                <th>Directories</th>
+                <th>Sent</th>
+              </tr>
+              @for (run of fullMappingRuns; track run.id) {
+              <tr [class.mapping-run-row-error]="!!run.error" [attr.title]="run.error">
+                <td>{{ run.displayStartedAt }}</td>
+                <td>{{ run.displayDuration }}</td>
+                <td>{{ run.mappedDirectories }} / {{ run.directoryCount }}</td>
+                <td>{{ run.displayBytesBroadcast }}</td>
+              </tr>
+              } @empty {
+              <tr><td colspan="4" class="mapping-empty-row">No full mapping runs recorded yet.</td></tr>
+              }
+            </table>
+          </div>
+          <div class="mapping-run-chart-canvas-container">
+            <canvas baseChart [data]="fullMappingChartData" [options]="barChartOptions" [type]="'bar'"></canvas>
+          </div>
         </div>
       </div>
-      }
     </div>
     }
   </div>

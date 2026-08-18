@@ -46,6 +46,29 @@
 	gap: 30px;
 }
 
+.mapping-statistics-columns {
+	display: flex;
+	flex-direction: row;
+	gap: 30px;
+}
+
+.mapping-statistics-column {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 0;
+	min-width: 0;
+	box-shadow: 0px 0 8px #710193;
+	padding: 20px;
+}
+
+.mapping-column-title {
+	color: #FFFFFF;
+	font-family: 'Righteous';
+	font-weight: normal;
+	font-size: 20px;
+	margin: 0 0 12px 0;
+}
+
 .mapping-runs-list-container {
 	width: 100%;
 	max-height: 260px;
@@ -57,35 +80,24 @@
 	width: 100%;
 }
 
-.mapping-run-row {
-	cursor: pointer;
+/* Hover on the tooltip attribute (native [attr.title]) is the only affordance an errored run gets now that
+   rows are no longer clickable - the per-run live CPU/Memory drilldown this used to open was removed along
+   with the single shared chart, replaced by the two run-vs-duration bar graphs below each table. */
+.mapping-run-row-error td {
+	color: #FF6B6B;
 }
 
-.mapping-run-row:hover {
-	background-color: #2A2A2A;
-}
-
-.mapping-run-row-selected {
-	background-color: #710193 !important;
-}
-
-.mapping-run-chart-container {
-	display: flex;
-	flex-direction: column;
-	box-shadow: 0px 0 8px #710193;
-	padding: 20px;
+.mapping-empty-row {
+	color: #999999;
+	font-family: 'Poppins';
+	text-align: center;
 }
 
 .mapping-run-chart-canvas-container {
 	position: relative;
 	width: 100%;
-	height: 380px;
-}
-
-.mapping-run-error-text {
-	color: #FF0000;
-	font-family: 'Poppins';
-	margin-bottom: 12px;
+	height: 280px;
+	margin-top: 20px;
 }
 
 table {

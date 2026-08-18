@@ -1,0 +1,34 @@
+<div class="lyrics-container">
+  <p class="lyrics-track-name">{{ trackName }}</p>
+  @if (isLoading) {
+  <div class="lyrics-loading-container">
+    <div class="lyrics-spinner"></div>
+    <p class="lyrics-loading-text">Loading lyrics…</p>
+  </div>
+  } @else if (hasNoLyrics) {
+  <div class="lyrics-empty-state">
+    <svg-icon key="lyrics" color="#505050" size="huge"></svg-icon>
+    <p class="lyrics-empty-title">No Lyrics Found</p>
+    <p class="lyrics-paste-hint">Paste lyrics below - plain text, or LRC-format (e.g. "[00:12.34] some line") for synced highlighting.</p>
+    <textarea
+      class="lyrics-paste-textarea"
+      rows="10"
+      placeholder="Paste lyrics here…"
+      [(ngModel)]="manualLyricsText"
+    ></textarea>
+  </div>
+  } @else {
+  <div class="lyrics-lines-container">
+    @for (line of lines; track $index) {
+    <p
+      #lineEl
+      class="lyrics-line"
+      [class.lyrics-line-active]="isSynced && $index === activeLineIndex"
+      [class.lyrics-line-past]="isSynced && $index < activeLineIndex"
+    >
+      {{ line.text }}
+    </p>
+    }
+  </div>
+  }
+</div>

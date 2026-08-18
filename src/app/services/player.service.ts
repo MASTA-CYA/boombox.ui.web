@@ -12,6 +12,7 @@ import { PlaylistTrack } from "../components/playlist/models/playlist-track";
 import { IEqualizerPreset } from "../components/player/components/equalizer/models/equalizer-preset";
 import { IEqualizerManagementData } from "../components/player/components/equalizer/models/track-equalizer-assignment";
 import { IPlayerStateInformation, PlayerStateInformation } from "../components/player/models/player-state-information";
+import { ILyrics } from "../components/player/components/lyrics/models/lyrics";
 
 @Injectable({
   providedIn: "root"
@@ -324,6 +325,38 @@ export class PlayerService {
     } catch (err) {
       this.snackbarService.showMessage(getErrorMessage(err));
       console.log(err);
+    }
+  }
+
+  // Lyrics dialog, opened from TrackInformationComponent - same on-demand-fetch shape as
+  // getTrackEqualizerPresetAsync above (undefined on failure rather than throwing, so the dialog can render an
+  // empty/error-friendly state instead of crashing). GetTrackLyricsAsync can occasionally take noticeably
+  // longer than other hub calls the first time it's invoked for a given track (LRCLIB round-trip on a cache
+  // miss) - every call after that for the same track is a fast Mongo lookup.
+  public async getTrackLyricsAsync(trackPath: string): Promise<ILyrics | undefined> {
+    try {
+      const response = await this.hubConnection.invoke('GetTrackLyricsAsync', trackPath);
+      const lyrics = JSON.parse(response);
+      return lyrics ?? undefined;
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+      return undefined;
+    }
+  }
+
+  // The manual paste-in fallback, used when none of the automated sources (embedded tag, LRCLIB, .lrc
+  // sidecar) turned anything up - saves whatever the user pastes (plain text or LRC-formatted) against the
+  // track, overwriting any prior NotFound/other result.
+  public async saveManualLyricsAsync(trackPath: string, rawText: string): Promise<ILyrics | undefined> {
+    try {
+      const response = await this.hubConnection.invoke('SaveManualLyricsAsync', trackPath, rawText);
+      const lyrics = JSON.parse(response);
+      return lyrics ?? undefined;
+    } catch (err) {
+      this.snackbarService.showMessage(getErrorMessage(err));
+      console.log(err);
+      return undefined;
     }
   }
 

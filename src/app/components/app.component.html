@@ -8,9 +8,6 @@
     cdkVirtualScrollingElement
     (scroll)="onScroll($event)"
   >
-    <div class="snackbar-container">
-      <app-snackbar></app-snackbar>
-    </div>
     <app-main></app-main>
     <app-modal>
       <div #modalContent></div>
@@ -18,8 +15,13 @@
   </main>
   <!-- Deliberately outside <main>: cdkVirtualScrollingElement's .cdk-virtual-scrollable class sets
        contain: strict on <main>, which - like transform - makes it a new containing block for any
-       position: fixed descendants. This button relies on being positioned relative to the actual viewport,
-       so it has to live outside <main> to escape that containment. -->
+       position: fixed descendants. The snackbar and scroll button both rely on being positioned relative to
+       the actual viewport, so they have to live outside <main> to escape that containment - previously the
+       snackbar was nested inside <main>, which meant its "fixed" bottom-right position was actually anchored
+       to <main>'s own scrolling content box, drifting away from the real viewport corner as you scrolled. -->
+  <div class="snackbar-container">
+    <app-snackbar></app-snackbar>
+  </div>
   @if (showScrollButton) {
   <button class="scroll-button" (click)="onScrollToTop()">
     <svg-icon key="up-arrow" color="#FFFFFF" size="xl"></svg-icon>

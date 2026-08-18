@@ -23,41 +23,42 @@ export class SettingsComponent {
     public isLoadingHistory: boolean = false;
     public hasLoadedHistory: boolean = false;
     public runs: MappingStatistic[] = [];
-    public selectedRun: MappingStatistic | undefined;
+    // Split from `runs` once per load (see loadHistoryAsync) rather than filtered inline in the template -
+    // avoids re-filtering the whole list on every change-detection pass for what's otherwise a static split.
+    // Mirrors the backend's MappingRunType enum (0 = FullScan, 1 = Cache), same convention as
+    // functions.ts#getMappingRunTypeLabel.
+    public cacheLoadRuns: MappingStatistic[] = [];
+    public fullMappingRuns: MappingStatistic[] = [];
 
     public isLoadingEqualizerData: boolean = false;
     public hasLoadedEqualizerData: boolean = false;
     public equalizerPresets: IEqualizerPreset[] = [];
     public equalizerAssignments: ITrackEqualizerAssignment[] = [];
 
-    public chartData: ChartConfiguration<'line'>['data'] = { labels: [], datasets: [] };
+    // One run per bar (x = run.displayStartedAt, y = run duration in seconds) - replaces the old single
+    // shared line chart, which plotted CPU/Memory samples *within* one selected run rather than a trend
+    // across runs. Duration is the one number every run has that's actually meaningful to compare run-over-
+    // run (directory/byte counts vary by what changed on disk, not by how the run performed).
+    public cacheLoadChartData: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
+    public fullMappingChartData: ChartConfiguration<'bar'>['data'] = { labels: [], datasets: [] };
 
-    public chartOptions: ChartConfiguration<'line'>['options'] = {
+    public barChartOptions: ChartConfiguration<'bar'>['options'] = {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            legend: { display: false },
+        },
         scales: {
             x: {
-                ticks: { color: '#FFFFFF', font: { family: 'Poppins' } },
+                ticks: { color: '#FFFFFF', font: { family: 'Poppins' }, autoSkip: true, maxRotation: 0 },
                 grid: { color: '#2A2A2A' },
             },
             y: {
-                position: 'left',
-                title: { display: true, text: 'CPU %', color: '#710193', font: { family: 'Poppins' } },
-                ticks: { color: '#710193', font: { family: 'Poppins' } },
+                title: { display: true, text: 'Duration (s)', color: '#FFFFFF', font: { family: 'Poppins' } },
+                ticks: { color: '#FFFFFF', font: { family: 'Poppins' } },
                 grid: { color: '#2A2A2A' },
                 min: 0,
             },
-            y1: {
-                position: 'right',
-                title: { display: true, text: 'Memory (MB)', color: '#FFFFFF', font: { family: 'Poppins' } },
-                ticks: { color: '#FFFFFF', font: { family: 'Poppins' } },
-                grid: { display: false },
-                min: 0,
-            },
-        },
-        plugins: {
-            legend: { labels: { color: '#FFFFFF', font: { family: 'Poppins' } } },
         },
     };
 
@@ -75,11 +76,6 @@ export class SettingsComponent {
 
         if (tab === 'equalizer' && !this.hasLoadedEqualizerData)
             await this.loadEqualizerDataAsync();
-    }
-
-    public onRunSelected(run: MappingStatistic): void {
-        this.selectedRun = run;
-        this.chartData = this.buildChartData(run);
     }
 
     public async onNewPresetClicked(): Promise<void> {
@@ -173,40 +169,31 @@ export class SettingsComponent {
             this.runs = await this.libraryService.getMappingHistoryAsync();
             this.hasLoadedHistory = true;
 
-            if (this.runs.length > 0)
-                this.onRunSelected(this.runs[0]);
+            // 0 = FullScan, 1 = Cache (mirrors the backend's MappingRunType enum - see functions.ts).
+            this.cacheLoadRuns = this.runs.filter(run => run.runType === 1);
+            this.fullMappingRuns = this.runs.filter(run => run.runType === 0);
+
+            this.cacheLoadChartData = this.buildDurationChartData(this.cacheLoadRuns);
+            this.fullMappingChartData = this.buildDurationChartData(this.fullMappingRuns);
         } finally {
             this.isLoadingHistory = false;
         }
     }
 
-    private buildChartData(run: MappingStatistic): ChartConfiguration<'line'>['data'] {
-        const runStartedAt = new Date(run.startedAtUtc).getTime();
-        const labels = run.samples.map(sample => {
-            const elapsedSeconds = Math.max(0, Math.round((new Date(sample.timestampUtc).getTime() - runStartedAt) / 1000));
-            return `${elapsedSeconds}s`;
-        });
+    // getMappingHistoryAsync returns newest-first (see MongoDbClient.GetMappingStatisticsAsync's
+    // SortByDescending) - reversed here so the bar chart reads left-to-right oldest-to-newest, matching how
+    // every other time-series chart in the app is read, while the tables above keep their existing
+    // newest-first order.
+    private buildDurationChartData(runs: MappingStatistic[]): ChartConfiguration<'bar'>['data'] {
+        const chronological = [...runs].reverse();
 
         return {
-            labels,
+            labels: chronological.map(run => run.displayStartedAt),
             datasets: [
                 {
-                    label: 'CPU %',
-                    data: run.samples.map(sample => sample.cpuPercent),
-                    borderColor: '#710193',
+                    label: 'Duration (s)',
+                    data: chronological.map(run => Math.round(run.durationMs / 1000)),
                     backgroundColor: '#710193',
-                    yAxisID: 'y',
-                    tension: 0.3,
-                    pointRadius: 0,
-                },
-                {
-                    label: 'Memory (MB)',
-                    data: run.samples.map(sample => sample.memoryMb),
-                    borderColor: '#FFFFFF',
-                    backgroundColor: '#FFFFFF',
-                    yAxisID: 'y1',
-                    tension: 0.3,
-                    pointRadius: 0,
                 },
             ],
         };
