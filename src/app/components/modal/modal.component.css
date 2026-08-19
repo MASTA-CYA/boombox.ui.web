@@ -12,7 +12,19 @@
 }
 
 .modal-content {
+	/* Every other background-image in this app (album.component.css, player-playlist.component.css) pairs it
+	   with background-size/position/repeat - this was the one place that didn't, so the image rendered at its
+	   native resolution, repeat-tiled from the top-left corner instead of filling the box. Usually invisible
+	   since a small dark crop of a mostly-black space photo looks close enough to "just dark" against most
+	   backgrounds, but became obvious once the modal could open over bright album art (see KNOWN_ISSUES.md) -
+	   album covers were visible bleeding through where the image should have been. background-color is a solid
+	   fallback (matching every other opaque surface in this app - snackbar, sidebar, settings, etc.) so the
+	   dialog stays fully opaque even in the moment before the image loads, or if it fails to load at all. */
+	background-color: #000000;
 	background-image: url("/space-background-modified.jpg");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
   box-shadow: 0px 0 10px #710193;
   padding: 20px;
   width: 600px;

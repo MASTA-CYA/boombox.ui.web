@@ -71,6 +71,16 @@ export class PlayerComponent implements OnInit, OnDestroy {
         const currentPlayingTrack = this.playlist?.find(track => track.isPlaying);
         const nextPlayingTrack = playlistTracks?.find(track => track.isPlaying);
 
+        // The recurring ~500ms tick no longer carries `image` for bandwidth reasons - the server only includes
+        // it in the full payload it pushes once when the playing track actually changes (see KNOWN_ISSUES.md
+        // #19). Both payload shapes arrive through the same playbackInformation$ stream, so a trimmed tick
+        // landing right after the full one would otherwise blank out art that's still correct - carry it
+        // forward whenever this tick's is empty and it's still the same track.
+        if (nextPlayingTrack && !nextPlayingTrack.image && this.playingTrack?.path === nextPlayingTrack.path) {
+            nextPlayingTrack.image = this.playingTrack.image;
+            nextPlayingTrack.displayImage = this.playingTrack.displayImage;
+        }
+
         this.playingTrack = nextPlayingTrack;
 
         // playbackInformation$ ticks every ~500ms while something is playing, not just when the track actually
