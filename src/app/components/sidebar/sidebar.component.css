@@ -77,10 +77,33 @@ a:link, a:visited {
 	margin: 0px 8px;
 }
 
+.audio-output-bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin: 4px 8px 0px 8px;
+}
+
+.audio-output-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	box-shadow: 0 0 25px 14px rgba(113, 1, 147, 0);
+	transition: box-shadow 0.4s ease;
+}
+
+.audio-output-icon-active {
+	box-shadow: 0 0 25px 14px rgba(113, 1, 147, 0.65);
+}
+
+.audio-output-icon-disabled {
+	cursor: not-allowed;
+}
+
 .server-information-bar {
-	margin-top: 5px;
-	margin-bottom: 5px;
-	align-content: center;
 	text-align: center;
 	color: #FFFFFF;
 }

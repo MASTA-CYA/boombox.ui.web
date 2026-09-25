@@ -9,10 +9,12 @@ import * as icons from './svg';
 import { ServerService } from './services/server.service';
 import { CustomRouteReuseStrategy } from './common/re-use-strategy';
 import { provideHttpClient } from '@angular/common/http';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(),
+    provideCharts(withDefaultRegisterables()),
     provideAppInitializer(async () => await inject(ServerService).startConnectionAsync()),
     provideZoneChangeDetection({ eventCoalescing: true }),
     { provide: RouteReuseStrategy, useClass: CustomRouteReuseStrategy },
@@ -32,6 +34,7 @@ export const appConfig: ApplicationConfig = {
         xl: '25px',
         xxl: '30px',
         xxxl: '35px',
+        huge: '50px',
       },
       defaultSize: 'md'
     }), provideSvgIcons([
@@ -70,5 +73,10 @@ export const appConfig: ApplicationConfig = {
       icons.undoIcon,
       icons.powerIcon,
       icons.restartIcon,
+      icons.cpuIcon,
+      icons.ramIcon,
+      icons.networkIcon,
+      icons.speakersIcon,
+      icons.headphonesIcon,
     ])]
 };

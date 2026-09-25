@@ -1,12 +1,18 @@
 .library-container {
+	margin-top: 20px;
+	padding-top: 10px;
+}
+
+/* Each row is one cdkVirtualFor "item" - its rendered height must match the component's rowHeight (350px)
+   exactly, or CDK's positioning math (which spaces rows using rowHeight, not their actual measured size) will
+   make rows overlap or leave gaps. 320px card + 30px bottom padding accounts for the old grid's row-gap. */
+.library-row {
 	display: flex;
 	flex-direction: row;
-	flex-wrap: wrap;
-	row-gap: 30px;
 	column-gap: 12px;
-	padding: 10px;
-	overflow: hidden;
-	margin-top: 20px;
+	height: 320px;
+	padding: 0 10px 30px 10px;
+	box-sizing: content-box;
 }
 	
 .progress-bar-container {
@@ -38,6 +44,45 @@
 .progress-bar-error-text {
 	margin-top: 10px;
 	color: #FF0000;
+}
+
+.progress-bar-run-type-text {
+	margin-top: 20px;
+	color: #710193;
+	font-family: 'Poppins';
+	font-size: 18px;
+	font-weight: bold;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.progress-bar-statistics-container {
+	justify-content: center;
+	margin-top: 16px;
+}
+
+.progress-bar-statistics-container .library-statistic-icon {
+	width: 110px;
+	height: 64px;
+	padding-top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.progress-bar-statistics-container .library-statistic-text {
+	width: 110px;
+	height: 52px;
+	padding-top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 19px;
+	font-weight: bold;
+	font-family: 'Poppins';
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .library-header-container {
@@ -121,8 +166,10 @@
 }
 
 .library-item {
+	position: relative;
 	width: 200px;
 	height: 320px;
+	overflow: hidden;
 	transition: all 0.5s ease-in-out;
 	cursor: pointer;
 	background-color: #000000;
@@ -151,9 +198,10 @@ mat-card img {
 	margin: 8px 2px 4px 0px;
 	display: -webkit-box;
   -webkit-line-clamp: 2; /* Number of lines to show */
-  -webkit-box-orient: vertical;  
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 20px;
 }
 
 .library-item-sub-title {
@@ -166,7 +214,10 @@ mat-card img {
 }
 
 mat-card-actions {
-	margin-top: auto;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
 .library-item-footer-container {

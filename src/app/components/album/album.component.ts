@@ -43,7 +43,16 @@ export class AlbumComponent implements OnInit, OnDestroy {
 
     if (!this.album) {
       const cachedAlbum = await this.libraryService.getCachedSelectedAlbumAsync();
-      this.album = new Album(this.domSanitizer, cachedAlbum!);
+
+      // getCachedSelectedAlbumAsync can come back empty (a failed hub call, or the server having nothing
+      // cached yet) - the Album constructor assumes a real IAlbum and throws immediately on a null/undefined
+      // one, which used to crash this component's rendering entirely rather than show anything recoverable.
+      if (!cachedAlbum) {
+        this.snackbarService.showMessage('Unable to load this album — try selecting it again from the library.');
+        return;
+      }
+
+      this.album = new Album(this.domSanitizer, cachedAlbum);
       this.displayTracks = this.album.tracks;
     }
     const imageUrl = this.domSanitizer.sanitize(SecurityContext.URL, this.album.displayImage);
@@ -93,11 +102,13 @@ export class AlbumComponent implements OnInit, OnDestroy {
   private handleUserTrackDataUpdated(trackData: UserTrackData) {
     let track = this.album?.tracks.find(track => track.path === trackData.path)
 
-    if (!track)
+    if (!track) {
       console.log("Unable to find track for user data update");
+      return;
+    }
 
-    track!.isFavourite = trackData.isFavourite;
-    track!.timesPlayed = trackData.timesPlayed;
+    track.isFavourite = trackData.isFavourite;
+    track.timesPlayed = trackData.timesPlayed;
   }
 
   onShowPlaylistsClicked(): void {

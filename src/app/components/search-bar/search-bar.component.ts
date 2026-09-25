@@ -33,7 +33,11 @@ export class SearchBarComponent {
   onClearClicked(): void {
     this.searchBar.nativeElement.value = '';
     this.canClearSearch = false;
-    this.onSearchClicked('');
+
+    // Clearing is a single deliberate action, not a stream of keystrokes - routing it through the same
+    // debounced searchInput Subject as onSearchTextChanged made it wait the full 500ms before the album list
+    // re-rendered, same as if the user had just typed a character. Filtering directly skips that wait.
+    this.libraryService.filterLibrary(new SearchModel('', undefined));
   }
 
   onSearchTextChanged(event: any): void {

@@ -12,27 +12,64 @@
 }
 
 .modal-content {
+	/* Every other background-image in this app (album.component.css, player-playlist.component.css) pairs it
+	   with background-size/position/repeat - this was the one place that didn't, so the image rendered at its
+	   native resolution, repeat-tiled from the top-left corner instead of filling the box. Usually invisible
+	   since a small dark crop of a mostly-black space photo looks close enough to "just dark" against most
+	   backgrounds, but became obvious once the modal could open over bright album art (see KNOWN_ISSUES.md) -
+	   album covers were visible bleeding through where the image should have been. background-color is a solid
+	   fallback (matching every other opaque surface in this app - snackbar, sidebar, settings, etc.) so the
+	   dialog stays fully opaque even in the moment before the image loads, or if it fails to load at all. */
+	background-color: #000000;
 	background-image: url("/space-background-modified.jpg");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
   box-shadow: 0px 0 10px #710193;
   padding: 20px;
   width: 600px;
-	height: 600px;
+	max-height: 90vh;
+	/* Sizes to its content (header + body + footer stack naturally, no scrollbar) instead of a fixed
+	   600px height - dialog content length varies a lot (a short confirm message vs. the equalizer's 9
+	   sliders), and forcing a fixed height either clipped/overflowed shorter or taller content. max-height
+	   is only a safety cap for the rare case of genuinely oversized content (taller than the viewport) -
+	   .modal-body's overflow-y below only actually shows a scrollbar in that case, never for normal content.
+	   .modal-container uses `display: contents` (see below) so .modal-header/.modal-body/.modal-footer are
+	   direct flex children of THIS element - keeps the sizing math here simple (no percentage-height chain
+	   through an intermediate wrapper, which is fragile against indefinite/auto heights). */
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+}
+
+.modal-container {
+	/* Removes this wrapper from the box tree (keeping it in the DOM) so .modal-header/.modal-body/
+	   .modal-footer become direct flex children of .modal-content instead of children of a plain block
+	   div - lets .modal-content's flex column size them directly with no intermediate percentage-height
+	   step to get wrong. */
+	display: contents;
 }
 
 .modal-header {
-	width: 50px;
+	width: 100%;
 	color: #FFFFFF;
+	flex-shrink: 0;
+	box-sizing: border-box;
 }
 
 .modal-body {
-	height: 480px;
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
 	padding: 10px 0px;
+	box-sizing: border-box;
 }
 
 .modal-footer {
 	display: flex;
 	justify-content: space-between;
 	height: 50px;
+	flex-shrink: 0;
 }
 
 .modal-icon-button {

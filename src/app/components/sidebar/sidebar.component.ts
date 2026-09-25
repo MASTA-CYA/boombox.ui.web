@@ -5,8 +5,13 @@ import { SvgIconComponent } from '@ngneat/svg-icon';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ServerService } from '../../services/server.service';
+import { PlayerService } from '../../services/player.service';
 import { Subscription } from 'rxjs';
 import { ServerUpdate } from './models/server-update';
+
+// Mirrors the backend's MusicPlayer.Player.Models.AudioOutput enum (0 = Speakers, 1 = Headset).
+const AUDIO_OUTPUT_SPEAKERS = 0;
+const AUDIO_OUTPUT_HEADSET = 1;
 
 @Component({
   selector: 'app-sidebar',
@@ -18,6 +23,15 @@ export class SidebarComponent implements OnInit, OnDestroy {
   version: String = "";
   isServerRunning: boolean = false;
   serverSubscription: Subscription | undefined;
+
+  audioOutput: number = AUDIO_OUTPUT_SPEAKERS;
+  // Default true/true, matching the backend's PlayerState defaults - before the first playback information
+  // snapshot arrives, neither icon should render as greyed out.
+  isSpeakersAvailable: boolean = true;
+  isHeadsetAvailable: boolean = true;
+  playerStateSubscription: Subscription | undefined;
+  protected readonly audioOutputSpeakers = AUDIO_OUTPUT_SPEAKERS;
+  protected readonly audioOutputHeadset = AUDIO_OUTPUT_HEADSET;
 
   activeLink: string | null = null;
   items = [
@@ -38,18 +52,37 @@ export class SidebarComponent implements OnInit, OnDestroy {
     },
   ];
 
-  constructor(private httpClient: HttpClient, private serverService: ServerService) { }
+  constructor(private httpClient: HttpClient, private serverService: ServerService, private playerService: PlayerService) { }
 
   async ngOnInit(): Promise<void> {
     this.serverSubscription = this.serverService.serverConnected$.subscribe(async (update: ServerUpdate) => {
       this.isServerRunning = await this.serverService.isServerRunningAsync();
       this.version = update.version;
     });
+
+    this.playerStateSubscription = this.playerService.playerState$.subscribe((state) => {
+      this.audioOutput = state.audioOutput;
+      this.isSpeakersAvailable = state.isSpeakersAvailable;
+      this.isHeadsetAvailable = state.isHeadsetAvailable;
+    });
   }
 
   ngOnDestroy(): void {
     if (this.serverSubscription)
       this.serverSubscription.unsubscribe();
+
+    if (this.playerStateSubscription)
+      this.playerStateSubscription.unsubscribe();
+  }
+
+  async onSpeakersClicked(): Promise<void> {
+    if (!this.isSpeakersAvailable) return;
+    await this.playerService.setAudioOutputAsync(AUDIO_OUTPUT_SPEAKERS);
+  }
+
+  async onHeadphonesClicked(): Promise<void> {
+    if (!this.isHeadsetAvailable) return;
+    await this.playerService.setAudioOutputAsync(AUDIO_OUTPUT_HEADSET);
   }
 
   async onPowerToggled(): Promise<void> {

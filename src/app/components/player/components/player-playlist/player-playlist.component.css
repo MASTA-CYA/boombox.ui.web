@@ -1,20 +1,31 @@
+/* :host needs an explicit height because a custom element defaults to display:inline, which has no
+   height to give - app-player-playlist (player.component.css) hands this component a real height via
+   flex:1 1 0, but that only reaches this far if :host actually claims it. */
+:host {
+	display: block;
+	height: 100%;
+}
+
 .player-container-image {
-	object-fit: contain;
 	background-repeat: no-repeat;
-	height: 290px;
-	background-size: contain;
+	background-size: cover;
+	background-position: center;
+	height: 100%;
+	width: 100%;
+	box-sizing: border-box;
 }
 
 .player-playlist-container {
 	display: flex;
 	flex-direction: column;
-	height: 290px;
+	height: 100%;
+	box-sizing: border-box;
 }
 
 .frosted-glass {
   position: relative; /* Essential for positioning the pseudo-element */
   z-index: 1; /* Ensures content stays above the glass layer */
-  /* Add your background image or color here */
+  height: 100%;
 }
 
 .frosted-glass::before {
@@ -39,9 +50,18 @@
 .playlist-button-container {
 	display: inline-flex;
 	justify-content: space-between;
+	align-items: center;
 	width: 100%;
-	margin: 5px 0px 5px 0px;
-	background-color: rgba(0, 0, 0, 0.9);
+	flex-shrink: 0;
+	margin: 0 0 6px 0;
+	padding: 8px 14px;
+	box-sizing: border-box;
+	/* Purple accent (#710193, matches the rest of the app) fading from solid on the left, where the
+	   reorder actions live, down to a soft translucency on the right behind delete - rather than fading to
+	   transparent, which would just show the frosted-glass/album-art blur underneath and lose the bar shape. */
+	background: linear-gradient(to right, rgba(113, 1, 147, 0.95), rgba(113, 1, 147, 0.35));
+	border-radius: 6px;
+	box-shadow: 0 2px 10px rgba(113, 1, 147, 0.35);
 }
 
 .playlist-icon-button {
@@ -61,8 +81,14 @@
 }
 
 .track-row-container {
-	padding: 0px 5px 0px 0px;
-	overflow-y: scroll;
+	/* Fills whatever height the button bar above doesn't use, instead of only taking its natural content
+	   height - this is what makes the playlist actually reach the bottom edge of the image area rather than
+	   leaving a gap. Scrollbar styling comes from the app-wide themed rules in styles.css (::-webkit-scrollbar
+	   etc.) - nothing here overrides them, so it already renders as the purple pill-on-dark-rail everywhere
+	   else uses. */
+	flex: 1 1 0;
+	min-height: 0;
+	overflow-y: auto;
 	overflow-x: hidden;
 	scrollbar-width: thin;
 	scroll-behavior: smooth;

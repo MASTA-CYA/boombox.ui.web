@@ -1,39 +1,88 @@
+/* app-player defaults to display:inline like any custom element, which meant .player-container's height:100%
+   below had nothing definite to resolve against - .player (sidebar.component.css) does get a real height via
+   flex:1, but that height was never actually being passed down into this component's content. */
+:host {
+	display: block;
+	height: 100%;
+}
+
 .player-container {
 	display: flex;
 	flex-direction: column;
 	width: 100%;
+	height: 100%;
 	padding: 10px;
-	justify-content: space-between;
+	box-sizing: border-box;
 }
 
+/* flex: 1 1 0 + min-height: 0 makes the image grow/shrink to fill whatever vertical space the other,
+   fixed-size controls (title, seek bar, action buttons) don't need - instead of the old aspect-ratio: 1/1,
+   which sized the image purely off its own width and ignored how much room was actually left. */
 .image {
-	/* height: 280px; */
+	width: 100%;
+	flex: 1 1 0;
+	min-height: 0;
+	object-fit: cover;
 	margin-top: 6px;
-	/* padding: 0px 4px 0px 4px; */
+	box-sizing: border-box;
 }
 
 .no-image {
-	/* height: 250px; */
+	width: 100%;
+	flex: 1 1 0;
+	min-height: 0;
+	object-fit: contain;
 	padding: 30px;
 	filter: invert(100%);
 	margin-top: 6px;
+	box-sizing: border-box;
 	animation: rotation 2s linear infinite;
 }
 
 .track-info-container {
+	flex-shrink: 0;
 	margin: 4px 0px;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 .track-title {
 	font-weight: bold;
 	color: #FFFFFF;
 	margin: 10px 2px 0px 2px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .track-sub-title {
 	color: #505050;
 	margin: 4px 2px 0px 2px;
 	font-family: 'Poppins';
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+app-track-information,
+app-seek-bar,
+app-player-actions {
+	display: block;
+	flex-shrink: 0;
+}
+
+/* app-player-playlist defaults to display:inline like any custom element, so without this it never
+   participated in the flex column at all - it just sized to fit its content instead of filling the same
+   flex:1 1 0 space .image/.no-image occupy. Mirrors their sizing exactly so switching between the album
+   art and the playlist view doesn't shift any other element's layout. */
+app-player-playlist {
+	display: block;
+	width: 100%;
+	flex: 1 1 0;
+	min-height: 0;
+	margin-top: 6px;
+	box-sizing: border-box;
 }
 
 .radio-item {

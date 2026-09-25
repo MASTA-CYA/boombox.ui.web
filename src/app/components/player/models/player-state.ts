@@ -5,6 +5,9 @@ export class PlayerState implements IPlayerState {
 	hasNext: boolean;
 	hasPrevious: boolean;
 	mode: number;
+	audioOutput: number;
+	isSpeakersAvailable: boolean;
+	isHeadsetAvailable: boolean;
 
 	modeImageName: string;
 
@@ -13,6 +16,9 @@ export class PlayerState implements IPlayerState {
 		this.hasNext = state.hasNext;
 		this.hasPrevious = state.hasPrevious;
 		this.mode = state.mode;
+		this.audioOutput = state.audioOutput;
+		this.isSpeakersAvailable = state.isSpeakersAvailable;
+		this.isHeadsetAvailable = state.isHeadsetAvailable;
 
 		this.modeImageName = this.getImageName(state.mode);
 	}

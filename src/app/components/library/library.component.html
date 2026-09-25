@@ -6,6 +6,30 @@
     <p class="progress-bar-update-text">{{ mappingUpdate.message }}</p>
     <p class="progress-bar-error-text">{{ mappingUpdate.error }}</p>
   </span>
+  <p class="progress-bar-run-type-text">{{ getMappingRunTypeLabel(mappingUpdate.runType) }}</p>
+  <div class="library-statistics-container progress-bar-statistics-container">
+    <!-- cpu -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="cpu" color="#FFFFFF" size="xxxl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ mappingUpdate.cpuPercent | number:'1.0-0' }}%</div>
+    </div>
+    <!-- ram -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="ram" color="#FFFFFF" size="xxxl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ mappingUpdate.memoryMb | number:'1.0-0' }} MB</div>
+    </div>
+    <!-- network -->
+    <div class="library-statistic">
+      <div class="library-statistic-icon">
+        <svg-icon key="network" color="#FFFFFF" size="xxxl"></svg-icon>
+      </div>
+      <div class="library-statistic-text">{{ getDisplayBytes(mappingUpdate.bytesBroadcast) }}</div>
+    </div>
+  </div>
 </div>
 } @else {
 <div class="library-header-container">
@@ -42,51 +66,62 @@
     </div>
   </div>
 </div>
-<div #scrollableContainer class="library-container">
-  @for (album of displayAlbums; track album) {
-  <mat-card
-    class="library-item"
-    appearance="raised"
-    (click)="onAlbumClick(album)"
+<cdk-virtual-scroll-viewport
+  #scrollableContainer
+  [itemSize]="rowHeight"
+  [minBufferPx]="rowBufferPx"
+  [maxBufferPx]="rowBufferPx * 2"
+  class="library-container"
+>
+  <div
+    *cdkVirtualFor="let row of albumRows; trackBy: trackByRowIndex"
+    class="library-row"
   >
-    @if (album.image) {
-    <img [src]="album.displayImage" />
-    } @else {
-    <img src="broken.png" />
-    }
-    <div class="library-item-header-container">
-      <p class="library-item-title">
-        {{ album.name }}
-      </p>
-      <p class="library-item-sub-title">
-        {{ album.artist }}
-      </p>
-    </div>
-    <mat-card-actions>
-      <div class="library-item-footer-container">
-        <div class="library-item-footer-info-container">
-          <svg-icon key="number-sign" color="#FFFFFF" size="sm"></svg-icon>
-          <span class="library-item-footer-text">{{
-            album.numberOfTracks
-          }}</span>
-        </div>
-        <span class="library-item-footer-separator"></span>
-        <div class="library-item-footer-info-container">
-          <svg-icon key="flame" color="#FFFFFF" size="sm"></svg-icon>
-          <span class="library-item-footer-text">{{
-            album.displayFavoriteTracks
-          }}</span>
-        </div>
-        <span class="library-item-footer-separator"></span>
-        <div class="library-item-footer-info-container">
-          <svg-icon key="extension" color="#FFFFFF" size="sm"></svg-icon>
-          <span class="library-item-footer-text">{{ album.encoding }}</span>
-        </div>
+    @for (album of row; track album) {
+    <mat-card
+      class="library-item"
+      appearance="raised"
+      (click)="onAlbumClick(album)"
+    >
+      @if (album.image) {
+      <img [src]="album.displayImage" />
+      } @else {
+      <img src="broken.png" />
+      }
+      <div class="library-item-header-container">
+        <p class="library-item-title">
+          {{ album.name }}
+        </p>
+        <p class="library-item-sub-title">
+          {{ album.artist }}
+        </p>
       </div>
-    </mat-card-actions>
-  </mat-card>
-  }
-</div>
+      <mat-card-actions>
+        <div class="library-item-footer-container">
+          <div class="library-item-footer-info-container">
+            <svg-icon key="number-sign" color="#FFFFFF" size="sm"></svg-icon>
+            <span class="library-item-footer-text">{{
+              album.numberOfTracks
+            }}</span>
+          </div>
+          <span class="library-item-footer-separator"></span>
+          <div class="library-item-footer-info-container">
+            <svg-icon key="flame" color="#FFFFFF" size="sm"></svg-icon>
+            <span class="library-item-footer-text">{{
+              album.displayFavoriteTracks
+            }}</span>
+          </div>
+          <span class="library-item-footer-separator"></span>
+          <div class="library-item-footer-info-container">
+            <svg-icon key="extension" color="#FFFFFF" size="sm"></svg-icon>
+            <span class="library-item-footer-text">{{ album.encoding }}</span>
+          </div>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+    }
+  </div>
+</cdk-virtual-scroll-viewport>
 }
 
 <router-outlet />

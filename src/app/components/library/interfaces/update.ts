@@ -3,4 +3,11 @@ export interface IMappingUpdate {
 	message: String;
 	error: String;
 	isComplete: boolean;
+	directoryCount: number;
+	mappedDirectories: number;
+	startedAtUtc: string | null;
+	cpuPercent: number;
+	memoryMb: number;
+	bytesBroadcast: number;
+	runType: number;
 }

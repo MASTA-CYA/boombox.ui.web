@@ -17,6 +17,29 @@
 	margin-right: 10px;
 }
 
+.equalizer-editing-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	margin-bottom: 12px;
+}
+
+.equalizer-editing-name {
+	color: #FFFFFF;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.equalizer-editing-path {
+	color: #999999;
+	font-family: 'Poppins';
+	font-size: 13px;
+	/* Full absolute paths have no natural break points a browser will wrap on by default (long unbroken runs
+	   of characters) - without this, a long enough path would rather overflow the dialog horizontally than
+	   wrap, which is exactly the kind of layout overflow this whole change is meant to get rid of. */
+	overflow-wrap: anywhere;
+}
+
 select {
 	background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22black%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%209L12%2015L18%209%22%2F%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;

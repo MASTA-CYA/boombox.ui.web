@@ -32,3 +32,42 @@ button, select, input {
 	font-weight: normal;
 	font-style: normal;
 }
+
+/* App-wide themed scrollbar (purple pill thumb over a thin dark rail, matching the app's #710193 accent
+   used everywhere else). Defined once globally rather than per-component so every scrollable element -
+   current and future - picks it up automatically; individual components' `scrollbar-width: thin` rules are
+   redundant now but left alone since they're harmless.
+   Firefox only supports a flat two-color scrollbar (no independent track/thumb sizing), so scrollbar-color is
+   just the closest approximation there; the full thin-rail/wide-pill look is WebKit/Blink only. */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #710193 #2b2b2b;
+}
+
+::-webkit-scrollbar {
+	width: 14px;
+	height: 14px;
+}
+
+::-webkit-scrollbar-track:vertical {
+	background: linear-gradient(to right, transparent 5px, #2b2b2b 5px, #2b2b2b 9px, transparent 9px);
+}
+
+::-webkit-scrollbar-track:horizontal {
+	background: linear-gradient(to bottom, transparent 5px, #2b2b2b 5px, #2b2b2b 9px, transparent 9px);
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #710193;
+	border-radius: 999px;
+	border: 3px solid transparent;
+	background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: #8f01b8;
+}
+
+::-webkit-scrollbar-corner {
+	background: transparent;
+}

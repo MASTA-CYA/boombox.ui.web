@@ -59,6 +59,13 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     this.scrollSubscription = this.scrollService.scrollPosition$.subscribe((position) => {
       try {
+        // Library and Album both render inside the same #scrollContainer (<main>), so a scroll-position
+        // broadcast that was requested while on /library can still arrive after the user has already
+        // navigated into an album - onScroll below already guards the save side the same way, but this apply
+        // side had no matching guard, so a late-arriving library position would force-scroll whatever view
+        // happened to be open when the response landed ("scroll bleeding into album view").
+        if (this.activeRoute !== "/library") return;
+
         const currentHorizontalPosition = this.scrollContainer.nativeElement.scrollLeft;
         const currentVerticalPosition = this.scrollContainer.nativeElement.scrollTop;
 

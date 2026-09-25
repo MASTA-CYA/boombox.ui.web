@@ -1,4 +1,4 @@
-<div class="information-controls">
+<div class="information-controls" [class.icons-enter]="playIconsAnimation">
   <button
     matIconButton
     class="information-icon-button"
@@ -22,7 +22,11 @@
   >
     <svg-icon key="flame" color="#FFFFFF" size="xl"></svg-icon>
   </button>
-  }<button matIconButton class="information-icon-button">
+  }<button
+    matIconButton
+    class="information-icon-button"
+    (click)="onOpenLyricsClicked()"
+  >
     <svg-icon key="lyrics" color="#FFFFFF" size="xxxl"></svg-icon>
   </button>
 </div>

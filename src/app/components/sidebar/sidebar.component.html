@@ -13,10 +13,30 @@
       </div>
     </div>
     <img class="image" src="logo-no-background.png" />
-    <div class="server-information-bar">
-      @if (isServerRunning) {
-        <span>{{ version }}</span>
-      }
+    <div class="audio-output-bar">
+      <div
+        role="button"
+        class="audio-output-icon"
+        [class.audio-output-icon-active]="audioOutput === audioOutputSpeakers"
+        [class.audio-output-icon-disabled]="!isSpeakersAvailable"
+        (click)="onSpeakersClicked()"
+      >
+        <svg-icon key="speakers" [color]="isSpeakersAvailable ? '#FFFFFF' : '#505050'" size="xl"></svg-icon>
+      </div>
+      <div class="server-information-bar">
+        @if (isServerRunning) {
+          <span>{{ version }}</span>
+        }
+      </div>
+      <div
+        role="button"
+        class="audio-output-icon"
+        [class.audio-output-icon-active]="audioOutput === audioOutputHeadset"
+        [class.audio-output-icon-disabled]="!isHeadsetAvailable"
+        (click)="onHeadphonesClicked()"
+      >
+        <svg-icon key="headphones" [color]="isHeadsetAvailable ? '#FFFFFF' : '#505050'" size="xl"></svg-icon>
+      </div>
     </div>
   </div>
   <div class="nav-list-container">

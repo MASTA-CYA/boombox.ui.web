@@ -7,30 +7,33 @@
             id="shift-up"
             matIconButton
             class="playlist-icon-button icon-button-spacing"
+            [disabled]="!canShiftUp()"
             (click)="onShiftUpClickedAsync()"
           >
-            <svg-icon key="up-arrow" color="#FFFFFF" size="xl"></svg-icon>
+            <svg-icon key="up-arrow" [color]="canShiftUp() ? '#FFFFFF' : '#505050'" size="xl"></svg-icon>
           </button>
           <button
             id="shift-down"
             matIconButton
             class="playlist-icon-button"
+            [disabled]="!canShiftDown()"
             (click)="onShiftDownClickedAsync()"
           >
-            <svg-icon key="down-arrow" color="#FFFFFF" size="xl"></svg-icon>
+            <svg-icon key="down-arrow" [color]="canShiftDown() ? '#FFFFFF' : '#505050'" size="xl"></svg-icon>
           </button>
         </div>
         <button
           id="delete-track"
           matIconButton
           class="playlist-icon-button"
+          [disabled]="isActionInProgress"
           (click)="onDeleteTrackAsync()"
         >
           <svg-icon key="bin" color="#FF0000" size="xl"></svg-icon>
         </button>
       </div>
       <div class="track-row-container">
-        @for (playlistTrack of playlist; track playlistTrack) {
+        @for (playlistTrack of playlist; track playlistTrack.path) {
         <div class="playlist-track-row">
           <input
             type="radio"
