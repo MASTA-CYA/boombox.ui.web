@@ -157,8 +157,16 @@ export class AlbumPlaylistComponent implements OnInit, OnDestroy, OnChanges {
       if (selectedPlaylistRadioButton)
         selectedPlaylistRadioButton.checked = false;
     }
-    this.selectedPlaylistTrack = undefined;
+
+    this.selectedPlaylistTrack = this.selectedPlaylist?.tracks?.at(-1)?.path;
     this.selectedTracks = [];
+
+    const newLastTrackName = this.selectedPlaylist?.tracks?.at(-1)?.name;
+    if (newLastTrackName) {
+      const newSelectedRadioButton = document.getElementById(newLastTrackName) as HTMLInputElement;
+      if (newSelectedRadioButton)
+        newSelectedRadioButton.checked = true;
+    }
   }
 
   onCancelClicked(): void {
