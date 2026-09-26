@@ -1,28 +1,73 @@
-# Boombox — Web UI
+<div align="center">
+  <img src="public/boombox.png" width="110" alt="Boombox logo" />
 
-The Angular frontend for **Boombox**, a personal self-hosted music player. It's the browser-based control
-surface for the [`boombox.services.musicplayer`](../boombox.services.musicplayer) backend — the library grid,
-the player, playlists, lyrics, and settings, all driven live over SignalR rather than a traditional REST
-request/response cycle.
+  # Boombox
 
-This is a solo, self-hosted project built to control one person's own music library — not a general-purpose
-product, and not accepting external contributions, but documented here in the interest of sharing how it's
-built.
+  ### *The music never stops*
+
+  A personal, self-hosted music player — Angular 19 web client.
+
+  ![Angular](https://img.shields.io/badge/Angular-19-DD0031?logo=angular&logoColor=white)
+  ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
+  ![SignalR](https://img.shields.io/badge/real--time-SignalR-512BD4)
+  ![Status](https://img.shields.io/badge/status-personal%20project-9b30ff)
+</div>
+
+<br/>
+
+> **Solo, self-hosted project.** Built to control one person's own music library, not a general-purpose
+> product — not accepting external contributions, but documented here in the interest of sharing how it's built.
+
+It's the browser-based control surface for the [`boombox.services.musicplayer`](../boombox.services.musicplayer)
+backend — the library grid, the player, playlists, lyrics, and settings, all driven live over SignalR rather
+than a traditional REST request/response cycle.
 
 ## Screenshots
 
-| | |
-|---|---|
-| **Library** — the album grid, search, sort order, and per-library favourite/play/mapped counts | ![Library](docs/screenshots/Library.png) |
-| **Album** — track list, duration/genre/format metadata, and Play All / Shuffle / Add To | ![Album](docs/screenshots/Album.png) |
-| **Album — queue actions** — Prepend/Append into an already-playing queue, plus the Playlists/Tracks panels | ![Album queue actions](docs/screenshots/Playlist-Chaining.png) |
-| **Player — Equalizer** — live 9-band preset editing from the now-playing view | ![Equalizer](docs/screenshots/Equalizer.png) |
-| **Player — Lyrics** — the synced lyrics dialog opened over the now-playing track | ![Lyrics](docs/screenshots/Lyrics.png) |
-| **Settings — Mapping Statistics** — cache-load vs. full-mapping run history, with duration charts | ![Mapping statistics](docs/screenshots/Directory-Mapping_Statistics.png) |
-| **Settings — Equalizer presets** | ![Equalizer settings](docs/screenshots/Equalizer-Settings.png) |
-| **Loading state** | ![Loading](docs/screenshots/Loading.png) |
-| **Track loading state** | ![Track loading](docs/screenshots/Track-Loading.png) |
-| **Album (alternate view)** | ![Album alternate](docs/screenshots/Album-2.png) |
+<table>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Library.png" width="280" alt="Library" /><br/>
+      <sub><b>Library</b> — album grid, search, sort, per-library counts</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Album.png" width="280" alt="Album" /><br/>
+      <sub><b>Album</b> — track list, metadata, Play All / Shuffle / Add To</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Playlist-Chaining.png" width="280" alt="Album queue actions" /><br/>
+      <sub><b>Queue actions</b> — Prepend/Append into the live queue</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Equalizer.png" width="280" alt="Equalizer" /><br/>
+      <sub><b>Equalizer</b> — live 9-band preset editing</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Lyrics.png" width="280" alt="Lyrics" /><br/>
+      <sub><b>Lyrics</b> — synced line highlighting over now-playing</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Directory-Mapping_Statistics.png" width="280" alt="Mapping statistics" /><br/>
+      <sub><b>Mapping Statistics</b> — cache-load vs. full-scan history</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Equalizer-Settings.png" width="280" alt="Equalizer settings" /><br/>
+      <sub><b>Equalizer presets</b> — Settings tab</sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Loading.png" width="280" alt="Loading" /><br/>
+      <sub><b>Loading state</b></sub>
+    </td>
+    <td align="center" width="33%">
+      <img src="docs/screenshots/Track-Loading.png" width="280" alt="Track loading" /><br/>
+      <sub><b>Track loading state</b></sub>
+    </td>
+  </tr>
+</table>
 
 ## What it does
 
